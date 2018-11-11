@@ -2,7 +2,9 @@ module.exports = {
   env: {
     NODE_ENV: '"development"'
   },
-  defineConstants: {},
+  defineConstants: {
+    CDN_URL: '""'
+  },
   weapp: {},
   h5: {}
 }

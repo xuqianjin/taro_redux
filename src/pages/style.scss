@@ -1,4 +1,75 @@
-
 .button {
   color: blue;
+}
+
+.home_header_bg {
+  height: 180px;
+}
+
+.home_header_container {
+  width: 700px;
+  margin: auto;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: -100px;
+
+  & .header {
+    padding: 5px 0;
+    height: 150px;
+    align-items: center;
+
+    & .number {
+      font-size: 50px;
+    }
+  }
+
+  & .footer {
+    height: 100px;
+    align-items: center;
+    background-color: #f0f9ff;
+
+    .line {
+      border-right: solid 1px;
+    }
+  }
+}
+
+.home_card_container {
+  margin: 20px auto auto;
+  width: 700px;
+  height: 180px;
+  align-items: center;
+  border-radius: 5px;
+
+  & .icon {
+    height: 80px;
+    width: 80px;
+    margin: 0 20px;
+  }
+
+  & .title {
+    font-size: 35px;
+  }
+
+  & .desc {
+    margin-bottom: 10px;
+    font-size: 22px;
+  }
+
+  & .right {
+    margin-right: 20px;
+  }
+}
+
+.user_list_item {
+  height: 100px;
+  align-items: center;
+
+  & .icon {
+    margin-left: 20px;
+  }
+
+  & .right {
+    margin-right: 20px;
+  }
 }

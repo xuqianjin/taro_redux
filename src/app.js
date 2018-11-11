@@ -27,11 +27,11 @@ class App extends Component {
     pages: ['pages/index'],
     window: {
       backgroundTextStyle: 'dark',
-      navigationBarBackgroundColor: APP_COLOR,
+      navigationBarBackgroundColor: APP_COLOR_THEME,
       navigationBarTitleText: '小多机器人',
       navigationBarTextStyle: 'white',
-      backgroundColor: APP_BG,
-      backgroundColorTop: APP_BG,
+      backgroundColor: APP_COLOR_GRAY,
+      backgroundColorTop: APP_COLOR_GRAY,
       enablePullDownRefresh: false
     }
   }

@@ -1,5 +1,5 @@
-$APP_COLOR: #6190e8;
-$APP_BG: #f0f1f5;
+$APP_COLOR_THEME: #6190e8;
+$APP_COLOR_GRAY: #f0f1f5;
 
 body,
 html {
@@ -9,7 +9,7 @@ html {
 
 page {
 	height: 100%;
-	background-color: $APP_BG;
+	background-color: $APP_COLOR_GRAY;
 }
 
 .baseview {
@@ -21,16 +21,50 @@ page {
 	height: 100%;
 }
 
-.app_bg {
-	background-color: $APP_BG;
+.bg_gray {
+	background-color: $APP_COLOR_GRAY;
 }
 
-.app_color_text {
-	color: $APP_COLOR;
+.bg_theme {
+	background-color::$APP_COLOR_THEME;
 }
 
-.app_color_bg {
-	color: $APP_COLOR;
+.bg_white {
+	background-color: white;
+}
+
+.text_theme {
+	color: $APP_COLOR_THEME;
+}
+
+.text_black_light {
+	color: #aaa;
+}
+
+.text_black {
+	color: black;
+}
+
+.text_left {
+	text-align: left;
+}
+
+.text_center {
+	text-align: center;
+}
+
+.text_right {
+	text-align: right;
+}
+
+.shadow {
+	box-shadow: 5px 5px 5px #ddd;
+}
+
+.opacity {
+	&:active {
+		opacity: 0.7;
+	}
 }
 
 .test {

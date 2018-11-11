@@ -46,8 +46,10 @@ const config = {
     }
   },
   defineConstants: {
-    APP_COLOR: '"#6190e8"',
-    APP_BG: '"#f0f1f5"'
+    APP_COLOR_THEME: '"#6190e8"',
+    APP_COLOR_GRAY: '"#f0f1f5"',
+    APP_COLOR_BLACK: '"#000"',
+    APP_COLOR_LIGHT_BLACK: '"#aaa"'
   },
   weapp: {
 
