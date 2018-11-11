@@ -1,104 +1,38 @@
-html,
-body {
+$APP_COLOR: #6190e8;
+$APP_BG: #f0f1f5;
+
+body,
+html {
 	margin: 0;
 	padding: 0;
+};
+
+page {
+	height: 100%;
+	background-color: $APP_BG;
 }
 
-// 元素选择器
-button {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	//background: none;
-	// font-size: 100%;
-	vertical-align: baseline;
-	font-family: inherit;
-	font-weight: inherit;
-	color: inherit;
-	//-webkit-appearance: none;
-	//appearance: none;
-	//-webkit-font-smoothing: antialiased;
-  //-moz-osx-font-smoothing: grayscale;
-  //&::after {
-  //  border: 0;
-  //}
+.baseview {
+	height: 100%;
+	min-height: 200px;
 }
 
-body, page {
-	font: 28px 'Helvetica Neue', Helvetica, Arial, sans-serif;
-	background: #f5f5f5;
-	color: #4d4d4d;
-	margin: 0 auto;
-	//-webkit-font-smoothing: antialiased;
-	//-moz-osx-font-smoothing: grayscale;
-	font-weight: 300;
+.fullheight {
+	height: 100%;
 }
 
-:focus {
-	outline: 0;
+.app_bg {
+	background-color: $APP_BG;
 }
 
-.hidden {
-	display: none;
+.app_color_text {
+	color: $APP_COLOR;
 }
 
-.todoapp {
-	background: #fff;
-	margin: 210px 0 40px 0;
-	position: relative;
-	//box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2),
-	//            0 25px WebkitTextRendering50px 0 rgba(0, 0, 0, 0.1);
+.app_color_bg {
+	color: $APP_COLOR;
 }
 
-input::-webkit-input-placeholder {
-	font-style: italic;
-	font-weight: 300;
-	color: #e6e6e6;
-}
-
-input::-moz-placeholder {
-	font-style: italic;
-	font-weight: 300;
-	color: #e6e6e6;
-}
-
-//input::input-placeholder {
-//	font-style: italic;
-//	font-weight: 300;
-//	color: #e6e6e6;
-//}
-
-.info {
-	margin: 130px auto 0;
-	color: #bfbfbf;
-	//font-size: 20px;
-	text-shadow: 0 2px 0 rgba(255, 255, 255, 0.5);
-	//text-align: center;
-}
-
-.info p {
-	line-height: 1;
-}
-
-.info a {
-	color: inherit;
-	text-decoration: none;
-	font-weight: 400;
-}
-
-.info a:hover {
-	text-decoration: underline;
-}
-
-.toggle-all,
-.todo-list .list-item .toggle {
-  //background: none;
-}
-
-.todo-list .list-item .toggle {
-  //height: 80px;
-}
-
-.weui-cells_checkbox {
-  margin-right: 10px;
+.test {
+	height: 100px;
 }

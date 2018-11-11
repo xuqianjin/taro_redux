@@ -46,6 +46,8 @@ const config = {
     }
   },
   defineConstants: {
+    APP_COLOR: '"#6190e8"',
+    APP_BG: '"#f0f1f5"'
   },
   weapp: {
 
@@ -63,7 +65,7 @@ const config = {
   }
 }
 
-module.exports = function (merge) {
+module.exports = function(merge) {
   if (process.env.NODE_ENV === 'development') {
     return merge({}, config, require('./dev'))
   }
