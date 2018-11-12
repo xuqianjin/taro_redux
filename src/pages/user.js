@@ -6,7 +6,6 @@ import ImageView from '../components/ImageView'
 import HeightView from '../components/HeightView'
 import './style.scss'
 
-const testimage = require('../static/image/test.jpg')
 const userheader = 'https://img12.360buyimg.com/jdphoto/s72x72_jfs/t6160/14/2008729947/2754/7d512a86/595c3aeeNa89ddf71.png'
 
 export default class extends Component {
@@ -53,7 +52,7 @@ export default class extends Component {
   render() {
     const userCard = <View className='at-row bg_white home_card_container shadow opacity'>
       <View className='at-col at-col-1 at-col--auto'>
-        <ImageView baseclassname='icon' src={userheader}></ImageView>
+        <ImageView className='icon' baseclassname='icon' src={userheader}></ImageView>
       </View>
       <View className='at-col'>
         <View className='title'>用户姓名</View>

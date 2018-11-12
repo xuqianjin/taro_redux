@@ -1,6 +1,5 @@
 import Taro, {Component} from '@tarojs/taro'
 import {Image} from '@tarojs/components'
-import {isEqual} from "lodash";
 
 export const changeSrc = (src) => {
   if (src && typeof src === 'string') {
@@ -15,7 +14,9 @@ export const changeSrc = (src) => {
 };
 
 export default class extends Component {
+
   static externalClasses = ['baseclassname']
+
   constructor(props) {
     super(props);
     this.state = {
@@ -29,12 +30,6 @@ export default class extends Component {
     }
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if (!isEqual(nextProps, this.props) || !isEqual(nextState, this.state)) {
-      return true;
-    }
-    return false;
-  }
 
   onLoad = () => {
     // this.setState({
