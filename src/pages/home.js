@@ -41,7 +41,7 @@ export default class extends Component {
         left: '转发 0',
         right: '阅读 0'
       }, {
-        title: '海报营销',
+        title: '获客案例',
         icon: require('../static/icon/haibao.png'),
         desc: '海量最新模板',
         left: '我的分享 0'
