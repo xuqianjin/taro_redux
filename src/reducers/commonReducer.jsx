@@ -28,8 +28,8 @@ export default function counter(state = init_state, action) {
         ...state,
         deviceinfo: action.payload
       }
-    case `${SET_STATE}`:
 
+    case `${SET_STATE}`:
       return {
         ...state,
         ...action.payload

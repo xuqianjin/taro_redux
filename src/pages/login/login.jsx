@@ -21,7 +21,7 @@ export default class extends Component {
     const {height, color} = this.props
     const style = 'height:100%;display:flex;align-items:center;justify-content:center; flex-direction:column'
     return <View style={style}>
-      <Text>使用微信账号快捷登录</Text>
+      <Text className='text_black_light'>使用微信账号快捷登录</Text>
       <HeightView height={100}></HeightView>
       <AtButton type='primary' openType='getUserInfo' onGetPhoneNumber={this.onGetPhoneNumber} onGetUserInfo={this.onGetUserInfo}>微信授权登录</AtButton>
     </View>

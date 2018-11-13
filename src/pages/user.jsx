@@ -1,6 +1,6 @@
 import Taro, {Component} from '@tarojs/taro'
 import {View, Text, ScrollView} from '@tarojs/components'
-import {AtList, AtListItem, AtIcon} from 'taro-ui'
+import {AtList, AtListItem, AtIcon,AtModal} from 'taro-ui'
 
 import ImageView from '../components/ImageView'
 import HeightView from '../components/HeightView'
@@ -20,7 +20,9 @@ export default class extends Component {
     this.state = {}
   }
   componentWillMount() {}
-  componentDidMount() {}
+  componentDidMount() {
+    Taro.info('sss')
+  }
   componentWillReceiveProps(nextProps) {}
   componentDidUpdate() {}
   componentWillUnmount() {}

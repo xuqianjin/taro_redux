@@ -12,8 +12,9 @@ import BaseView from '../components/BaseView'
 
 import request from '../reducers/request'
 
-import {add, minus, asyncAdd} from '../reducers/counter'
 import {getDeviceInfo, setState} from '../reducers/commonReducer'
+import {postWxLogin, getDebugToken} from '../reducers/userReducer'
+
 const testimage = require('../static/image/test.jpg')
 
 const mapStateToProps = (state) => {
@@ -22,9 +23,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
-    add,
-    minus,
-    asyncAdd,
+    postWxLogin,
+    getDebugToken,
     getDeviceInfo,
     setState
   }, dispatch)
@@ -43,20 +43,18 @@ class Index extends Component {
     }
   }
   componentWillReceiveProps(nextProps) {}
-  componentWillMount() {}
-  componentDidMount() {
+  componentWillMount() {
     this.props.getDeviceInfo()
-    // console.log(Taro.request("http://dj.sigoden.com/c/wxlite/debugLogin/1"));
+    Taro.login().then(res => {
+      // this.props.postWxLogin({code: res.code})
+    })
   }
+  componentDidMount() {}
   componentDidShow() {}
 
   componentDidHide() {}
 
   handleMenuClick = (current) => {
-    Taro.login().then(e=>{
-console.log(e);
-})
-    // Taro.authorize()
     this.setState({current})
   }
 
