@@ -1,8 +1,8 @@
 {
-	"miniprogramRoot": "./dist",
+	"miniprogramRoot": "dist/",
 	"projectname": "open-todo",
 	"description": "todo-list",
-	"appid": "touristappid",
+	"appid": "wx3381d91b259e012d",
 	"setting": {
 		"urlCheck": true,
 		"es6": false,

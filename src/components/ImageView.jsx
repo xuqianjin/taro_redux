@@ -30,7 +30,6 @@ export default class extends Component {
     }
   }
 
-
   onLoad = () => {
     // this.setState({
     //   src: changeSrc(require('../static/image/noPicture.png'))
@@ -42,8 +41,15 @@ export default class extends Component {
 
   render() {
     const {src} = this.state
-    const {className, basestyle, mode} = this.props
+    let {basestyle, mode} = this.props
 
-    return <Image src={src} onLoad={this.onLoad} onError={this.onError} className='baseclassname' style={basestyle} mode={mode}></Image>
+    //  小程序bug兼容 https://nervjs.github.io/taro/docs/component-style.html
+
+    var className = 'baseclassname'
+    if (process.env.TARO_ENV !== 'weapp') {
+      className = this.props.baseclassname
+    }
+
+    return <Image src={src} onLoad={this.onLoad} onError={this.onError} className={className} style={basestyle} mode={mode}></Image>
   }
 }

@@ -10,8 +10,10 @@ import User from './user'
 
 import BaseView from '../components/BaseView'
 
-import {add, minus, asyncAdd} from '../redux/counter'
-import {getDeviceInfo, setState} from '../redux/commonReducer'
+import request from '../reducers/request'
+
+import {add, minus, asyncAdd} from '../reducers/counter'
+import {getDeviceInfo, setState} from '../reducers/commonReducer'
 const testimage = require('../static/image/test.jpg')
 
 const mapStateToProps = (state) => {
@@ -40,17 +42,21 @@ class Index extends Component {
       current: 0
     }
   }
-
   componentWillReceiveProps(nextProps) {}
   componentWillMount() {}
   componentDidMount() {
     this.props.getDeviceInfo()
+    // console.log(Taro.request("http://dj.sigoden.com/c/wxlite/debugLogin/1"));
   }
   componentDidShow() {}
 
   componentDidHide() {}
 
   handleMenuClick = (current) => {
+    Taro.login().then(e=>{
+console.log(e);
+})
+    // Taro.authorize()
     this.setState({current})
   }
 
@@ -93,7 +99,6 @@ class Index extends Component {
           <User></User>
         </AtTabsPane>
       </AtTabs>
-      <View style='height:120rpx'></View>
       <AtTabBar fixed={true} tabList={menuData} onClick={this.handleMenuClick.bind(this)} current={current}/>
     </BaseView>)
   }

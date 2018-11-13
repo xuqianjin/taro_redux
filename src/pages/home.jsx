@@ -32,7 +32,7 @@ export default class extends Component {
         title: '我的名片',
         icon: require('../static/icon/usercard.png'),
         desc: '个人展示页面 让好友认识你',
-        left: '访问 0',
+        left: '访问 1',
         right: '收藏 0'
       }, {
         title: '获客文章',
@@ -40,12 +40,13 @@ export default class extends Component {
         desc: '最新最全行业观点',
         left: '转发 0',
         right: '阅读 0'
-      }, {
-        title: '获客案例',
-        icon: require('../static/icon/haibao.png'),
-        desc: '海量最新模板',
-        left: '我的分享 0'
       }
+      // , {
+      //   title: '获客案例',
+      //   icon: require('../static/icon/haibao.png'),
+      //   desc: '海量最新模板',
+      //   left: '我的分享 0'
+      // }
     ]
   }
   render() {
@@ -82,7 +83,7 @@ export default class extends Component {
     const userCard = this.getListData().map((item, index) => {
       return <View key={index} className='at-row bg_white home_card_container shadow opacity'>
         <View className='at-col at-col-1 at-col--auto'>
-          <ImageView className='icon' baseclassname='icon' src={item.icon}></ImageView>
+          <ImageView test='sss' baseclassname='icon' src={item.icon}></ImageView>
         </View>
         <View className='at-col'>
           <View className='title'>{item.title}</View>

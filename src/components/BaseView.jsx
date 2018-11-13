@@ -4,6 +4,8 @@ import {AtActivityIndicator} from 'taro-ui'
 
 export default class extends Component {
 
+  static externalClasses = ['baseclassname']
+
   static options = {
     addGlobalClass: true
   }
@@ -19,7 +21,7 @@ export default class extends Component {
   componentWillUnmount() {}
 
   render() {
-    const {condition, className, basestyle} = this.props
+    const {condition, basestyle} = this.props
 
     let child = null
     if (condition && condition.state) {
@@ -30,6 +32,13 @@ export default class extends Component {
       }
     } else {
       child = this.props.children
+    }
+
+    //  小程序bug兼容 https://nervjs.github.io/taro/docs/component-style.html
+
+    var className = 'baseclassname'
+    if (process.env.TARO_ENV !== 'weapp') {
+      className = this.props.baseclassname
     }
 
     return (<View className={className

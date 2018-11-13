@@ -6,7 +6,6 @@ import configStore from './store'
 import reducer from './reducers'
 import Index from './pages/index'
 
-
 if (process.env.TARO_ENV === "weapp") {
   require("taro-ui/dist/weapp/css/index.css")
 } else if (process.env.TARO_ENV === "h5") {
@@ -24,7 +23,9 @@ const store = configStore()
 class App extends Component {
 
   config = {
-    pages: ['pages/index'],
+    pages: [
+      'pages/index', 'pages/login/login'
+    ],
     window: {
       backgroundTextStyle: 'dark',
       navigationBarBackgroundColor: APP_COLOR_THEME,

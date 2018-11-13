@@ -27,6 +27,10 @@ export default class extends Component {
   getUserList = () => {
     return [
       {
+        icon: 'message',
+        title: '我的消息',
+        extra: '暂无消息'
+      }, {
         icon: 'sketch',
         title: 'VIP会员',
         extra: '1天1块钱'
@@ -69,14 +73,14 @@ export default class extends Component {
       return <View key={index}>
         <View className='at-row user_list_item bg_white opacity'>
           <View className='at-col at-col-1 at-col--auto icon'>
-            <AtIcon value={item.icon} className='text_theme'></AtIcon>
+            <AtIcon size={18} value={item.icon} className='text_theme'></AtIcon>
           </View>
           <View className='at-col at-col-1 at-col--auto'>
             <View className='title'>{item.title}</View>
           </View>
           <View className='at-col right text_black_light text_right'>
             <Text>{item.extra}</Text>
-            <AtIcon value='chevron-right' size='15'></AtIcon>
+            <AtIcon size={18} value='chevron-right'></AtIcon>
           </View>
         </View>
         {index < list1data.length - 1 && <HeightView height={2} color='transparent'></HeightView>}
@@ -87,14 +91,14 @@ export default class extends Component {
       return <View key={index}>
         <View className='at-row user_list_item bg_white opacity'>
           <View className='at-col at-col-1 at-col--auto icon'>
-            <AtIcon value={item.icon} className='text_theme'></AtIcon>
+            <AtIcon size={18} value={item.icon} className='text_theme'></AtIcon>
           </View>
           <View className='at-col at-col-1 at-col--auto'>
             <View className='title'>{item.title}</View>
           </View>
           <View className='at-col right text_black_light text_right'>
             <Text>{item.extra}</Text>
-            <AtIcon value='chevron-right' size='15'></AtIcon>
+            <AtIcon size={18} value='chevron-right'></AtIcon>
           </View>
         </View>
         {index < list1data.length - 1 && <HeightView height={2} color='transparent'></HeightView>}
