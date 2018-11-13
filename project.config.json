@@ -4,7 +4,7 @@
 	"description": "todo-list",
 	"appid": "wx3381d91b259e012d",
 	"setting": {
-		"urlCheck": false,
+		"urlCheck": true,
 		"es6": false,
 		"postcss": false,
 		"minified": false,

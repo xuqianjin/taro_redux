@@ -2,8 +2,7 @@ import Taro, {Component} from '@tarojs/taro'
 import {View, Button, Text, Input} from '@tarojs/components'
 import {connect} from '@tarojs/redux'
 import {bindActionCreators} from 'redux'
-import {AtTabBar, AtTabs, AtTabsPane} from 'taro-ui'
-
+import {AtTabBar, AtTabs, AtTabsPane, AtModal,AtMessage} from 'taro-ui'
 import Home from './home'
 import Customer from './customer'
 import User from './user'
@@ -39,14 +38,15 @@ class Index extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      current: 0
+      current: 0,
+      showmodal: false
     }
   }
   componentWillReceiveProps(nextProps) {}
   componentWillMount() {
     this.props.getDeviceInfo()
     Taro.login().then(res => {
-      // this.props.postWxLogin({code: res.code})
+      this.props.postWxLogin({code: res.code})
     })
   }
   componentDidMount() {}
@@ -57,7 +57,13 @@ class Index extends Component {
   handleMenuClick = (current) => {
     this.setState({current})
   }
-
+  handleModalConfirm = () => {
+    Taro.navigateTo({url: '/pages/login/login'})
+    this.setState({showmodal: false})
+  }
+  handleModalClose = () => {
+    this.setState({showmodal: false})
+  }
   getMenuData = () => {
     return [
       {
@@ -75,7 +81,7 @@ class Index extends Component {
   render() {
 
     const {deviceinfo} = this.props.commonReducer
-    const {current} = this.state
+    const {current, showmodal} = this.state
     const menuData = this.getMenuData()
 
     let condition = false
@@ -98,6 +104,7 @@ class Index extends Component {
         </AtTabsPane>
       </AtTabs>
       <AtTabBar fixed={true} tabList={menuData} onClick={this.handleMenuClick.bind(this)} current={current}/>
+      <AtModal isOpened={showmodal} title='提示' confirmText='去授权' onClose={this.handleModalClose.bind(this)} onConfirm={this.handleModalConfirm.bind(this)} content='为了获得更好体验,我们需要您的微信授权点击去授权'></AtModal>
     </BaseView>)
   }
 }

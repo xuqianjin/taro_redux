@@ -47,7 +47,15 @@ methods.forEach(method => {
       header,
       data,
     }
-    return Taro.request(postdata)
+    return new Promise((resolve, reject) => {
+
+      Taro.request(postdata).then(res => {
+        resolve(res)
+      }).catch(err => {
+        reject(err)
+      })
+
+    })
   }
 });
 

@@ -1,4 +1,5 @@
 import request from './request'
+import { AtMessage } from 'taro-ui'
 
 const API_GET_DEGUG_TOKEN = API_HOST + '/c/wxlite/debugLogin/{id}'
 //wx
@@ -88,8 +89,8 @@ export default function counter(state = init_state, action) {
         ...state,
         deviceinfo: action.payload
       }
-    case `${API_POST_WXLOGIN}_EJECTED`:
-      console.log('ss');
+    case `${API_POST_WXLOGIN}_REJECTED`:
+      console.log(action.payload);
       return state
     default:
       return state
