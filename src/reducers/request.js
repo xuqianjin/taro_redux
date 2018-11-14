@@ -41,6 +41,11 @@ methods.forEach(method => {
     if (params) {
       url = formatParams(url, params)
     }
+
+    if (header && header.Authorization) {
+      header.Authorization = 'Bearer ' + header.Authorization
+    }
+
     const postdata = {
       method: method.toUpperCase(),
       url,

@@ -1,5 +1,5 @@
 import request from './request'
-import { AtMessage } from 'taro-ui'
+import {AtMessage} from 'taro-ui'
 
 const API_GET_DEGUG_TOKEN = API_HOST + '/c/wxlite/debugLogin/{id}'
 //wx
@@ -31,54 +31,89 @@ export const postWxLogin = (data) => (dispatch, getState) => {
 export const putWxUserInfo = (data) => (dispatch, getState) => {
   dispatch({
     type: API_PUT_WXUERINFO,
-    payload: request.put(API_PUT_WXUERINFO, {data})
+    payload: request.put(API_PUT_WXUERINFO, {
+      header: {
+        Authorization: getState().userReducer.token
+      },
+      data
+    })
   })
 }
 
 export const postWxUserPhone = (data) => (dispatch, getState) => {
   dispatch({
     type: API_PUT_WXUERPHONE,
-    payload: request.post(API_PUT_WXUERPHONE, {data})
+    payload: request.post(API_PUT_WXUERPHONE, {
+      header: {
+        Authorization: getState().userReducer.token
+      },
+      data
+    })
   })
 }
 
 export const getUserCarte = (operateId) => (dispatch, getState) => {
   dispatch({
     type: API_GET_USER_CARTE,
-    payload: request.get(API_GET_USER_CARTE, {operateId})
+    payload: request.get(API_GET_USER_CARTE, {
+      header: {
+        Authorization: getState().userReducer.token
+      },
+      operateId
+    })
   })
 }
 
 export const putUserCarte = (data) => (dispatch, getState) => {
   dispatch({
     type: API_PUT_USER_CARTE,
-    payload: request.put(API_PUT_USER_CARTE, {data})
+    payload: request.put(API_PUT_USER_CARTE, {
+      header: {
+        Authorization: getState().userReducer.token
+      },
+      data
+    })
   })
 }
 
 export const putUserCarteDesc = (operateId) => (dispatch, getState) => {
   dispatch({
     type: API_GET_USER_CARTE_DEC,
-    payload: request.put(API_GET_USER_CARTE_DEC, {operateId})
+    payload: request.put(API_GET_USER_CARTE_DEC, {
+      header: {
+        Authorization: getState().userReducer.token
+      },
+      operateId
+    })
   })
 }
 
 export const putUserCarteCollect = (operateId) => (dispatch, getState) => {
   dispatch({
     type: API_PUT_USER_CARTE_COLLECT,
-    payload: request.put(API_GET_USER_CARTE_DEC, {operateId})
+    payload: request.put(API_GET_USER_CARTE_DEC, {
+      header: {
+        Authorization: getState().userReducer.token
+      },
+      operateId
+    })
   })
 }
 
 export const delUserCarteCollect = (operateId) => (dispatch, getState) => {
   dispatch({
     type: API_DEL_USER_CARTE_COLLECT,
-    payload: request.delete(API_DEL_USER_CARTE_COLLECT, {operateId})
+    payload: request.delete(API_DEL_USER_CARTE_COLLECT, {
+      header: {
+        Authorization: getState().userReducer.token
+      },
+      operateId
+    })
   })
 }
 
 const init_state = {
-  deviceinfo: ''
+  token: ''
 }
 
 export default function counter(state = init_state, action) {
@@ -87,11 +122,8 @@ export default function counter(state = init_state, action) {
     case `${API_GET_DEGUG_TOKEN}_FULFILLED`:
       return {
         ...state,
-        deviceinfo: action.payload
+        token: action.payload
       }
-    case `${API_POST_WXLOGIN}_REJECTED`:
-      console.log(action.payload);
-      return state
     default:
       return state
   }

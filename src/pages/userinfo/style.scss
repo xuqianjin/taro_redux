@@ -1,0 +1,38 @@
+.headderbox {
+  width: 750px;
+  text-align: center;
+}
+
+.headerimg {
+  width: 710px;
+  height: 400px;
+}
+
+.inputpicker {
+  // height: 80px;
+  display: flex;
+  padding: 24px 0;
+
+  & .left {
+    width: 172px;
+    font-size: 32px;
+    margin-right: 16px;
+  }
+
+  & .right {
+    font-size: 32px;
+  }
+
+  & .default {
+    color: #ccc;
+  }
+
+  & .select {
+    color: black;
+  }
+}
+
+.button {
+  width: 700px;
+  padding-left: 25px;
+}

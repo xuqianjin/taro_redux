@@ -2,7 +2,8 @@ import Taro, {Component} from '@tarojs/taro'
 import {View, Button, Text, Input} from '@tarojs/components'
 import {connect} from '@tarojs/redux'
 import {bindActionCreators} from 'redux'
-import {AtTabBar, AtTabs, AtTabsPane, AtModal,AtMessage} from 'taro-ui'
+import {AtTabBar, AtTabs, AtTabsPane, AtModal} from 'taro-ui'
+
 import Home from './home'
 import Customer from './customer'
 import User from './user'
@@ -45,6 +46,7 @@ class Index extends Component {
   componentWillReceiveProps(nextProps) {}
   componentWillMount() {
     this.props.getDeviceInfo()
+    this.props.getDebugToken(1)
     Taro.login().then(res => {
       this.props.postWxLogin({code: res.code})
     })
@@ -62,6 +64,7 @@ class Index extends Component {
     this.setState({showmodal: false})
   }
   handleModalClose = () => {
+    Taro.navigateTo({url: '/pages/login/login'})
     this.setState({showmodal: false})
   }
   getMenuData = () => {
