@@ -65,7 +65,7 @@ export const getUserCarte = (operateId) => (dispatch, getState) => {
 }
 
 export const putUserCarte = (data) => (dispatch, getState) => {
-  dispatch({
+  return dispatch({
     type: API_PUT_USER_CARTE,
     payload: request.put(API_PUT_USER_CARTE, {
       header: {
@@ -113,16 +113,23 @@ export const delUserCarteCollect = (operateId) => (dispatch, getState) => {
 }
 
 const init_state = {
-  token: ''
+  token: '',
+  userinfo: '',
+  usercarte: ''
 }
 
 export default function counter(state = init_state, action) {
-
   switch (action.type) {
     case `${API_GET_DEGUG_TOKEN}_FULFILLED`:
       return {
         ...state,
-        token: action.payload
+        token: action.payload.token,
+        userinfo: action.payload
+      }
+    case `${API_GET_USER_CARTE}_FULFILLED`:
+      return {
+        ...state,
+        usercarte: action.payload
       }
     default:
       return state

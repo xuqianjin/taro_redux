@@ -24,12 +24,12 @@ class App extends Component {
 
   config = {
     pages: [
-      'pages/userinfo/edit','pages/index', 'pages/login/login'
+      'pages/index', 'pages/login/login','pages/userinfo/edit','pages/userinfo/index'
     ],
     window: {
       backgroundTextStyle: 'dark',
       navigationBarBackgroundColor: APP_COLOR_THEME,
-      navigationBarTitleText: '小多机器人',
+      navigationBarTitleText: '多装机器人',
       navigationBarTextStyle: 'white',
       backgroundColor: APP_COLOR_GRAY,
       backgroundColorTop: APP_COLOR_GRAY,

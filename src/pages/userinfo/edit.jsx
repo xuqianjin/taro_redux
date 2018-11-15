@@ -1,34 +1,40 @@
 import Taro, {Component} from '@tarojs/taro'
+import {connect} from '@tarojs/redux'
+import {bindActionCreators} from 'redux'
+
 import {View, Text, ScrollView} from '@tarojs/components'
 
-import {AtButton, AtInput, AtForm, Picker, AtTextarea} from 'taro-ui'
+import {
+  AtButton,
+  AtInput,
+  AtForm,
+  Picker,
+  AtTextarea,
+  AtMessage
+} from 'taro-ui'
 import HeightView from '../../components/HeightView'
 import BaseView from '../../components/BaseView'
 import ImageView from '../../components/ImageView'
+import {gender, careerKind} from '../../components/Constant'
+
+import {putUserCarte, getDebugToken} from '../../reducers/userReducer'
+
 import './style.scss'
 
-const gender = [
-  {
-    name: '男',
-    value: 1
-  }, {
-    name: '女',
-    value: 2
-  }
-]
+const testimage = require('../static/image/test.jpg')
 
-const careerKind = [
-  {
-    name: '设计师',
-    value: 1
-  }, {
-    name: '装企',
-    value: 2
-  }, {
-    name: '建材商',
-    value: 3
-  }
-]
+const mapStateToProps = (state) => {
+  return {userReducer: state.userReducer}
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({
+    getDebugToken,
+    putUserCarte
+  }, dispatch)
+}
+
+@connect(mapStateToProps, mapDispatchToProps)
 
 export default class extends Component {
 
@@ -51,7 +57,8 @@ export default class extends Component {
           name: 'gender',
           type: 'select',
           selector: gender,
-          rangeKey: 'name'
+          rangeKey: 'name',
+          func: Number
         }, {
           title: '公司',
           name: 'corp',
@@ -65,16 +72,48 @@ export default class extends Component {
           name: 'careerKind',
           type: 'select',
           selector: careerKind,
-          rangeKey: 'name'
+          rangeKey: 'name',
+          func: Number
         }
       ],
       desc: ''
     }
   }
-
+  config = {
+    navigationBarTitleText: '编辑名片'
+  }
+  componentWillMount() {
+    // this.props.getDebugToken(1)
+  }
   onSubmit = (data) => {
-    console.log(data);
-    console.log(this.phtone);
+    const {listdata, desc} = this.state
+    let postdata = {}
+    for (var item of listdata) {
+      if (!item.value) {
+        let toast = item.type === 'select'
+          ? '请选择'
+          : '请输入'
+        Taro.atMessage({'message': `${toast}${item.title}`, 'type': 'error'})
+        return;
+      } else {
+        postdata[item.name] = item.func
+          ? item.func(item.value)
+          : item.value
+      }
+    }
+
+    if (!desc) {
+      Taro.atMessage({'message': '请输入个人简介', 'type': 'error'})
+      return
+    }
+    postdata.desc = desc
+
+    Taro.showLoading()
+    this.props.putUserCarte(postdata).then((res) => {
+      Taro.hideLoading()
+    }).catch(err => {
+      Taro.hideLoading()
+    })
   }
 
   onChange = (item, value) => {
@@ -99,6 +138,7 @@ export default class extends Component {
     const {listdata} = this.state
 
     return <BaseView baseclassname='bg_white'>
+      <AtMessage></AtMessage>
       <HeightView height={20} color='transparent'></HeightView>
       <View className='headderbox'>
         <ImageView baseclassname='headerimg' src={require('../../static/image/test.jpg')}></ImageView>
@@ -128,7 +168,7 @@ export default class extends Component {
         <AtTextarea value={this.state.desc} onChange={this.onDescChange.bind(this)} maxlength='200' placeholder='个人简介...'/>
       </View>
       <HeightView height={50} color='transparent'></HeightView>
-      <AtButton className='button' type='primary' formType='submit'>提交</AtButton>
+      <AtButton className='button' type='primary' onClick={this.onSubmit}>提交</AtButton>
       <HeightView height={100} color='transparent'></HeightView>
     </BaseView>
   }

@@ -1,5 +1,6 @@
 $APP_COLOR_THEME: #6190e8;
 $APP_COLOR_GRAY: #f0f1f5;
+$APP_COLOR_THEME_OPACITY: rgba(97,144,232,.8);
 
 body,
 html {
@@ -14,7 +15,7 @@ page {
 
 .baseview {
 	// height: 100%;
-	min-height: 200px;
+	min-height: 100%;
 }
 
 .fullheight {
@@ -27,6 +28,10 @@ page {
 
 .bg_theme {
 	background-color::$APP_COLOR_THEME;
+}
+
+.bg_theme_opacity {
+	background-color::$APP_COLOR_THEME_OPACITY;
 }
 
 .bg_white {
@@ -65,6 +70,10 @@ page {
 	&:active {
 		opacity: 0.7;
 	}
+}
+
+.item-extra__info {
+	max-width: 300px !important;
 }
 
 .test {

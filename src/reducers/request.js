@@ -45,7 +45,6 @@ methods.forEach(method => {
     if (header && header.Authorization) {
       header.Authorization = 'Bearer ' + header.Authorization
     }
-
     const postdata = {
       method: method.toUpperCase(),
       url,
@@ -55,7 +54,10 @@ methods.forEach(method => {
     return new Promise((resolve, reject) => {
 
       Taro.request(postdata).then(res => {
-        resolve(res)
+        if (res.statusCode >= 400) {
+          reject(res.data)
+        }
+        resolve(res.data)
       }).catch(err => {
         reject(err)
       })

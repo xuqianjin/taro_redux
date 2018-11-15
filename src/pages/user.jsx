@@ -20,8 +20,7 @@ export default class extends Component {
     this.state = {}
   }
   componentWillMount() {}
-  componentDidMount() {
-  }
+  componentDidMount() {}
   componentWillReceiveProps(nextProps) {}
   componentDidUpdate() {}
   componentWillUnmount() {}
@@ -42,7 +41,7 @@ export default class extends Component {
       }, {
         icon: 'help',
         title: '使用攻略',
-        extra: '玩转小多机器人'
+        extra: '玩转小多'
       }
     ]
   }
@@ -54,8 +53,11 @@ export default class extends Component {
       }
     ]
   }
+  handleUserData = () => {
+    Taro.navigateTo({url: '/pages/userinfo/edit'})
+  }
   render() {
-    const userCard = <View className='at-row bg_white home_card_container shadow opacity'>
+    const userCard = <View onClick={this.handleUserData} className='at-row bg_white home_card_container shadow opacity'>
       <View className='at-col at-col-1 at-col--auto'>
         <ImageView className='icon' baseclassname='icon' src={userheader}></ImageView>
       </View>

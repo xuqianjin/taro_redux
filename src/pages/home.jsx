@@ -33,13 +33,15 @@ export default class extends Component {
         icon: require('../static/icon/usercard.png'),
         desc: '个人展示页面 让好友认识你',
         left: '访问 1',
-        right: '收藏 0'
+        right: '收藏 0',
+        tourl: '/pages/userinfo/index'
       }, {
         title: '获客文章',
         icon: require('../static/icon/article.png'),
         desc: '最新最全行业观点',
         left: '转发 0',
-        right: '阅读 0'
+        right: '阅读 0',
+        tourl: '/pages/userinfo/edit'
       }
       // , {
       //   title: '获客案例',
@@ -48,6 +50,9 @@ export default class extends Component {
       //   left: '我的分享 0'
       // }
     ]
+  }
+  handleListClick = (item) => {
+    Taro.navigateTo({url: item.tourl})
   }
   render() {
     let condition = false
@@ -81,7 +86,7 @@ export default class extends Component {
     </View>
 
     const userCard = this.getListData().map((item, index) => {
-      return <View key={index} className='at-row bg_white home_card_container shadow opacity'>
+      return <View key={index} onClick={this.handleListClick.bind(this, item)} className='at-row bg_white home_card_container shadow opacity'>
         <View className='at-col at-col-1 at-col--auto'>
           <ImageView test='sss' baseclassname='icon' src={item.icon}></ImageView>
         </View>
