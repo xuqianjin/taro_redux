@@ -6,14 +6,14 @@ const SET_STATE = 'SET_STATE'
 const API_GET_OSS_TOKEN = API_HOST + '/c/oss/token'
 
 export const setState = (data) => (dispatch, getState) => {
-  dispatch({type: SET_STATE, payload: data})
+  return dispatch({type: SET_STATE, payload: data})
 }
 export const getDeviceInfo = () => (dispatch, getState) => {
-  dispatch({type: GET_DEVICE_INFO, payload: Taro.getSystemInfo()})
+  return dispatch({type: GET_DEVICE_INFO, payload: Taro.getSystemInfo()})
 }
 
 export const getOssToken = () => (dispatch, getState) => {
-  dispatch({
+  return dispatch({
     type: API_GET_OSS_TOKEN,
     payload: request.get(API_GET_OSS_TOKEN, {
       header: {
@@ -28,7 +28,7 @@ const init_state = {
   osstoken: ''
 }
 
-export default function counter(state = init_state, action) {
+export default function reducer(state = init_state, action) {
   switch (action.type) {
     case `${GET_DEVICE_INFO}_FULFILLED`:
       return {

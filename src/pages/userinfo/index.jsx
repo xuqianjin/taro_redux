@@ -47,11 +47,9 @@ export default class extends Component {
   constructor(props) {
     super(props);
   }
-  componentWillMount() {
-    this.props.getUserCarte(1)
-  }
+  componentWillMount() {}
   handleEdit = () => {
-    Taro.navigateTo({url:'/pages/userinfo/edit'})
+    Taro.navigateTo({url: '/pages/userinfo/edit'})
   }
   render() {
     const {usercarte} = this.props.userReducer
@@ -64,10 +62,12 @@ export default class extends Component {
     return <BaseView baseclassname='' condition={condition}>
       <HeightView height={20} color='transparent'></HeightView>
       <View className='headderbox'>
-        <ImageView baseclassname='headerimg' src={require('../../static/image/test.jpg')}></ImageView>
+        <ImageView baseclassname='headerimg' src={usercarte.avatarUrl}></ImageView>
         <View className='infotag bg_theme_opacity'>
           <View className='title'>{usercarte.name}</View>
-          <View className='desc'>{usercarte.corp}|{usercarte.office}</View>
+          <View className='desc'>
+            {usercarte.corp}
+            | {usercarte.office}</View>
         </View>
         <View className='edittag opacity' onClick={this.handleEdit}>
           <AtIcon value='edit' size={15}></AtIcon>
@@ -76,10 +76,10 @@ export default class extends Component {
       </View>
       <View className='at-row headerboxbottom shadow text_center bg_white'>
         <View className='at-col text_black_light'>
-          <AtIcon value='eye' size={20}></AtIcon>人气 0
+          <AtIcon value='eye' size={20}></AtIcon>人气 {usercarte.numView}
         </View>
         <View className='at-col text_black_light'>
-          <AtIcon value='heart' size={18}></AtIcon>收藏 2
+          <AtIcon value='heart' size={18}></AtIcon>收藏 {usercarte.numCollect}
         </View>
         <View className='at-col'>
           <AtButton type='primary' size='small'>
@@ -90,9 +90,8 @@ export default class extends Component {
       <HeightView height={20} color='transparent'></HeightView>
       <View className='paneltitle bg_white'>基本信息</View>
       <AtList>
-        <AtListItem title='手机号码' extraText={usercarte.contactPhonenum}/>
-        <AtListItem title='个人简介' extraText='详细信息'/>
-        <AtListItem title='标题文字' extraText='详细信息'/>
+        <AtListItem title='我的姓名' extraText={usercarte.name}/>
+        <AtListItem title='联系方式' extraText={usercarte.contactPhonenum}/>
       </AtList>
 
       <HeightView height={20} color='transparent'></HeightView>

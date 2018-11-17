@@ -1,13 +1,13 @@
 import Taro, {Component} from '@tarojs/taro'
 import {Image} from '@tarojs/components'
-
+const nopic = require('../static/image/noPicture.png')
 export const changeSrc = (src) => {
+  if (!src) {
+    return nopic
+  }
   if (src && typeof src === 'string') {
-    if (src.indexOf('http') !== 0) {
-      src = CDN_URL + (
-        src.indexOf('/') === 0
-        ? ''
-        : '/') + src;
+    if (src.indexOf('i/') === 0) {
+      src = CDN_URL + src;
     }
   }
   return src
@@ -36,7 +36,7 @@ export default class extends Component {
     // })
   };
   onError = () => {
-    this.setState({src: require('../static/image/noPicture.png')})
+    this.setState({src: nopic})
   };
 
   render() {
@@ -44,7 +44,6 @@ export default class extends Component {
     let {basestyle, mode} = this.props
 
     //  小程序bug兼容 https://nervjs.github.io/taro/docs/component-style.html
-
     var className = 'baseclassname'
     if (process.env.TARO_ENV !== 'weapp') {
       className = this.props.baseclassname

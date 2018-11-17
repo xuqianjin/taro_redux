@@ -1,10 +1,11 @@
 import Taro, {Component} from '@tarojs/taro'
 import {connect} from '@tarojs/redux'
 import {bindActionCreators} from 'redux'
+
 import {View} from '@tarojs/components'
+import {AtMessage} from 'taro-ui'
 
 import {getOssToken} from '../../reducers/commonReducer'
-
 import uploadAliyun from './lib/uploadAliyun'
 
 const mapStateToProps = (state) => {
@@ -21,30 +22,71 @@ const mapDispatchToProps = (dispatch) => {
 
 export default class extends Component {
 
-  static defaultProps = {}
+  static defaultProps = {
+    config: {
+      count: 1
+    }
+  }
   constructor(props) {
     super(props);
   }
   componentWillMount() {
     this.props.getOssToken()
   }
-  handleClick = async () => {
-    const {osstoken} = this.props.commonReducer
-    console.log(osstoken);
-    // const aliyunFileKey = dir+filePath.replace('wxfile://', '');
-    const files = await Taro.chooseImage({count: 1})
-    console.log(files);
-    const config = {
-      aliyunServerURL: `http://${osstoken.bucket}.${osstoken.region}.aliyuncs.com`,
-      accessid: osstoken.credentials.AccessKeyId,
-      accesskey: osstoken.credentials.AccessKeySecret,
-      aliyunFileKey: 'test.png',
-      Expiration: osstoken.credentials.Expiration
+  getfilename = (filepath) => {
+    const dir = 'i/'
+    let name = ''
+    if (filepath && filepath.indexOf('/') > -1) {
+      var split = filepath.split('/')
+      name = split[split.length - 1]
     }
-    console.log(config);
-    uploadAliyun(config, files.tempFilePaths[0])
+    return dir + name
+  }
+
+  handleClick = () => {
+    const {osstoken} = this.props.commonReducer
+    Taro.chooseImage(this.props.config).then(res => {
+      Taro.showLoading({title: '上传图片中...', mask: true})
+      const {tempFilePaths} = res
+      var config = {
+        aliyunServerURL: `http://${osstoken.bucket}.${osstoken.region}.aliyuncs.com`,
+        accessid: osstoken.credentials.AccessKeyId,
+        accesskey: osstoken.credentials.AccessKeySecret,
+        Expiration: osstoken.credentials.Expiration,
+        ststoken: osstoken.credentials.SecurityToken
+      }
+
+      var promissarray = []
+      tempFilePaths.map(filepath => {
+        const filename = this.getfilename(filepath)
+        if (filename) {
+          config.aliyunFileKey = filename
+          promissarray.push(uploadAliyun(config, filepath))
+        }
+      })
+      Promise.all(promissarray).then(res => {
+        let fail = res.filter(result => result.statusCode !== 200)
+        Taro.hideLoading()
+        if (fail.length > 0) {
+          Taro.atMessage({'message': `有${fail.length}张图片上传失败`, 'type': 'error'})
+        } else {
+          Taro.atMessage({'message': `图片上传成功`, 'type': 'success'})
+          let success = res.map(result => {
+            return result.path
+          })
+          this.props.onUpload && this.props.onUpload(success)
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    }).catch(err => {
+      console.log(err);
+    })
   }
   render() {
-    return <View onClick={this.handleClick.bind(this)}>{this.props.children}</View>
+    return <View onClick={this.handleClick.bind(this)}>
+      <AtMessage></AtMessage>
+      {this.props.children}
+    </View>
   }
 }

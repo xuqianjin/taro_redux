@@ -13,14 +13,14 @@ import BaseView from '../components/BaseView'
 import request from '../reducers/request'
 
 import {getDeviceInfo, setState} from '../reducers/commonReducer'
-import {postWxLogin, getDebugToken} from '../reducers/userReducer'
+import {postWxLogin, getDebugToken, getUserCarte} from '../reducers/userReducer'
 
 const testimage = require('../static/image/test.jpg')
 
 import UploadFile from '../components/UploadFile'
 
 const mapStateToProps = (state) => {
-  return {commonReducer: state.commonReducer}
+  return {commonReducer: state.commonReducer, userReducer: state.userReducer}
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -28,6 +28,7 @@ const mapDispatchToProps = (dispatch) => {
     postWxLogin,
     getDebugToken,
     getDeviceInfo,
+    getUserCarte,
     setState
   }, dispatch)
 }
@@ -46,14 +47,16 @@ class Index extends Component {
     }
   }
   componentWillReceiveProps(nextProps) {}
-  componentWillMount() {
+  componentWillMount() {}
+  componentDidMount() {
     this.props.getDeviceInfo()
-    this.props.getDebugToken(1)
+    this.props.getDebugToken(1).then(res => {
+      this.props.getUserCarte(1)
+    })
     Taro.login().then(res => {
-      this.props.postWxLogin({code: res.code})
+      // this.props.postWxLogin({code: res.code})
     })
   }
-  componentDidMount() {}
   componentDidShow() {}
 
   componentDidHide() {}
@@ -86,6 +89,7 @@ class Index extends Component {
   render() {
 
     const {deviceinfo} = this.props.commonReducer
+    const {usercarte} = this.props.userReducer
     const {current, showmodal} = this.state
     const menuData = this.getMenuData()
 
@@ -99,13 +103,13 @@ class Index extends Component {
     return (<BaseView condition={condition}>
       <AtTabs current={current}>
         <AtTabsPane current={current} index={0}>
-          <Home ></Home>
+          <Home usercarte={usercarte}></Home>
         </AtTabsPane>
         <AtTabsPane current={current} index={1}>
           <Customer></Customer>
         </AtTabsPane>
         <AtTabsPane current={current} index={2}>
-          <User></User>
+          <User usercarte={usercarte}></User>
         </AtTabsPane>
       </AtTabs>
       <AtTabBar fixed={true} tabList={menuData} onClick={this.handleMenuClick.bind(this)} current={current}/>

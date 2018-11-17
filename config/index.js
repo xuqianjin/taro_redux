@@ -49,7 +49,8 @@ const config = {
     APP_COLOR_THEME: '"#6190e8"',
     APP_COLOR_GRAY: '"#f0f1f5"',
     APP_COLOR_BLACK: '"#000"',
-    APP_COLOR_LIGHT_BLACK: '"#aaa"'
+    APP_COLOR_LIGHT_BLACK: '"#aaa"',
+    CDN_URL: '"http://djpub.oss-cn-shenzhen.aliyuncs.com/"'
   },
   weapp: {
 

@@ -1,4 +1,6 @@
 import Taro, {Component} from '@tarojs/taro'
+import {connect} from '@tarojs/redux'
+import {bindActionCreators} from 'redux'
 import {View, Text, ScrollView} from '@tarojs/components'
 import {AtList, AtListItem, AtIcon} from 'taro-ui'
 
@@ -6,14 +8,9 @@ import ImageView from '../components/ImageView'
 import HeightView from '../components/HeightView'
 import './style.scss'
 
-const userheader = 'https://img12.360buyimg.com/jdphoto/s72x72_jfs/t6160/14/2008729947/2754/7d512a86/595c3aeeNa89ddf71.png'
-
 export default class extends Component {
   static options = {
     addGlobalClass: true
-  }
-  static defaultProps = {
-    deviceinfo: {}
   }
   constructor(props) {
     super(props);
@@ -57,13 +54,16 @@ export default class extends Component {
     Taro.navigateTo({url: '/pages/userinfo/edit'})
   }
   render() {
+    const {usercarte} = this.props
     const userCard = <View onClick={this.handleUserData} className='at-row bg_white home_card_container shadow opacity'>
       <View className='at-col at-col-1 at-col--auto'>
-        <ImageView className='icon' baseclassname='icon' src={userheader}></ImageView>
+        <ImageView baseclassname='icon' src={usercarte.avatarUrl}></ImageView>
       </View>
       <View className='at-col'>
-        <View className='title'>用户姓名</View>
-        <View className='desc text_black_light'>职位未填写 | 公司未填写</View>
+        <View className='title'>{usercarte.name}</View>
+        <View className='desc text_black_light'>
+          {usercarte.office}
+          | {usercarte.corp}</View>
       </View>
       <View className='at-col at-col-1 at-col--auto right text_theme'>
         <Text>编辑</Text>

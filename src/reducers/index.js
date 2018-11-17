@@ -4,11 +4,13 @@ import {
 import counter from './counter'
 import commonReducer from './commonReducer'
 import userReducer from './userReducer'
+import articleReducer from './articleReducer'
 
 const rootReducer = combineReducers({
   counter,
   commonReducer,
-  userReducer
+  userReducer,
+  articleReducer
 })
 
 export default rootReducer

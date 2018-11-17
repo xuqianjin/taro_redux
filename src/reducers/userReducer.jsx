@@ -14,21 +14,21 @@ const API_PUT_USER_CARTE_COLLECT = API_HOST + '/c/carte/{id}/collect'
 const API_DEL_USER_CARTE_COLLECT = API_HOST + '/c/carte/{id}/uncollect'
 
 export const getDebugToken = (operateId) => (dispatch, getState) => {
-  dispatch({
+  return dispatch({
     type: API_GET_DEGUG_TOKEN,
     payload: request.get(API_GET_DEGUG_TOKEN, {operateId})
   })
 }
 
 export const postWxLogin = (data) => (dispatch, getState) => {
-  dispatch({
+  return dispatch({
     type: API_POST_WXLOGIN,
     payload: request.post(API_POST_WXLOGIN, {data})
   })
 }
 
 export const putWxUserInfo = (data) => (dispatch, getState) => {
-  dispatch({
+  return dispatch({
     type: API_PUT_WXUERINFO,
     payload: request.put(API_PUT_WXUERINFO, {
       header: {
@@ -40,7 +40,7 @@ export const putWxUserInfo = (data) => (dispatch, getState) => {
 }
 
 export const postWxUserPhone = (data) => (dispatch, getState) => {
-  dispatch({
+  return dispatch({
     type: API_PUT_WXUERPHONE,
     payload: request.post(API_PUT_WXUERPHONE, {
       header: {
@@ -52,7 +52,7 @@ export const postWxUserPhone = (data) => (dispatch, getState) => {
 }
 
 export const getUserCarte = (operateId) => (dispatch, getState) => {
-  dispatch({
+  return dispatch({
     type: API_GET_USER_CARTE,
     payload: request.get(API_GET_USER_CARTE, {
       header: {
@@ -76,7 +76,7 @@ export const putUserCarte = (data) => (dispatch, getState) => {
 }
 
 export const putUserCarteDesc = (operateId) => (dispatch, getState) => {
-  dispatch({
+  return dispatch({
     type: API_GET_USER_CARTE_DEC,
     payload: request.put(API_GET_USER_CARTE_DEC, {
       header: {
@@ -88,7 +88,7 @@ export const putUserCarteDesc = (operateId) => (dispatch, getState) => {
 }
 
 export const putUserCarteCollect = (operateId) => (dispatch, getState) => {
-  dispatch({
+  return dispatch({
     type: API_PUT_USER_CARTE_COLLECT,
     payload: request.put(API_GET_USER_CARTE_DEC, {
       header: {
@@ -100,7 +100,7 @@ export const putUserCarteCollect = (operateId) => (dispatch, getState) => {
 }
 
 export const delUserCarteCollect = (operateId) => (dispatch, getState) => {
-  dispatch({
+  return dispatch({
     type: API_DEL_USER_CARTE_COLLECT,
     payload: request.delete(API_DEL_USER_CARTE_COLLECT, {
       header: {
@@ -117,7 +117,7 @@ const init_state = {
   usercarte: ''
 }
 
-export default function counter(state = init_state, action) {
+export default function reducer(state = init_state, action) {
   switch (action.type) {
     case `${API_GET_DEGUG_TOKEN}_FULFILLED`:
       return {

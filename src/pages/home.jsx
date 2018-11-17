@@ -15,6 +15,9 @@ export default class extends Component {
   static options = {
     addGlobalClass: true
   }
+  static defaultProps = {
+    usercarte: {}
+  }
 
   constructor(props) {
     super(props);
@@ -27,13 +30,14 @@ export default class extends Component {
   componentWillUnmount() {}
 
   getListData = () => {
+    const {usercarte} = this.props
     return [
       {
         title: '我的名片',
         icon: require('../static/icon/usercard.png'),
         desc: '个人展示页面 让好友认识你',
-        left: '访问 1',
-        right: '收藏 0',
+        left: `访问 ${usercarte.numView}`,
+        right: `收藏 ${usercarte.numCollect}`,
         tourl: '/pages/userinfo/index'
       }, {
         title: '获客文章',
@@ -41,7 +45,7 @@ export default class extends Component {
         desc: '最新最全行业观点',
         left: '转发 0',
         right: '阅读 0',
-        tourl: '/pages/userinfo/edit'
+        tourl: '/pages/article/index'
       }
       // , {
       //   title: '获客案例',
@@ -88,7 +92,7 @@ export default class extends Component {
     const userCard = this.getListData().map((item, index) => {
       return <View key={index} onClick={this.handleListClick.bind(this, item)} className='at-row bg_white home_card_container shadow opacity'>
         <View className='at-col at-col-1 at-col--auto'>
-          <ImageView test='sss' baseclassname='icon' src={item.icon}></ImageView>
+          <ImageView baseclassname='icon' src={item.icon}></ImageView>
         </View>
         <View className='at-col'>
           <View className='title'>{item.title}</View>

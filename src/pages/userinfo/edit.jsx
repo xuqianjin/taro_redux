@@ -22,8 +22,6 @@ import {putUserCarte, getDebugToken} from '../../reducers/userReducer'
 
 import './style.scss'
 
-const testimage = require('../static/image/test.jpg')
-
 const mapStateToProps = (state) => {
   return {userReducer: state.userReducer}
 }
@@ -36,7 +34,6 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-
 export default class extends Component {
 
   static defaultProps = {}
@@ -77,14 +74,25 @@ export default class extends Component {
           func: Number
         }
       ],
-      desc: ''
+      desc: '',
+      avatarUrl: ''
     }
   }
   config = {
     navigationBarTitleText: '编辑名片'
   }
-  componentWillMount() {
-    // this.props.getDebugToken(1)
+  componentWillMount() {}
+  componentDidMount() {
+    const {usercarte} = this.props.userReducer
+    const {listdata} = this.state
+    var list = JSON.parse(JSON.stringify(listdata))
+    list.map(item => {
+      item.value = usercarte[item.name]
+    })
+    this.setState({desc: usercarte.desc, listdata: list, avatarUrl: usercarte.avatarUrl})
+  }
+  onUpload = (images) => {
+    this.setState({avatarUrl: images[0]})
   }
   onSubmit = (data) => {
     const {listdata, desc} = this.state
@@ -108,21 +116,21 @@ export default class extends Component {
       return
     }
     postdata.desc = desc
-
+    postdata.avatarUrl = this.state.avatarUrl
     Taro.showLoading()
     this.props.putUserCarte(postdata).then((res) => {
       Taro.hideLoading()
+      Taro.navigateBack()
     }).catch(err => {
       Taro.hideLoading()
     })
   }
 
-  onChange = (item, value) => {
+  onChange = (item, index, value) => {
     let {listdata} = this.state
-    let index = listdata.findIndex(listone => listone.name === item.name)
     if (item.type === 'select') {
       const {detail} = value
-      listdata[index].value = detail.value
+      listdata[index].value = item.selector[Number(detail.value)].value
     } else {
       listdata[index].value = value
     }
@@ -133,42 +141,47 @@ export default class extends Component {
     const {detail} = value
     this.setState({desc: detail.value})
   }
-
+  getTypeName = (item) => {
+    const {selector} = item
+    if (!selector)
+      return null
+    return selector.find(myitem => myitem.value === item.value).name
+  }
   render() {
-    const {height} = this.props
-    const {listdata} = this.state
-
+    const {usercarte} = this.props.userReducer
+    const {listdata, avatarUrl, desc} = this.state
     return <BaseView baseclassname='bg_white'>
       <AtMessage></AtMessage>
       <HeightView height={20} color='transparent'></HeightView>
       <View className='headderbox'>
-        <UploadFile>
-          <ImageView baseclassname='headerimg' src={require('../../static/image/test.jpg')}></ImageView>
+        <UploadFile onUpload={this.onUpload}>
+          <ImageView baseclassname='headerimg' src={avatarUrl}></ImageView>
         </UploadFile>
       </View>
       <HeightView height={20} color='transparent'></HeightView>
       <AtForm onSubmit={this.onSubmit.bind(this)}>
         {
           listdata.map((item, index) => {
+
             return item.type === 'select'
-              ? <Picker onChange={this.onChange.bind(this, item)} key={item.name} rangeKey={item.rangeKey} range={item.selector}>
+              ? <Picker onChange={this.onChange.bind(this, item, index)} key={item.name} rangeKey={item.rangeKey} range={item.selector}>
                   <View className='inputpicker'>
                     <View className='left'>{item.title}</View>
                     {
                       item.value
-                        ? <View className='right select'>{item.selector[item.value].name}</View>
+                        ? <View className='right select'>{this.getTypeName(item)}</View>
                         : <View className='right default'>{`请选择${item.title}`}</View>
                     }
                   </View>
                   {index + 1 < listdata.length && <HeightView height={1} color='#d6e4ef'></HeightView>}
                 </Picker>
-              : <AtInput value={item.value} onChange={this.onChange.bind(this, item)} key={item.name} name={item.name} title={item.title} type={item.type} placeholder={`请输入${item.title}`}/>
+              : <AtInput value={item.value} onChange={this.onChange.bind(this, item, index)} key={item.name} name={item.name} title={item.title} type={item.type} placeholder={`请输入${item.title}`}/>
           })
         }
       </AtForm>
       <HeightView height={50} color='transparent'></HeightView>
       <View className='button'>
-        <AtTextarea value={this.state.desc} onChange={this.onDescChange.bind(this)} maxlength='200' placeholder='个人简介...'/>
+        <AtTextarea value={desc} onChange={this.onDescChange.bind(this)} height='200' maxlength='200' placeholder='个人简介...'/>
       </View>
       <HeightView height={50} color='transparent'></HeightView>
       <AtButton className='button' type='primary' onClick={this.onSubmit}>提交</AtButton>
