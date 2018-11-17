@@ -17,6 +17,8 @@ import {postWxLogin, getDebugToken} from '../reducers/userReducer'
 
 const testimage = require('../static/image/test.jpg')
 
+import UploadFile from '../components/UploadFile'
+
 const mapStateToProps = (state) => {
   return {commonReducer: state.commonReducer}
 }

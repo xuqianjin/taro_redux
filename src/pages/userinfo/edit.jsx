@@ -15,6 +15,7 @@ import {
 import HeightView from '../../components/HeightView'
 import BaseView from '../../components/BaseView'
 import ImageView from '../../components/ImageView'
+import UploadFile from '../../components/UploadFile'
 import {gender, careerKind} from '../../components/Constant'
 
 import {putUserCarte, getDebugToken} from '../../reducers/userReducer'
@@ -141,7 +142,9 @@ export default class extends Component {
       <AtMessage></AtMessage>
       <HeightView height={20} color='transparent'></HeightView>
       <View className='headderbox'>
-        <ImageView baseclassname='headerimg' src={require('../../static/image/test.jpg')}></ImageView>
+        <UploadFile>
+          <ImageView baseclassname='headerimg' src={require('../../static/image/test.jpg')}></ImageView>
+        </UploadFile>
       </View>
       <HeightView height={20} color='transparent'></HeightView>
       <AtForm onSubmit={this.onSubmit.bind(this)}>

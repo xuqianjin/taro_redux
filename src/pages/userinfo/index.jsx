@@ -107,7 +107,6 @@ export default class extends Component {
         <AtListItem title='公司职位' extraText={usercarte.office}/>
         <AtListItem title='所属工种' extraText={usercarte && careerKind.find(item => item.value == usercarte.careerKind).name}/>
       </AtList>
-
       <HeightView height={100} color='transparent'></HeightView>
     </BaseView>
   }

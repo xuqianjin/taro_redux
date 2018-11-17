@@ -1,5 +1,4 @@
 import request from './request'
-import {AtMessage} from 'taro-ui'
 
 const API_GET_DEGUG_TOKEN = API_HOST + '/c/wxlite/debugLogin/{id}'
 //wx
