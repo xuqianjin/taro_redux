@@ -1,22 +1,25 @@
 import Taro, {Component} from '@tarojs/taro'
 import {connect} from '@tarojs/redux'
 import {bindActionCreators} from 'redux'
-import {View} from '@tarojs/components'
+import {View, ScrollView} from '@tarojs/components'
 import {AtTabBar, AtTabs, AtTabsPane, AtLoadMore, AtIcon} from 'taro-ui'
 
 import ArticleItem from './ArticleItem'
 import HeightView from '../../components/HeightView'
-import {getSysArticle, getUserArticleCreate} from '../../reducers/articleReducer'
+import {articleTag} from '../../components/Constant'
+import {getSysArticle, getUserArticleCreate, getUserArticleForward, getUserArticleCollect} from '../../reducers/articleReducer'
 
 import './style.scss'
 
 const mapStateToProps = (state) => {
-  return {articleReducer: state.articleReducer}
+  return {articleReducer: state.articleReducer, commonReducer: state.commonReducer}
 }
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
     getUserArticleCreate,
+    getUserArticleForward,
+    getUserArticleCollect,
     getSysArticle
   }, dispatch)
 }
@@ -31,21 +34,59 @@ export default class extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      current: 0
+      current: 0,
+      choosetag: -1,
+      chooseuser: 1,
+      userarticle: ''
     }
   }
   componentWillMount() {
     this.props.getSysArticle()
-    this.props.getUserArticleCreate()
+    this.props.getUserArticleCreate().then(res => {
+      this.setState({userarticle: res.value})
+    })
   }
-  handleChangeTab(value) {
+  handleChangeTab = (value) => {
     this.setState({current: value})
+  }
+  handleTagClick = (value) => {
+    const {choosetag} = this.state
+    if (value == choosetag) {
+      this.setState({choosetag: -1})
+    } else {
+      this.setState({choosetag: value})
+    }
+  }
+  handleUserClick = (value) => {
+    const {chooseuser} = this.state
+    if (value == chooseuser) {} else {
+      this.setState({chooseuser: value})
+      switch (value) {
+        case 1:
+          this.props.getUserArticleCreate().then(res => {
+            this.setState({userarticle: res.value})
+          })
+          break;
+        case 2:
+          this.props.getUserArticleCollect().then(res => {
+            this.setState({userarticle: res.value})
+          })
+          break;
+        case 3:
+          this.props.getUserArticleForward().then(res => {
+            this.setState({userarticle: res.value})
+          })
+          break;
+        default:
+      }
+    }
   }
   handUpload = () => {
     Taro.navigateTo({url: '/pages/article/upload'})
   }
   render() {
-    const {userarticle} = this.props.articleReducer
+    const {choosetag, chooseuser, userarticle} = this.state
+    const {deviceinfo} = this.props.commonReducer
     const tabList = [
       {
         title: '全部文章'
@@ -53,21 +94,66 @@ export default class extends Component {
         title: '我的文章'
       }
     ]
+    const usertag = [
+      {
+        name: '我的上传',
+        value: 1
+      }, {
+        name: '我的收藏',
+        value: 2
+      }, {
+        name: '我的转发',
+        value: 3
+      }
+    ]
+
+    const scrollheight = Taro.pxTransform(deviceinfo.windowHeight * 750 / deviceinfo.windowWidth - 160)
     return (<View>
-      <AtTabs current={this.state.current} tabList={tabList} onClick={this.handleChangeTab.bind(this)}>
+      <AtTabs className='attabs' current={this.state.current} tabList={tabList} onClick={this.handleChangeTab.bind(this)}>
         <AtTabsPane current={this.state.current} index={0}>
-          <View style='padding: 100px 50px;background-color: #FAFBFC;text-align: center;'>标签页一的内容</View>
+          <View className='at-row bg_white fixtag'>
+            {
+              articleTag.map(tag => {
+                let color = tag.value == choosetag
+                  ? 'text_black'
+                  : 'text_black_light'
+                return <View className={`at-col text_center ${color}`} key={tag.value} onClick={this.handleTagClick.bind(this, tag.value)}>{tag.name}</View>
+              })
+            }
+          </View>
+          <ScrollView scrollY={true} style={`height:${scrollheight}`}>
+            <HeightView height={10}></HeightView>
+            {
+              userarticle && userarticle.map((item, index) => {
+                return <ArticleItem key={item.id} item={item} line={index < userarticle.length - 1}></ArticleItem>
+              })
+            }
+            <AtLoadMore status={'noMore'}></AtLoadMore>
+          </ScrollView>
         </AtTabsPane>
         <AtTabsPane current={this.state.current} index={1}>
-          {
-            userarticle && userarticle.map((item, index) => {
-              return <ArticleItem key={item.id} item={item} line={index < userarticle.length - 1}></ArticleItem>
-            })
-          }
-          <AtLoadMore status={'noMore'}></AtLoadMore>
+          <View className='at-row bg_white fixtag'>
+            {
+              usertag.map(tag => {
+                let color = tag.value == chooseuser
+                  ? 'text_black'
+                  : 'text_black_light'
+                return <View className={`at-col text_center ${color}`} key={tag.value} onClick={this.handleUserClick.bind(this, tag.value)}>{tag.name}</View>
+              })
+            }
+          </View>
+          <ScrollView scrollY={true} style={`height:${scrollheight}`}>
+            <HeightView height={10}></HeightView>
+            {
+              userarticle && userarticle.map((item, index) => {
+                return <ArticleItem key={item.id} item={item} line={index < userarticle.length - 1}></ArticleItem>
+              })
+            }
+            <AtLoadMore status={'noMore'}></AtLoadMore>
+          </ScrollView>
         </AtTabsPane>
       </AtTabs>
-      <View className='fix bg_theme shadow opacity' onClick={this.handUpload}>
+      <View className='fix bg_theme opacity' onClick={this.handUpload}>
         <AtIcon value='share-2' size={18}></AtIcon>
         <HeightView height={5} color='transparent'></HeightView>
         <Text>

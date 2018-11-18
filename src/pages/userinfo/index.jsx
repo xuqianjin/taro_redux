@@ -16,6 +16,8 @@ import {
 import HeightView from '../../components/HeightView'
 import BaseView from '../../components/BaseView'
 import ImageView from '../../components/ImageView'
+import ShareDialog from '../../components/ShareDialog'
+
 import {gender, careerKind} from '../../components/Constant'
 
 import {getUserCarte} from '../../reducers/userReducer'
@@ -25,7 +27,7 @@ import './edit'
 import './style.scss'
 
 const mapStateToProps = (state) => {
-  return {userReducer: state.userReducer}
+  return {userReducer: state.userReducer, commonReducer: state.commonReducer}
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -37,21 +39,32 @@ const mapDispatchToProps = (dispatch) => {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class extends Component {
 
-  static defaultProps = {
-    height: 1,
-    color: APP_COLOR_GRAY
-  }
+  static defaultProps = {}
   config = {
     navigationBarTitleText: '我的名片'
   }
   constructor(props) {
     super(props);
+    this.state = {
+      showshare: false
+    }
   }
   componentWillMount() {}
+  onShareAppMessage() {
+    const {usercarte} = this.props.userReducer
+    return {title: usercarte.name}
+  }
   handleEdit = () => {
     Taro.navigateTo({url: '/pages/userinfo/edit'})
   }
+  handleShareShow = () => {
+    this.setState({showshare: true})
+  }
+  handleShareClose = () => {
+    this.setState({showshare: false})
+  }
   render() {
+    const {showshare} = this.state
     const {usercarte} = this.props.userReducer
     let condition = false
     if (usercarte) {} else {
@@ -82,7 +95,7 @@ export default class extends Component {
           <AtIcon value='heart' size={18}></AtIcon>收藏 {usercarte.numCollect}
         </View>
         <View className='at-col'>
-          <AtButton type='primary' size='small'>
+          <AtButton type='primary' size='small' onClick={this.handleShareShow}>
             <AtIcon value='share-2' size={15}></AtIcon>分享好友
           </AtButton>
         </View>
@@ -107,6 +120,7 @@ export default class extends Component {
         <AtListItem title='所属工种' extraText={usercarte && careerKind.find(item => item.value == usercarte.careerKind).name}/>
       </AtList>
       <HeightView height={100} color='transparent'></HeightView>
+      <ShareDialog isOpened={showshare} onClose={this.handleShareClose}></ShareDialog>
     </BaseView>
   }
 }

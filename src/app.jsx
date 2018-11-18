@@ -29,7 +29,8 @@ class App extends Component {
       'pages/userinfo/edit',
       'pages/userinfo/index',
       'pages/article/index',
-      'pages/article/upload'
+      'pages/article/upload',
+      'pages/webview/index'
     ],
     window: {
       backgroundTextStyle: 'dark',

@@ -80,3 +80,9 @@ page {
 .at-tag {
 	margin: 5px;
 }
+
+.at-float-layout__container,
+.layout-body,
+.layout-body__content {
+	min-height: inherit !important;
+}

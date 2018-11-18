@@ -34,7 +34,10 @@ export default class extends Component {
       }, {
         icon: 'share',
         title: '邀请好友',
-        extra: '享VIP折扣'
+        extra: '享VIP折扣',
+        onClick: () => {
+          this.props.onShare && this.props.onShare()
+        }
       }, {
         icon: 'help',
         title: '使用攻略',
@@ -52,6 +55,18 @@ export default class extends Component {
   }
   handleUserData = () => {
     Taro.navigateTo({url: '/pages/userinfo/edit'})
+  }
+  handleUserClick = (index) => {
+    let list = this.getUserList()
+    if (list[index].onClick) {
+      list[index].onClick()
+    }
+  }
+  handleSysClick = (index) => {
+    let list = this.getSysList()
+    if (list[index].onClick) {
+      list[index].onClick()
+    }
   }
   render() {
     const {usercarte} = this.props
@@ -73,7 +88,7 @@ export default class extends Component {
 
     const list1data = this.getUserList()
     const list1 = list1data.map((item, index) => {
-      return <View key={index}>
+      return <View key={index} onClick={this.handleUserClick.bind(this, index)}>
         <View className='at-row user_list_item bg_white opacity'>
           <View className='at-col at-col-1 at-col--auto icon'>
             <AtIcon size={18} value={item.icon} className='text_theme'></AtIcon>
@@ -91,7 +106,7 @@ export default class extends Component {
     })
     const list2data = this.getSysList()
     const list2 = list2data.map((item, index) => {
-      return <View key={index}>
+      return <View key={index} onClick={this.handleSysClick.bind(this, index)}>
         <View className='at-row user_list_item bg_white opacity'>
           <View className='at-col at-col-1 at-col--auto icon'>
             <AtIcon size={18} value={item.icon} className='text_theme'></AtIcon>

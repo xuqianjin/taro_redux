@@ -1,10 +1,25 @@
 import Taro, {Component} from '@tarojs/taro'
+import {connect} from '@tarojs/redux'
+import {bindActionCreators} from 'redux'
 import {View} from '@tarojs/components'
 import moment from 'moment'
 import ImageView from '../../components/ImageView'
 import HeightView from '../../components/HeightView'
 import './style.scss'
 
+import {getArticle} from '../../reducers/articleReducer'
+
+const mapStateToProps = (state) => {
+  return {articleReducer: state.articleReducer}
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({
+    getArticle
+  }, dispatch)
+}
+
+@connect(mapStateToProps, mapDispatchToProps)
 export default class extends Component {
   static options = {
     addGlobalClass: true
@@ -15,11 +30,16 @@ export default class extends Component {
   constructor(props) {
     super(props);
   }
-
+  handleClick = () => {
+    const {item} = this.props
+    this.props.getArticle(item.id).then(res => {
+      Taro.navigateTo({url: '/pages/webview/index'})
+    })
+  }
   render() {
     const {item, line} = this.props
     const color = APP_COLOR_GRAY
-    return <View className='bg_white opacity'>
+    return <View className='bg_white opacity' onClick={this.handleClick}>
       <HeightView height={20} color='transparent'></HeightView>
       <View className='at-row articleitem '>
         <View className='at-col at-col--wrap'>

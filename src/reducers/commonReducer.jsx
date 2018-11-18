@@ -4,6 +4,7 @@ import request from './request'
 const GET_DEVICE_INFO = 'GET_DEVICE_INFO'
 const SET_STATE = 'SET_STATE'
 const API_GET_OSS_TOKEN = API_HOST + '/c/oss/token'
+const API_GET_STATISTIC = API_HOST + '/c/statistic'
 
 export const setState = (data) => (dispatch, getState) => {
   return dispatch({type: SET_STATE, payload: data})
@@ -23,9 +24,21 @@ export const getOssToken = () => (dispatch, getState) => {
   })
 }
 
+export const getStatistic = () => (dispatch, getState) => {
+  return dispatch({
+    type: API_GET_STATISTIC,
+    payload: request.get(API_GET_STATISTIC, {
+      header: {
+        Authorization: getState().userReducer.token
+      }
+    })
+  })
+}
+
 const init_state = {
   deviceinfo: '',
-  osstoken: ''
+  osstoken: '',
+  statistic: ''
 }
 
 export default function reducer(state = init_state, action) {
@@ -44,6 +57,11 @@ export default function reducer(state = init_state, action) {
       return {
         ...state,
         osstoken: action.payload
+      }
+    case `${API_GET_STATISTIC}_FULFILLED`:
+      return {
+        ...state,
+        statistic: action.payload
       }
     default:
       return state

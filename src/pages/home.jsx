@@ -58,6 +58,9 @@ export default class extends Component {
   handleListClick = (item) => {
     Taro.navigateTo({url: item.tourl})
   }
+  handleShare = () => {
+    this.props.onShare && this.props.onShare()
+  }
   render() {
     let condition = false
     if (true) {} else {
@@ -84,8 +87,8 @@ export default class extends Component {
         </View>
       </View>
       <View className='at-row footer text_theme'>
-        <View className='at-col text_center line'>邀请好友获VIP</View>
-        <View className='at-col text_center'>加入群聊</View>
+        <View className='at-col text_center line opacity' onClick={this.handleShare}>邀请好友获VIP</View>
+        <View className='at-col text_center opacity'>加入群聊</View>
       </View>
     </View>
 

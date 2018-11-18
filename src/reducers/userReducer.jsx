@@ -39,10 +39,10 @@ export const putWxUserInfo = (data) => (dispatch, getState) => {
   })
 }
 
-export const postWxUserPhone = (data) => (dispatch, getState) => {
+export const putWxUserPhone = (data) => (dispatch, getState) => {
   return dispatch({
     type: API_PUT_WXUERPHONE,
-    payload: request.post(API_PUT_WXUERPHONE, {
+    payload: request.put(API_PUT_WXUERPHONE, {
       header: {
         Authorization: getState().userReducer.token
       },
@@ -129,6 +129,11 @@ export default function reducer(state = init_state, action) {
       return {
         ...state,
         usercarte: action.payload
+      }
+    case `${API_POST_WXLOGIN}_FULFILLED`:
+      return {
+        ...state,
+        token: action.payload.token
       }
     default:
       return state

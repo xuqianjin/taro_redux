@@ -12,15 +12,14 @@ import BaseView from '../components/BaseView'
 
 import request from '../reducers/request'
 
-import {getDeviceInfo, setState} from '../reducers/commonReducer'
+import {getDeviceInfo, setState, getStatistic} from '../reducers/commonReducer'
 import {postWxLogin, getDebugToken, getUserCarte} from '../reducers/userReducer'
+import {getVisitGuest, getVisitIntent} from '../reducers/customerReducer'
 
-const testimage = require('../static/image/test.jpg')
-
-import UploadFile from '../components/UploadFile'
+import ShareDialog from '../components/ShareDialog'
 
 const mapStateToProps = (state) => {
-  return {commonReducer: state.commonReducer, userReducer: state.userReducer}
+  return {commonReducer: state.commonReducer, userReducer: state.userReducer, customerReducer: state.customerReducer}
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -28,7 +27,10 @@ const mapDispatchToProps = (dispatch) => {
     postWxLogin,
     getDebugToken,
     getDeviceInfo,
+    getStatistic,
     getUserCarte,
+    getVisitGuest,
+    getVisitIntent,
     setState
   }, dispatch)
 }
@@ -43,7 +45,8 @@ class Index extends Component {
     super(props);
     this.state = {
       current: 0,
-      showmodal: false
+      showmodal: false,
+      showshare: false
     }
   }
   componentWillReceiveProps(nextProps) {}
@@ -52,10 +55,16 @@ class Index extends Component {
     this.props.getDeviceInfo()
     this.props.getDebugToken(1).then(res => {
       this.props.getUserCarte(1)
+      this.props.getStatistic()
+      this.props.getVisitGuest()
+      this.props.getVisitIntent()
     })
     Taro.login().then(res => {
-      // this.props.postWxLogin({code: res.code})
+      this.props.postWxLogin({code: res.code})
     })
+  }
+  onShareAppMessage() {
+    return {title: 'sfsf'}
   }
   componentDidShow() {}
 
@@ -71,6 +80,12 @@ class Index extends Component {
   handleModalClose = () => {
     Taro.navigateTo({url: '/pages/login/login'})
     this.setState({showmodal: false})
+  }
+  handleShare = () => {
+    this.setState({showshare: true})
+  }
+  handleShareClose = () => {
+    this.setState({showshare: false})
   }
   getMenuData = () => {
     return [
@@ -90,7 +105,8 @@ class Index extends Component {
 
     const {deviceinfo} = this.props.commonReducer
     const {usercarte} = this.props.userReducer
-    const {current, showmodal} = this.state
+    const {visitguest, visitintent} = this.props.customerReducer
+    const {current, showmodal, showshare} = this.state
     const menuData = this.getMenuData()
 
     let condition = false
@@ -103,17 +119,18 @@ class Index extends Component {
     return (<BaseView condition={condition}>
       <AtTabs current={current}>
         <AtTabsPane current={current} index={0}>
-          <Home usercarte={usercarte}></Home>
+          <Home onShare={this.handleShare} usercarte={usercarte}></Home>
         </AtTabsPane>
         <AtTabsPane current={current} index={1}>
-          <Customer></Customer>
+          <Customer visitguest={visitguest} visitintent={visitintent} deviceinfo={deviceinfo}></Customer>
         </AtTabsPane>
         <AtTabsPane current={current} index={2}>
-          <User usercarte={usercarte}></User>
+          <User onShare={this.handleShare} usercarte={usercarte}></User>
         </AtTabsPane>
       </AtTabs>
       <AtTabBar fixed={true} tabList={menuData} onClick={this.handleMenuClick.bind(this)} current={current}/>
       <AtModal isOpened={showmodal} title='提示' confirmText='去授权' onClose={this.handleModalClose.bind(this)} onConfirm={this.handleModalConfirm.bind(this)} content='为了获得更好体验,我们需要您的微信授权点击去授权'></AtModal>
+      <ShareDialog isOpened={showshare} onClose={this.handleShareClose}></ShareDialog>
     </BaseView>)
   }
 }

@@ -5,12 +5,14 @@ import counter from './counter'
 import commonReducer from './commonReducer'
 import userReducer from './userReducer'
 import articleReducer from './articleReducer'
+import customerReducer from './customerReducer'
 
 const rootReducer = combineReducers({
   counter,
   commonReducer,
   userReducer,
-  articleReducer
+  articleReducer,
+  customerReducer
 })
 
 export default rootReducer

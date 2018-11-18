@@ -18,7 +18,7 @@ import ImageView from '../../components/ImageView'
 import UploadFile from '../../components/UploadFile'
 import {gender, careerKind} from '../../components/Constant'
 
-import {putUserCarte, getDebugToken} from '../../reducers/userReducer'
+import {putUserCarte, putWxUserPhone} from '../../reducers/userReducer'
 
 import './style.scss'
 
@@ -28,7 +28,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
-    getDebugToken,
+    putWxUserPhone,
     putUserCarte
   }, dispatch)
 }
@@ -90,6 +90,15 @@ export default class extends Component {
       item.value = usercarte[item.name]
     })
     this.setState({desc: usercarte.desc, listdata: list, avatarUrl: usercarte.avatarUrl})
+  }
+  onGetPhoneNumber = (res) => {
+    const {detail} = res
+    const {encryptedData, iv} = detail
+    const {listdata} = this.state
+    this.props.putWxUserPhone({encryptedData, iv}).then(res => {
+      listdata.find(list => list.name === 'contactPhonenum').value = res.phonenum
+      this.setState({listdata})
+    })
   }
   onUpload = (images) => {
     this.setState({avatarUrl: images[0]})
@@ -175,7 +184,9 @@ export default class extends Component {
                   </View>
                   {index + 1 < listdata.length && <HeightView height={1} color='#d6e4ef'></HeightView>}
                 </Picker>
-              : <AtInput value={item.value} onChange={this.onChange.bind(this, item, index)} key={item.name} name={item.name} title={item.title} type={item.type} placeholder={`请输入${item.title}`}/>
+              : <AtInput value={item.value} onChange={this.onChange.bind(this, item, index)} key={item.name} name={item.name} title={item.title} type={item.type} placeholder={`请输入${item.title}`}>
+                {item.name === 'contactPhonenum' && <AtButton openType='getPhoneNumber' onGetPhoneNumber={this.onGetPhoneNumber} type='primary' size='small' style={`margin-right:${Taro.pxTransform(20)}`}>快速获取</AtButton>}
+              </AtInput>
           })
         }
       </AtForm>
