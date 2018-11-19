@@ -58,20 +58,20 @@ class Index extends Component {
   }
   componentDidMount() {
     this.props.getDeviceInfo()
-    this.props.getDebugToken(1).then(res => {
-      this.props.getUserCarte(1)
-      this.props.getStatistic()
-      this.props.getVisitGuest()
-      this.props.getVisitIntent()
-    })
-    // Taro.login().then(res => {
-    //   return this.props.postWxLogin({code: res.code})
-    // }).then(res => {
-    //   Taro.eventCenter.trigger('getUserCarte')
+    // this.props.getDebugToken(1).then(res => {
+    //   this.props.getUserCarte(1)
     //   this.props.getStatistic()
     //   this.props.getVisitGuest()
     //   this.props.getVisitIntent()
     // })
+    Taro.login().then(res => {
+      return this.props.postWxLogin({code: res.code})
+    }).then(res => {
+      Taro.eventCenter.trigger('getUserCarte')
+      this.props.getStatistic()
+      this.props.getVisitGuest()
+      this.props.getVisitIntent()
+    })
     Taro.getSetting().then(res => {
       const {authSetting} = res
       if (!authSetting['scope.userInfo']) {

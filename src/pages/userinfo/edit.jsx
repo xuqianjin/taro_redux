@@ -45,18 +45,21 @@ export default class extends Component {
         {
           title: '手机号码',
           name: 'contactPhonenum',
-          type: 'phone'
+          type: 'phone',
+          isneed: true
         }, {
           title: '姓名',
           name: 'name',
-          type: 'text'
+          type: 'text',
+          isneed: true
         }, {
-          title: '性别',
-          name: 'gender',
+          title: '身份',
+          name: 'careerKind',
           type: 'select',
-          selector: gender,
+          selector: careerKind,
           rangeKey: 'name',
-          func: Number
+          func: Number,
+          isneed: true
         }, {
           title: '公司',
           name: 'corp',
@@ -65,13 +68,6 @@ export default class extends Component {
           title: '职位',
           name: 'office',
           type: 'text'
-        }, {
-          title: '工种',
-          name: 'careerKind',
-          type: 'select',
-          selector: careerKind,
-          rangeKey: 'name',
-          func: Number
         }
       ],
       desc: '',
@@ -110,7 +106,7 @@ export default class extends Component {
     const {listdata, desc} = this.state
     let postdata = {}
     for (var item of listdata) {
-      if (!item.value) {
+      if (!item.value && item.isneed) {
         let toast = item.type === 'select'
           ? '请选择'
           : '请输入'
@@ -123,13 +119,10 @@ export default class extends Component {
       }
     }
 
-    if (!desc) {
-      Taro.atMessage({'message': '请输入个人简介', 'type': 'error'})
-      return
-    }
     postdata.desc = desc
     postdata.avatarUrl = this.state.avatarUrl
     Taro.showLoading()
+    postdata.careerKind=0
     this.props.putUserCarte(postdata).then((res) => {
       Taro.eventCenter.trigger('getUserCarte')
       Taro.hideLoading()
@@ -176,10 +169,14 @@ export default class extends Component {
         {
           listdata.map((item, index) => {
 
+            const title = item.isneed
+              ? '*' + item.title
+              : item.title
+
             return item.type === 'select'
               ? <Picker onChange={this.onChange.bind(this, item, index)} key={item.name} rangeKey={item.rangeKey} range={item.selector}>
                   <View className='inputpicker'>
-                    <View className='left'>{item.title}</View>
+                    <View className='left'>{title}</View>
                     {
                       item.value
                         ? <View className='right select'>{this.getTypeName(item)}</View>
@@ -188,7 +185,7 @@ export default class extends Component {
                   </View>
                   {index + 1 < listdata.length && <HeightView height={1} color='#d6e4ef'></HeightView>}
                 </Picker>
-              : <AtInput value={item.value} onChange={this.onChange.bind(this, item, index)} key={item.name} name={item.name} title={item.title} type={item.type} placeholder={`请输入${item.title}`}>
+              : <AtInput value={item.value} onChange={this.onChange.bind(this, item, index)} key={item.name} name={item.name} title={title} type={item.type} placeholder={`请输入${item.title}`}>
                 {item.name === 'contactPhonenum' && <AtButton openType='getPhoneNumber' onGetPhoneNumber={this.onGetPhoneNumber} type='primary' size='small' style={`margin-right:${Taro.pxTransform(20)}`}>快速获取</AtButton>}
               </AtInput>
           })

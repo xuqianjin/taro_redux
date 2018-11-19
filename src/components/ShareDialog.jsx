@@ -16,7 +16,7 @@ export default class extends Component {
   }
 
   handleClickCircle = () => {
-    Taro.previewImage({urls: ['https://mmbiz.qpic.cn/mmbiz_jpg/QicyPhNHD5varTJ9icRDIicfogw89Q3tawHUwy4g7Um43r1oWG6uF3SOXU6iankoxv9obic8DumiczloBtibdCy6bqBWQ/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1']})
+    Taro.previewImage({urls: ['http://djpub.oss-cn-shenzhen.aliyuncs.com/1800407422.jpg']})
     this.handleClose()
   }
   handleClickFriend = () => {

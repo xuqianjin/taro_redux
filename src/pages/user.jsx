@@ -38,11 +38,12 @@ export default class extends Component {
         onClick: () => {
           this.props.onShare && this.props.onShare()
         }
-      }, {
-        icon: 'help',
-        title: '使用攻略',
-        extra: '玩转小多'
       }
+      // , {
+      //   icon: 'help',
+      //   title: '使用攻略',
+      //   extra: '玩转小多'
+      // }
     ]
   }
   getSysList = () => {

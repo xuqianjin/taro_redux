@@ -54,6 +54,12 @@ export default class extends Component {
     const {usercarte} = this.props.userReducer
     return {title: usercarte.name}
   }
+  getCareerName = (value) => {
+    if (!value) {
+      return null
+    }
+    careerKind.find(item => item.value == value).name
+  }
   handleEdit = () => {
     Taro.navigateTo({url: '/pages/userinfo/edit'})
   }
@@ -103,8 +109,11 @@ export default class extends Component {
       <HeightView height={20} color='transparent'></HeightView>
       <View className='paneltitle bg_white'>基本信息</View>
       <AtList>
-        <AtListItem title='我的姓名' extraText={usercarte.name}/>
-        <AtListItem title='联系方式' extraText={usercarte.contactPhonenum}/>
+        <AtListItem title='姓名' extraText={usercarte.name}/>
+        <AtListItem title='手机' extraText={usercarte.contactPhonenum}/>
+        <AtListItem title='身份' extraText={this.getCareerName(usercarte.careerKind)}/>
+        <AtListItem title='公司' extraText={usercarte.corp}/>
+        <AtListItem title='职位' extraText={usercarte.office}/>
       </AtList>
 
       <HeightView height={20} color='transparent'></HeightView>
@@ -112,13 +121,6 @@ export default class extends Component {
       <HeightView height={1} color='#d6e4ef'></HeightView>
       <View className='userdesc bg_white'>{usercarte.desc}</View>
 
-      <HeightView height={20} color='transparent'></HeightView>
-      <View className='paneltitle bg_white'>我的档案</View>
-      <AtList>
-        <AtListItem title='所属公司' extraText={usercarte.corp}/>
-        <AtListItem title='公司职位' extraText={usercarte.office}/>
-        <AtListItem title='所属工种' extraText={usercarte && careerKind.find(item => item.value == usercarte.careerKind).name}/>
-      </AtList>
       <HeightView height={100} color='transparent'></HeightView>
       <ShareDialog isOpened={showshare} onClose={this.handleShareClose}></ShareDialog>
     </BaseView>
