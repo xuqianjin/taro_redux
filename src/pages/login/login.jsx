@@ -6,7 +6,7 @@ import {View, Text} from '@tarojs/components'
 import {AtButton} from 'taro-ui'
 import HeightView from '../../components/HeightView'
 import ImageView from '../../components/ImageView'
-import {putWxUserInfo} from '../../reducers/userReducer'
+import {putWxUserInfo, putUserCarte} from '../../reducers/userReducer'
 
 const mapStateToProps = (state) => {
   return {userReducer: state.userReducer}
@@ -14,7 +14,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
-    putWxUserInfo
+    putWxUserInfo,
+    putUserCarte
   }, dispatch)
 }
 
@@ -26,7 +27,17 @@ export default class extends Component {
   constructor(props) {
     super(props);
   }
-  onGetUserInfo = (user) => {}
+  onGetUserInfo = async (res) => {
+    const {detail} = res
+    const {encryptedData, iv, errMsg, userInfo} = detail
+    if (errMsg === 'getUserInfo:ok') {
+      const {avatarUrl, gender, nickName} = userInfo
+      await this.props.putWxUserInfo({encryptedData, iv})
+      await this.props.putUserCarte({avatarUrl, gender, name: nickName})
+      Taro.eventCenter.trigger('getUserCarte')
+      Taro.navigateBack()
+    }
+  }
   render() {
     const {height, color} = this.props
     const style = 'height:80%;display:flex;align-items:center;justify-content:center; flex-direction:column'

@@ -50,7 +50,12 @@ class Index extends Component {
     }
   }
   componentWillReceiveProps(nextProps) {}
-  componentWillMount() {}
+  componentWillMount() {
+    Taro.eventCenter.on('getUserCarte', () => {
+      const {userinfo} = this.props.userReducer
+      this.props.getUserCarte(userinfo.userId)
+    })
+  }
   componentDidMount() {
     this.props.getDeviceInfo()
     this.props.getDebugToken(1).then(res => {
@@ -59,8 +64,19 @@ class Index extends Component {
       this.props.getVisitGuest()
       this.props.getVisitIntent()
     })
-    Taro.login().then(res => {
-      this.props.postWxLogin({code: res.code})
+    // Taro.login().then(res => {
+    //   return this.props.postWxLogin({code: res.code})
+    // }).then(res => {
+    //   Taro.eventCenter.trigger('getUserCarte')
+    //   this.props.getStatistic()
+    //   this.props.getVisitGuest()
+    //   this.props.getVisitIntent()
+    // })
+    Taro.getSetting().then(res => {
+      const {authSetting} = res
+      if (!authSetting['scope.userInfo']) {
+        this.setState({showmodal: true})
+      }
     })
   }
   onShareAppMessage() {

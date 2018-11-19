@@ -133,7 +133,8 @@ export default function reducer(state = init_state, action) {
     case `${API_POST_WXLOGIN}_FULFILLED`:
       return {
         ...state,
-        token: action.payload.token
+        token: action.payload.token,
+        userinfo: action.payload
       }
     default:
       return state

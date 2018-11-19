@@ -93,12 +93,15 @@ export default class extends Component {
   }
   onGetPhoneNumber = (res) => {
     const {detail} = res
-    const {encryptedData, iv} = detail
+    const {encryptedData, iv, errMsg} = detail
     const {listdata} = this.state
-    this.props.putWxUserPhone({encryptedData, iv}).then(res => {
-      listdata.find(list => list.name === 'contactPhonenum').value = res.phonenum
-      this.setState({listdata})
-    })
+    if (errMsg === 'getPhoneNumber:ok') {
+      this.props.putWxUserPhone({encryptedData, iv}).then(res => {
+        var list = JSON.parse(JSON.stringify(listdata))
+        list.find(listitem => listitem.name === 'contactPhonenum').value = res.value.phonenum
+        this.setState({listdata: list})
+      })
+    }
   }
   onUpload = (images) => {
     this.setState({avatarUrl: images[0]})
@@ -128,6 +131,7 @@ export default class extends Component {
     postdata.avatarUrl = this.state.avatarUrl
     Taro.showLoading()
     this.props.putUserCarte(postdata).then((res) => {
+      Taro.eventCenter.trigger('getUserCarte')
       Taro.hideLoading()
       Taro.navigateBack()
     }).catch(err => {
