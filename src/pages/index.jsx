@@ -12,7 +12,7 @@ import BaseView from '../components/BaseView'
 
 import request from '../reducers/request'
 
-import {getDeviceInfo, setState, getStatistic} from '../reducers/commonReducer'
+import {getDeviceInfo, setState, getStatistic, getImToken} from '../reducers/commonReducer'
 import {postWxLogin, getDebugToken, getUserCarte} from '../reducers/userReducer'
 import {getVisitGuest, getVisitIntent} from '../reducers/customerReducer'
 
@@ -31,6 +31,7 @@ const mapDispatchToProps = (dispatch) => {
     getUserCarte,
     getVisitGuest,
     getVisitIntent,
+    getImToken,
     setState
   }, dispatch)
 }
@@ -71,6 +72,7 @@ class Index extends Component {
       this.props.getStatistic()
       this.props.getVisitGuest()
       this.props.getVisitIntent()
+      this.props.getImToken()
     })
     Taro.getSetting().then(res => {
       const {authSetting} = res

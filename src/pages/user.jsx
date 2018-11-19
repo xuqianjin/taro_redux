@@ -77,9 +77,12 @@ export default class extends Component {
       </View>
       <View className='at-col'>
         <View className='title'>{usercarte.name}</View>
-        <View className='desc text_black_light'>
-          {usercarte.office}
-          | {usercarte.corp}</View>
+        {
+          usercarte.office && usercarte.corp && <View className='desc text_black_light'>
+              {usercarte.office}
+              | {usercarte.corp}
+            </View>
+        }
       </View>
       <View className='at-col at-col-1 at-col--auto right text_theme'>
         <Text>编辑</Text>

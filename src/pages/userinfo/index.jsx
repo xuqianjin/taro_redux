@@ -85,8 +85,8 @@ export default class extends Component {
         <View className='infotag bg_theme_opacity'>
           <View className='title'>{usercarte.name}</View>
           <View className='desc'>
-            {usercarte.corp}
-            | {usercarte.office}</View>
+            {usercarte.corp || '公司未填写'}
+            | {usercarte.office || '职位未填写'}</View>
         </View>
         <View className='edittag opacity' onClick={this.handleEdit}>
           <AtIcon value='edit' size={15}></AtIcon>

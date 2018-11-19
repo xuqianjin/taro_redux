@@ -4,6 +4,7 @@ import request from './request'
 const GET_DEVICE_INFO = 'GET_DEVICE_INFO'
 const SET_STATE = 'SET_STATE'
 const API_GET_OSS_TOKEN = API_HOST + '/c/oss/token'
+const API_GET_IM_TOKEN = API_HOST + '/c/im/token'
 const API_GET_STATISTIC = API_HOST + '/c/statistic'
 
 export const setState = (data) => (dispatch, getState) => {
@@ -17,6 +18,16 @@ export const getOssToken = () => (dispatch, getState) => {
   return dispatch({
     type: API_GET_OSS_TOKEN,
     payload: request.get(API_GET_OSS_TOKEN, {
+      header: {
+        Authorization: getState().userReducer.token
+      }
+    })
+  })
+}
+export const getImToken = () => (dispatch, getState) => {
+  return dispatch({
+    type: API_GET_IM_TOKEN,
+    payload: request.get(API_GET_IM_TOKEN, {
       header: {
         Authorization: getState().userReducer.token
       }
