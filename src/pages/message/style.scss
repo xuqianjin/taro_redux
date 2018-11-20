@@ -1,0 +1,8 @@
+.item {
+  position: relative;
+  & .badge {
+    position: absolute;
+    left: 66px;
+    top: 30px;
+  }
+}

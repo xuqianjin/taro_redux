@@ -32,10 +32,13 @@
     color: black;
   }
 }
-
-.button {
+.desc {
   width: 700px;
   padding-left: 25px;
+}
+.button {
+  width: 700px;
+  margin-left: -7px !important;
 }
 
 .infotag {
@@ -60,7 +63,7 @@
 }
 
 .edittag {
-  background-color: rgba(136,136,136,0.7);
+  background-color: rgba(136, 136, 136, 0.7);
   position: absolute;
   top: 10px;
   right: 30px;
@@ -92,15 +95,16 @@
     left: 0.512rem;
     top: 50%;
     margin-top: -0.42667rem;
-    width: 2PX;
+    width: 2px;
     height: 0.85333rem;
     background-color: #6190e8;
     box-shadow: 0 0.14933rem 0.256rem 0 rgba(97, 144, 232, 0.2);
-    border-radius: 1PX;
+    border-radius: 1px;
   }
 }
 
 .userdesc {
   font-size: 25px;
   padding: 20px;
+  min-height: 100px;
 }

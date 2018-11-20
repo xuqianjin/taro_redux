@@ -1,10 +1,11 @@
-import Taro from '@tarojs/taro'
-import request from './request'
+import Taro from "@tarojs/taro";
+import request from "./request";
 
-const API_GET_VISIT_GUEST = API_HOST + '/c/visits/guest'
-const API_GET_VISIT_INTENT = API_HOST + '/c/visits/intent'
-const API_PUT_VISIT = API_HOST + '/c/visit/{id}'
-const API_GET_VISIT_LOG = API_HOST + '/c/visit/{visitorId}/viewLogs'
+const API_GET_VISIT_GUEST = API_HOST + "/c/visits/guest";
+const API_GET_VISIT_INTENT = API_HOST + "/c/visits/intent";
+const API_PUT_VISIT = API_HOST + "/c/visit/{id}";
+const API_GET_VISIT_LOG = API_HOST + "/c/visit/{visitorId}/viewLogs";
+const API_GET_MESSAGEBOXES = API_HOST + "/c/messageBoxes";
 
 export const getVisitGuest = () => (dispatch, getState) => {
   return dispatch({
@@ -14,8 +15,8 @@ export const getVisitGuest = () => (dispatch, getState) => {
         Authorization: getState().userReducer.token
       }
     })
-  })
-}
+  });
+};
 export const getVisitIntent = () => (dispatch, getState) => {
   return dispatch({
     type: API_GET_VISIT_INTENT,
@@ -24,8 +25,8 @@ export const getVisitIntent = () => (dispatch, getState) => {
         Authorization: getState().userReducer.token
       }
     })
-  })
-}
+  });
+};
 export const putVisit = (oprateId, data) => (dispatch, getState) => {
   return dispatch({
     type: API_PUT_VISIT,
@@ -36,10 +37,10 @@ export const putVisit = (oprateId, data) => (dispatch, getState) => {
       oprateId,
       data
     })
-  })
-}
+  });
+};
 
-export const getVisitLog = (oprateId) => (dispatch, getState) => {
+export const getVisitLog = oprateId => (dispatch, getState) => {
   return dispatch({
     type: API_GET_VISIT_LOG,
     payload: request.get(API_GET_VISIT_LOG, {
@@ -48,14 +49,24 @@ export const getVisitLog = (oprateId) => (dispatch, getState) => {
       },
       oprateId
     })
-  })
-}
+  });
+};
+export const getMessageBoxes = oprateId => (dispatch, getState) => {
+  return dispatch({
+    type: API_GET_MESSAGEBOXES,
+    payload: request.get(API_GET_MESSAGEBOXES, {
+      header: {
+        Authorization: getState().userReducer.token
+      }
+    })
+  });
+};
 
 const init_state = {
-  visitguest: '',
-  visitintent: '',
-  visitlog: ''
-}
+  visitguest: "",
+  visitintent: "",
+  visitlog: ""
+};
 
 export default function reducer(state = init_state, action) {
   switch (action.type) {
@@ -63,18 +74,18 @@ export default function reducer(state = init_state, action) {
       return {
         ...state,
         visitguest: action.payload
-      }
+      };
     case `${API_GET_VISIT_INTENT}_FULFILLED`:
       return {
         ...state,
         visitintent: action.payload
-      }
+      };
     case `${API_GET_VISIT_LOG}_FULFILLED`:
       return {
         ...state,
         visitlog: action.payload
-      }
+      };
     default:
-      return state
+      return state;
   }
 }
