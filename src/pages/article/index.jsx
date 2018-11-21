@@ -6,8 +6,8 @@ import {AtTabBar, AtTabs, AtTabsPane, AtLoadMore, AtIcon} from 'taro-ui'
 
 import ArticleItem from './ArticleItem'
 import HeightView from '../../components/HeightView'
-import {articleTag} from '../../components/Constant'
 import {getSysArticle, getUserArticleCreate, getUserArticleForward, getUserArticleCollect} from '../../reducers/articleReducer'
+import {getTags} from '../../reducers/commonReducer'
 
 import './style.scss'
 
@@ -20,7 +20,8 @@ const mapDispatchToProps = (dispatch) => {
     getUserArticleCreate,
     getUserArticleForward,
     getUserArticleCollect,
-    getSysArticle
+    getSysArticle,
+    getTags
   }, dispatch)
 }
 
@@ -37,10 +38,14 @@ export default class extends Component {
       current: 0,
       choosetag: -1,
       chooseuser: 1,
-      userarticle: ''
+      userarticle: '',
+      articleTag:[]
     }
   }
   componentWillMount() {
+    this.props.getTags({kind:2}).then(res => {
+      this.setState({articleTag: res.value})
+    })
     this.props.getSysArticle()
     this.props.getUserArticleCreate().then(res => {
       this.setState({userarticle: res.value})
@@ -49,12 +54,12 @@ export default class extends Component {
   handleChangeTab = (value) => {
     this.setState({current: value})
   }
-  handleTagClick = (value) => {
+  handleTagClick = (id) => {
     const {choosetag} = this.state
-    if (value == choosetag) {
+    if (id == choosetag) {
       this.setState({choosetag: -1})
     } else {
-      this.setState({choosetag: value})
+      this.setState({choosetag: id})
     }
   }
   handleUserClick = (value) => {
@@ -85,7 +90,7 @@ export default class extends Component {
     Taro.navigateTo({url: '/pages/article/upload'})
   }
   render() {
-    const {choosetag, chooseuser, userarticle} = this.state
+    const {choosetag, chooseuser, userarticle,articleTag} = this.state
     const {deviceinfo} = this.props.commonReducer
     const tabList = [
       {
@@ -114,10 +119,10 @@ export default class extends Component {
           <View className='at-row bg_white fixtag'>
             {
               articleTag.map(tag => {
-                let color = tag.value == choosetag
+                let color = tag.id == choosetag
                   ? 'text_black'
                   : 'text_black_light'
-                return <View className={`at-col text_center ${color}`} key={tag.value} onClick={this.handleTagClick.bind(this, tag.value)}>{tag.name}</View>
+                return <View className={`at-col text_center ${color}`} key={tag.id} onClick={this.handleTagClick.bind(this, tag.id)}>{tag.name}</View>
               })
             }
           </View>

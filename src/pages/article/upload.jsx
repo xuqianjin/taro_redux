@@ -6,11 +6,11 @@ import {AtTextarea, AtButton, AtMessage, AtTag} from 'taro-ui'
 
 import BaseView from '../../components/BaseView'
 import HeightView from '../../components/HeightView'
-import {articleTag} from '../../components/Constant'
 
 import './style.scss'
 
 import {postSysArticle} from '../../reducers/articleReducer'
+import {getTags} from '../../reducers/commonReducer'
 
 const mapStateToProps = (state) => {
   return {articleReducer: state.articleReducer}
@@ -18,7 +18,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
-    postSysArticle
+    postSysArticle,
+    getTags
   }, dispatch)
 }
 
@@ -32,8 +33,14 @@ export default class extends Component {
     super(props);
     this.state = {
       url: '',
-      tags: []
+      tags: [],
+      articleTag:[]
     }
+  }
+  componentWillMount() {
+    this.props.getTags({kind:2}).then(res => {
+      this.setState({articleTag: res.value})
+    })
   }
   handleTagClick = (value) => {
     const {name, active} = value
@@ -73,6 +80,7 @@ export default class extends Component {
     })
   }
   render() {
+    const {articleTag} = this.state
     const {tags} = this.state
     return <BaseView baseclassname='bg_white'>
       <AtMessage></AtMessage>
@@ -89,7 +97,7 @@ export default class extends Component {
           <HeightView height={20} color='transparent'></HeightView>
           {
             articleTag.map(tag => {
-              return <AtTag active={tags.includes(tag.value)} key={tag.value} name={'' + tag.value} type='primary' circle={true} onClick={this.handleTagClick}>{tag.name}</AtTag>
+              return <AtTag active={tags.includes(tag.id)} key={tag.id} name={'' + tag.id} type='primary' circle={true} onClick={this.handleTagClick}>{tag.name}</AtTag>
             })
           }
         </View>
