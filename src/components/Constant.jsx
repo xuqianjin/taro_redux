@@ -23,18 +23,3 @@ export const careerKind = [
     value: 4
   }
 ]
-export const articleTag = [
-  {
-    name: '装修风水',
-    value: 1
-  }, {
-    name: '装修百科',
-    value: 2
-  }, {
-    name: '选材助手',
-    value: 3
-  }, {
-    name: '装修案例',
-    value: 4
-  }
-]

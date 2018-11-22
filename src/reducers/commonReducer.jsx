@@ -7,6 +7,7 @@ const API_GET_OSS_TOKEN = API_HOST + "/c/oss/token";
 const API_GET_IM_TOKEN = API_HOST + "/c/im/token";
 const API_GET_STATISTIC = API_HOST + "/c/statistic";
 const API_GET_REGION = API_HOST + "/c/regions";
+const API_GET_TAGS = API_HOST + "/c/tags";
 
 export const getRegion = () => (dispatch, getState) => {
   return dispatch({
@@ -50,6 +51,13 @@ export const getStatistic = () => (dispatch, getState) => {
         Authorization: getState().userReducer.token
       }
     })
+  });
+};
+
+export const getTags = (params) => (dispatch, getState) => {
+  return dispatch({
+    type: API_GET_TAGS,
+    payload: request.get(API_GET_TAGS,{params})
   });
 };
 
