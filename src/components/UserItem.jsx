@@ -11,13 +11,15 @@ export default class extends Component {
   constructor(props) {
     super(props);
   }
-
+  handleClick = () => {
+    Taro.navigateTo({ url: "/pages/chat/index" });
+  };
   render() {
     const { height, color } = this.props;
     const imgstyle = `margin:${Taro.pxTransform(20)}`;
     const descstyle = `font-size:${Taro.pxTransform(25)}`;
     return (
-      <View className="at-row bg_white opacity">
+      <View className="at-row bg_white opacity" onClick={this.handleClick}>
         <View style={imgstyle} className="at-col at-col-1 at-col--auto">
           <AtAvatar image="https://jdc.jd.com/img/300" />
         </View>

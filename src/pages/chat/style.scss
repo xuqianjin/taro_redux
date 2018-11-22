@@ -1,0 +1,64 @@
+.item {
+  position: relative;
+  & .badge {
+    position: absolute;
+    left: 66px;
+    top: 30px;
+  }
+}
+
+.avatar {
+  margin: 0 20px;
+}
+.time {
+  font-size: 25px;
+}
+.message {
+  position: relative;
+  background-color: white;
+  border-radius: 10px;
+  max-width: 500px;
+  padding: 20px;
+  margin-left: 15px;
+  font-size: 30px;
+  &:before {
+    content: "";
+    width: 0;
+    height: 0;
+    border-bottom: 16px solid transparent;
+    border-right: 16px solid white;
+    border-top: 16px solid transparent;
+    position: absolute;
+    top: 25px;
+    left: -16px;
+    z-index: 2;
+  }
+}
+
+.messageme {
+  position: relative;
+  border-radius: 10px;
+  max-width: 500px;
+  padding: 20px;
+  margin-right: 15px;
+  font-size: 30px;
+  background-color: #9fe759;
+  &:after {
+    content: "";
+    width: 0;
+    height: 0;
+    border-bottom: 16px solid transparent;
+    border-left: 16px solid #9fe759;
+    border-top: 16px solid transparent;
+    position: absolute;
+    top: 25px;
+    right: -16px;
+    z-index: 999;
+  }
+}
+
+.fix {
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
+}

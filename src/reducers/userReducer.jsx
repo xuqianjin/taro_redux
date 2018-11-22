@@ -7,6 +7,7 @@ const API_PUT_WXUERINFO = API_HOST + "/c/wxlite/userinfo";
 const API_PUT_WXUERPHONE = API_HOST + "/c/wxlite/phonenum";
 const API_POST_WXFORMID = API_HOST + "/c/wxlite/formid";
 const API_POST_WXQRCODE = API_HOST + "/c/wxlite/qr";
+const API_POST_MAGICMESSAGE = API_HOST + "/c/wxlite/magicMessageHook";
 
 //user
 const API_PUT_USER_CARTE = API_HOST + "/c/carte";
@@ -89,6 +90,17 @@ export const postWxQrCode = page => (dispatch, getState) => {
   });
 };
 
+export const postWxMagicMessage = data => (dispatch, getState) => {
+  return dispatch({
+    type: API_POST_MAGICMESSAGE,
+    payload: request.post(API_POST_MAGICMESSAGE, {
+      header: {
+        Authorization: getState().userReducer.token
+      },
+      data
+    })
+  });
+};
 export const getUserCarte = operateId => (dispatch, getState) => {
   return dispatch({
     type: API_GET_USER_CARTE,

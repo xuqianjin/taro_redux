@@ -9,6 +9,8 @@ import Customer from "./customer";
 import User from "./user";
 import "moment/locale/zh-cn";
 
+import NimSDK from "../lib/NIM_Web_SDK_weixin_v5.8.0";
+
 import BaseView from "../components/BaseView";
 
 import request from "../reducers/request";
@@ -21,6 +23,7 @@ import {
 } from "../reducers/commonReducer";
 import {
   postWxLogin,
+  postWxMagicMessage,
   getDebugToken,
   getUserCarte,
   getUserCarteDesc
@@ -40,6 +43,7 @@ const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       postWxLogin,
+      postWxMagicMessage,
       getDebugToken,
       getDeviceInfo,
       getStatistic,
@@ -77,6 +81,7 @@ class Index extends Component {
       this.props.getUserCarteDesc(userinfo.userId);
     });
   }
+
   componentDidMount() {
     this.props.getDeviceInfo();
     // this.props.getDebugToken(1).then(res => {
@@ -85,6 +90,7 @@ class Index extends Component {
     //   this.props.getVisitGuest()
     //   this.props.getVisitIntent()
     // })
+
     Taro.login()
       .then(res => {
         return this.props.postWxLogin({ code: res.code });
@@ -94,7 +100,9 @@ class Index extends Component {
         this.props.getStatistic();
         this.props.getVisitGuest();
         this.props.getVisitIntent();
-        this.props.getImToken();
+        this.props.getImToken().then(({ value }) => {
+          this.initNim(value.token);
+        });
       });
     Taro.getSetting().then(res => {
       const { authSetting } = res;
@@ -103,6 +111,31 @@ class Index extends Component {
       }
     });
   }
+  initNim = imtoken => {
+    const { userinfo } = this.props.userReducer;
+    const { nickName, avatarUrl, gender, phonenum, userId } = userinfo;
+    wx.nim = NimSDK.NIM.getInstance({
+      debug: false,
+      appKey: NIM_APP_KEY,
+      account: userId,
+      token: imtoken,
+      onconnect: () => {
+        wx.nim.updateMyInfo({
+          nick: nickName,
+          avatar: avatarUrl,
+          tel: phonenum
+        });
+        // function sendMsgDone(error, msg) {
+        //     console.log('发送' + msg.scene + ' ' + msg.type + '消息' + (!error?'成功':'失败') + ', id=' + msg.idClient, error, msg);
+        // }
+        wx.nim.sendText({ scene: "p2p", to: 27, text: "hello" });
+      },
+      onsysmsgunread: res => {
+        console.log("sssss");
+        console.log(res);
+      }
+    });
+  };
   onShareAppMessage() {
     return { title: "sfsf" };
   }
@@ -162,7 +195,11 @@ class Index extends Component {
       <BaseView condition={condition}>
         <AtTabs current={current}>
           <AtTabsPane current={current} index={0}>
-            <Home onShare={this.handleShare} usercarte={usercarte} />
+            <Home
+              onShare={this.handleShare}
+              usercarte={usercarte}
+              onpostWxMagicMessage={this.props.postWxMagicMessage}
+            />
           </AtTabsPane>
           <AtTabsPane current={current} index={1}>
             <Customer
