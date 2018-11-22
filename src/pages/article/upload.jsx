@@ -4,24 +4,27 @@ import { bindActionCreators } from "redux";
 import { View } from "@tarojs/components";
 import { AtTextarea, AtButton, AtMessage, AtTag } from "taro-ui";
 
-import BaseView from '../../components/BaseView'
-import HeightView from '../../components/HeightView'
+import BaseView from "../../components/BaseView";
+import HeightView from "../../components/HeightView";
 
 import "./style.scss";
 
-import {postSysArticle} from '../../reducers/articleReducer'
-import {getTags} from '../../reducers/commonReducer'
+import { postSysArticle } from "../../reducers/articleReducer";
+import { getTags } from "../../reducers/commonReducer";
 
 const mapStateToProps = state => {
   return { articleReducer: state.articleReducer };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({
-    postSysArticle,
-    getTags
-  }, dispatch)
-}
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators(
+    {
+      postSysArticle,
+      getTags
+    },
+    dispatch
+  );
+};
 
 @connect(
   mapStateToProps,
@@ -35,19 +38,19 @@ export default class extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      url: '',
+      url: "",
       tags: [],
-      articleTag:[]
-    }
+      articleTag: []
+    };
   }
   componentWillMount() {
-    this.props.getTags({kind:2}).then(res => {
-      this.setState({articleTag: res.value})
-    })
+    this.props.getTags({ kind: 2 }).then(res => {
+      this.setState({ articleTag: res.value });
+    });
   }
-  handleTagClick = (value) => {
-    const {name, active} = value
-    const {tags} = this.state
+  handleTagClick = value => {
+    const { name, active } = value;
+    const { tags } = this.state;
     if (tags.includes(Number(name)) && active) {
       tags.splice(tags.indexOf(Number(name)), 1);
     } else {
@@ -90,31 +93,59 @@ export default class extends Component {
       });
   };
   render() {
-    const {articleTag} = this.state
-    const {tags} = this.state
-    return <BaseView baseclassname='bg_white'>
-      <AtMessage></AtMessage>
-      <View className='content'>
-        <HeightView height={20} color='transparent'></HeightView>
-        <View className='tips'>
-          粘贴原文链接
-        </View>
-        <HeightView height={20} color='transparent'></HeightView>
-        <AtTextarea height='200' placeholder='请将已复制的微信文章链接,粘贴到此处' onChange={this.handleChange}></AtTextarea>
-        <HeightView height={50} color='transparent'></HeightView>
-        <View>
-          <View style='font-size:15px'>选择文章标签</View>
-          <HeightView height={20} color='transparent'></HeightView>
-          {
-            articleTag.map(tag => {
-              return <AtTag active={tags.includes(tag.id)} key={tag.id} name={'' + tag.id} type='primary' circle={true} onClick={this.handleTagClick}>{tag.name}</AtTag>
-            })
-          }
-        </View>
-        <HeightView height={50} color='transparent'></HeightView>
-        <View className='at-row'>
-          <View className='at-col'>
-            <AtButton type='secondary' size='normal' onClick={this.handleCancel}>取消</AtButton>
+    const { tags, articleTag } = this.state;
+    return (
+      <BaseView baseclassname="bg_white">
+        <AtMessage />
+        <View className="content">
+          <HeightView height={20} color="transparent" />
+          <View className="tips">粘贴原文链接</View>
+          <HeightView height={20} color="transparent" />
+          <AtTextarea
+            height="200"
+            placeholder="请将已复制的微信文章链接,粘贴到此处"
+            onChange={this.handleChange}
+          />
+          <HeightView height={50} color="transparent" />
+          <View>
+            <View style="font-size:15px">选择文章标签</View>
+            <HeightView height={20} color="transparent" />
+            {articleTag.map(tag => {
+              return (
+                <AtTag
+                  active={tags.includes(tag.id)}
+                  key={tag.id}
+                  name={"" + tag.id}
+                  type="primary"
+                  circle={true}
+                  onClick={this.handleTagClick}
+                >
+                  {tag.name}
+                </AtTag>
+              );
+            })}
+          </View>
+          <HeightView height={50} color="transparent" />
+          <View className="at-row">
+            <View className="at-col">
+              <AtButton
+                type="secondary"
+                size="normal"
+                onClick={this.handleCancel}
+              >
+                取消
+              </AtButton>
+            </View>
+            <View className="at-col at-col-1 at-col--auto" />
+            <View className="at-col">
+              <AtButton
+                type="primary"
+                size="normal"
+                onClick={this.handleSubmit}
+              >
+                生成我的文章
+              </AtButton>
+            </View>
           </View>
           <HeightView height={50} color="transparent" />
           <View className="title text_black_light text_center">上传说明</View>

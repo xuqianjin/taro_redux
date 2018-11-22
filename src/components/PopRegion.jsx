@@ -95,7 +95,7 @@ export default class extends Component {
           onChange={this.handleChange}
           onColumnchange={this.handleColumnChange}
         >
-          <View className="picker">当前选择</View>
+          {this.props.children}
         </Picker>
       </View>
     );

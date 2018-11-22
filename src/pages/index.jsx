@@ -10,7 +10,6 @@ import User from "./user";
 import "moment/locale/zh-cn";
 
 import BaseView from "../components/BaseView";
-import PopRegion from "../components/PopRegion";
 
 import request from "../reducers/request";
 
@@ -123,8 +122,7 @@ class Index extends Component {
     this.setState({ showmodal: false });
   };
   handleShare = () => {
-    // this.setState({ showshare: true });
-    console.log(this.PopRegion.getRegionNameById());
+    this.setState({ showshare: true });
   };
   handleShareClose = () => {
     this.setState({ showshare: false });
@@ -191,8 +189,7 @@ class Index extends Component {
           onConfirm={this.handleModalConfirm.bind(this)}
           content="为了获得更好体验,我们需要您的微信授权点击去授权"
         />
-        {/*<ShareDialog isOpened={showshare} onClose={this.handleShareClose} />*/}
-        <PopRegion ref={ref => (this.PopRegion = ref)} isOpened={showshare} />
+        <ShareDialog isOpened={showshare} onClose={this.handleShareClose} />
       </BaseView>
     );
   }
