@@ -42,9 +42,14 @@ export default class extends Component {
   }
   componentWillMount() {
     this.props.getSysArticle()
-    this.props.getUserArticleCreate().then(res => {
-      this.setState({userarticle: res.value})
-    })
+
+    Taro.eventCenter.on("getUserArticleCreate", () => {
+      this.props.getUserArticleCreate().then(res => {
+        this.setState({userarticle: res.value})
+      })
+    });
+
+    Taro.eventCenter.trigger("getUserArticleCreate");
   }
   handleChangeTab = (value) => {
     this.setState({current: value})

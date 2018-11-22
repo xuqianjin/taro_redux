@@ -126,7 +126,7 @@ export default class extends Component {
   onSubmit = value => {
     const { detail } = value;
     this.props.postWxFormId(detail.formId);
-    this.props.postWxQrCode('/pages/index')
+    this.props.postWxQrCode('pages/index')
     const { listdata, desc } = this.state;
     let postdata = {};
     for (var item of listdata) {

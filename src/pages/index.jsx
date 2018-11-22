@@ -123,7 +123,8 @@ class Index extends Component {
     this.setState({ showmodal: false });
   };
   handleShare = () => {
-    this.setState({ showshare: true });
+    // this.setState({ showshare: true });
+    console.log(this.PopRegion.getRegionNameById());
   };
   handleShareClose = () => {
     this.setState({ showshare: false });
@@ -190,8 +191,8 @@ class Index extends Component {
           onConfirm={this.handleModalConfirm.bind(this)}
           content="为了获得更好体验,我们需要您的微信授权点击去授权"
         />
-        <ShareDialog isOpened={showshare} onClose={this.handleShareClose} />
-        <PopRegion />
+        {/*<ShareDialog isOpened={showshare} onClose={this.handleShareClose} />*/}
+        <PopRegion ref={ref => (this.PopRegion = ref)} isOpened={showshare} />
       </BaseView>
     );
   }

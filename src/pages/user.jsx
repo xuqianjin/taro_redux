@@ -34,7 +34,10 @@ export default class extends Component {
       {
         icon: "sketch",
         title: "VIP会员",
-        extra: "1天1块钱"
+        extra: "1天1块钱",
+        onClick: () => {
+          Taro.navigateTo({ url: "/pages/vip/index" });
+        }
       },
       {
         icon: "share",

@@ -16,6 +16,8 @@ const API_GET_USER_CARTE_DEC = API_HOST + "/c/carte/{id}/decorate";
 const API_PUT_USER_CARTE_COLLECT = API_HOST + "/c/carte/{id}/collect";
 const API_DEL_USER_CARTE_COLLECT = API_HOST + "/c/carte/{id}/uncollect";
 
+const API_POST_CHARGE = API_HOST + "/c/charge";
+
 export const getDebugToken = operateId => (dispatch, getState) => {
   return dispatch({
     type: API_GET_DEGUG_TOKEN,
@@ -143,6 +145,18 @@ export const delUserCarteCollect = operateId => (dispatch, getState) => {
         Authorization: getState().userReducer.token
       },
       operateId
+    })
+  });
+};
+
+export const postCharge = data => (dispatch, getState) => {
+  return dispatch({
+    type: API_POST_CHARGE,
+    payload: request.post(API_POST_CHARGE, {
+      header: {
+        Authorization: getState().userReducer.token
+      },
+      data
     })
   });
 };

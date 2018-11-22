@@ -1,0 +1,35 @@
+.image {
+  width: 750px;
+  display: block;
+}
+.buy {
+  text-align: center;
+  color: white;
+  font-size: 35px;
+  align-items: center;
+  margin: 20px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-radius: 10px;
+
+  & .money {
+    font-size: 45px;
+    font-weight: bold;
+  }
+  & .button {
+    border-radius: 25px;
+    background-color: white;
+    padding: 5px 40px;
+    color: red;
+    font-size: 25px;
+  }
+}
+
+.orange {
+  background-color: #f97b43;
+}
+.orangelight {
+  background-color: #f8a847;
+}

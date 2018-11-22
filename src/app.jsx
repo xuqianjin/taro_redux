@@ -30,7 +30,8 @@ class App extends Component {
       "pages/article/index",
       "pages/article/upload",
       "pages/webview/index",
-      "pages/message/index"
+      "pages/message/index",
+      "pages/vip/index"
     ],
     window: {
       backgroundTextStyle: "dark",
