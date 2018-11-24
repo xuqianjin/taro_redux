@@ -15,7 +15,6 @@ import {
 
 import BaseView from "../../components/BaseView";
 import HeightView from "../../components/HeightView";
-import { getMessageBoxes } from "../../reducers/customerReducer";
 
 import chatItem from "./chatItem";
 
@@ -24,16 +23,11 @@ import moment from "moment";
 import "./style.scss";
 
 const mapStateToProps = state => {
-  return { userReducer: state.userReducer };
+  return { userReducer: state.userReducer, commonReducer: state.commonReducer };
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators(
-    {
-      getMessageBoxes
-    },
-    dispatch
-  );
+  return bindActionCreators({}, dispatch);
 };
 
 @connect(
@@ -51,11 +45,20 @@ export default class extends Component {
   constructor(props) {
     super(props);
   }
-  componentWillMount() {}
+  componentWillMount() {
+    wx.nim.getLocalSessions({
+      lastSessionId: 'p2p-29',
+      limit: 100,
+      done: res => {
+        console.log(res);
+      }
+    });
+  }
   handleonConfirm = () => {
     console.log("sss");
   };
   render() {
+    const { session } = this.props.commonReducer;
     let data = [
       {
         User: {
@@ -93,6 +96,7 @@ export default class extends Component {
       }
     ];
     const { height, color } = this.props;
+    console.log(session);
     return (
       <BaseView>
         {data.map(item => {

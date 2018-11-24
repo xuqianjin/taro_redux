@@ -1,8 +1,29 @@
 import Taro, { Component } from "@tarojs/taro";
+import { connect } from "@tarojs/redux";
+import { bindActionCreators } from "redux";
 import { View, Button, Text, Input, ScrollView } from "@tarojs/components";
-import { AtTabBar, AtTabs, AtTabsPane } from "taro-ui";
+import { AtTabBar, AtTabs, AtTabsPane, AtLoadMore } from "taro-ui";
 import UserItem from "../components/UserItem";
+import { putVisit } from "../reducers/customerReducer";
 
+const mapStateToProps = state => {
+  return {
+    customerReducer: state.customerReducer
+  };
+};
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators(
+    {
+      putVisit
+    },
+    dispatch
+  );
+};
+
+@connect(
+  mapStateToProps,
+  mapDispatchToProps
+)
 export default class extends Component {
   static options = {
     addGlobalClass: true
@@ -24,8 +45,19 @@ export default class extends Component {
   handleChangeTab(value) {
     this.setState({ current: value });
   }
+  onSetIntent = item => {
+    const { id } = item;
+    const postdata = {
+      visitorData: {}
+    };
+    Taro.showLoading();
+    this.props.putVisit(id, postdata).then(res => {
+      Taro.hideLoading();
+      Taro.eventCenter.trigger("getCustomer");
+    });
+  };
   render() {
-    const { deviceinfo } = this.props;
+    const { deviceinfo, visitguest, visitintent } = this.props;
     const tabList = [
       {
         title: "意向客户"
@@ -43,20 +75,37 @@ export default class extends Component {
         current={this.state.current}
         tabList={tabList}
         onClick={this.handleChangeTab.bind(this)}
+        swipeable={false}
       >
         <AtTabsPane current={this.state.current} index={0}>
           <ScrollView scrollY={true} style={`height:${scrollheight}`}>
-            <UserItem />
+            {visitintent &&
+              visitintent.map(item => {
+                return (
+                  <UserItem
+                    key={item.id}
+                    item={item}
+                    onSetIntent={this.onSetIntent}
+                  />
+                );
+              })}
+            <AtLoadMore status={"noMore"} />
           </ScrollView>
         </AtTabsPane>
         <AtTabsPane current={this.state.current} index={1}>
           <ScrollView scrollY={true} style={`height:${scrollheight}`}>
-            <UserItem />
-            <UserItem />
-            <UserItem />
-            <UserItem />
-            <UserItem />
-            <UserItem />
+            {visitguest &&
+              visitguest.map(item => {
+                return (
+                  <UserItem
+                    key={item.id}
+                    item={item}
+                    type={1}
+                    onSetIntent={this.onSetIntent}
+                  />
+                );
+              })}
+            <AtLoadMore status={"noMore"} />
           </ScrollView>
         </AtTabsPane>
       </AtTabs>

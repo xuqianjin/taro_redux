@@ -18,6 +18,8 @@ import BaseView from "../../components/BaseView";
 import ImageView from "../../components/ImageView";
 import ShareDialog from "../../components/ShareDialog";
 
+import ArticleItem from "../article/ArticleItem";
+
 import { gender, careerKind } from "../../components/Constant";
 
 import { getUserCarte } from "../../reducers/userReducer";
@@ -76,7 +78,7 @@ export default class extends Component {
   };
   render() {
     const { showshare } = this.state;
-    const { usercarte } = this.props.userReducer;
+    const { usercarte, usercartedesc } = this.props.userReducer;
     let condition = false;
     if (usercarte) {
     } else {
@@ -138,6 +140,22 @@ export default class extends Component {
         <View className="paneltitle bg_white">个人简介</View>
         <HeightView height={1} color="#d6e4ef" />
         <View className="userdesc bg_white">{usercarte.desc}</View>
+
+        <HeightView height={20} color="transparent" />
+        <View className="paneltitle bg_white">名片文章</View>
+        <HeightView height={1} color="#d6e4ef" />
+        <View>
+          {usercartedesc.articles &&
+            usercartedesc.articles.map((item, index) => {
+              return (
+                <ArticleItem
+                  key={item.id}
+                  item={item}
+                  line={index < usercartedesc.articles.length - 1}
+                />
+              );
+            })}
+        </View>
 
         <HeightView height={100} color="transparent" />
         <ShareDialog isOpened={showshare} onClose={this.handleShareClose} />

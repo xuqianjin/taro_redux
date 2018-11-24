@@ -49,13 +49,13 @@ export default class extends Component {
       Taro.showLoading({title: '上传图片中...', mask: true})
       const {tempFilePaths} = res
       var config = {
-        aliyunServerURL: `http://${osstoken.bucket}.${osstoken.region}.aliyuncs.com`,
+        aliyunServerURL: CDN_URL,
         accessid: osstoken.credentials.AccessKeyId,
         accesskey: osstoken.credentials.AccessKeySecret,
         Expiration: osstoken.credentials.Expiration,
         ststoken: osstoken.credentials.SecurityToken
       }
-
+      console.log(config);
       var promissarray = []
       tempFilePaths.map(filepath => {
         const filename = this.getfilename(filepath)
@@ -77,6 +77,8 @@ export default class extends Component {
           this.props.onUpload && this.props.onUpload(success)
         }
       }).catch(err => {
+        Taro.hideLoading()
+        Taro.atMessage({'message': `图片上传失败${err.errMsg}`, 'type': 'error'})
         console.log(err)
       })
     }).catch(err => {

@@ -32,7 +32,9 @@ class App extends Component {
       "pages/webview/index",
       "pages/message/index",
       "pages/vip/index",
-      "pages/chat/index"
+      "pages/chat/index",
+      "pages/qrcode/index",
+      "pages/viewlog/index"
     ],
     window: {
       backgroundTextStyle: "dark",

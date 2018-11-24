@@ -8,6 +8,7 @@ const API_GET_IM_TOKEN = API_HOST + "/c/im/token";
 const API_GET_STATISTIC = API_HOST + "/c/statistic";
 const API_GET_REGION = API_HOST + "/c/regions";
 const API_GET_TAGS = API_HOST + "/c/tags";
+const API_GET_VIPKINDS = API_HOST + "/c/vipKinds";
 
 export const getRegion = () => (dispatch, getState) => {
   return dispatch({
@@ -54,10 +55,17 @@ export const getStatistic = () => (dispatch, getState) => {
   });
 };
 
-export const getTags = (params) => (dispatch, getState) => {
+export const getTags = params => (dispatch, getState) => {
   return dispatch({
     type: API_GET_TAGS,
-    payload: request.get(API_GET_TAGS,{params})
+    payload: request.get(API_GET_TAGS, { params })
+  });
+};
+
+export const getVipKinds = () => (dispatch, getState) => {
+  return dispatch({
+    type: API_GET_VIPKINDS,
+    payload: request.get(API_GET_VIPKINDS)
   });
 };
 
@@ -65,7 +73,8 @@ const init_state = {
   deviceinfo: "",
   osstoken: "",
   statistic: "",
-  regions: ""
+  regions: "",
+  vipkinds: ""
 };
 
 export default function reducer(state = init_state, action) {
@@ -94,6 +103,11 @@ export default function reducer(state = init_state, action) {
       return {
         ...state,
         regions: action.payload
+      };
+    case `${API_GET_VIPKINDS}_FULFILLED`:
+      return {
+        ...state,
+        vipkinds: action.payload
       };
     default:
       return state;

@@ -10,6 +10,7 @@ const API_POST_WXQRCODE = API_HOST + "/c/wxlite/qr";
 const API_POST_MAGICMESSAGE = API_HOST + "/c/wxlite/magicMessageHook";
 
 //user
+const API_GET_USER_INFO = API_HOST + "/c/user";
 const API_PUT_USER_CARTE = API_HOST + "/c/carte";
 const API_GET_USER_CARTE = API_HOST + "/c/carte/{id}";
 const API_GET_USER_CARTE_DEC = API_HOST + "/c/carte/{id}/decorate";
@@ -17,7 +18,7 @@ const API_GET_USER_CARTE_DEC = API_HOST + "/c/carte/{id}/decorate";
 const API_PUT_USER_CARTE_COLLECT = API_HOST + "/c/carte/{id}/collect";
 const API_DEL_USER_CARTE_COLLECT = API_HOST + "/c/carte/{id}/uncollect";
 
-const API_POST_CHARGE = API_HOST + "/c/charge";
+const API_POST_CHARGE = API_HOST + "/c/charge/vip";
 
 export const getDebugToken = operateId => (dispatch, getState) => {
   return dispatch({
@@ -112,6 +113,16 @@ export const getUserCarte = operateId => (dispatch, getState) => {
     })
   });
 };
+export const getUserInfo = () => (dispatch, getState) => {
+  return dispatch({
+    type: API_GET_USER_INFO,
+    payload: request.get(API_GET_USER_INFO, {
+      header: {
+        Authorization: getState().userReducer.token
+      }
+    })
+  });
+};
 
 export const putUserCarte = data => (dispatch, getState) => {
   return dispatch({
@@ -176,7 +187,9 @@ export const postCharge = data => (dispatch, getState) => {
 const init_state = {
   token: "",
   userinfo: "",
-  usercarte: ""
+  userinfodetail: "",
+  usercarte: "",
+  usercartedesc: ""
 };
 
 export default function reducer(state = init_state, action) {
@@ -192,11 +205,21 @@ export default function reducer(state = init_state, action) {
         ...state,
         usercarte: action.payload
       };
+    case `${API_GET_USER_CARTE_DEC}_FULFILLED`:
+      return {
+        ...state,
+        usercartedesc: action.payload
+      };
     case `${API_POST_WXLOGIN}_FULFILLED`:
       return {
         ...state,
         token: action.payload.token,
         userinfo: action.payload
+      };
+    case `${API_GET_USER_INFO}_FULFILLED`:
+      return {
+        ...state,
+        userinfodetail: action.payload
       };
     default:
       return state;

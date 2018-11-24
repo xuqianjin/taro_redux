@@ -4,8 +4,11 @@ import request from "./request";
 const API_GET_VISIT_GUEST = API_HOST + "/c/visits/guest";
 const API_GET_VISIT_INTENT = API_HOST + "/c/visits/intent";
 const API_PUT_VISIT = API_HOST + "/c/visit/{id}";
-const API_GET_VISIT_LOG = API_HOST + "/c/visit/{visitorId}/viewLogs";
-const API_GET_MESSAGEBOXES = API_HOST + "/c/messageBoxes";
+const API_GET_VISIT_LOG = API_HOST + "/c/visit/{id}/viewLogs";
+
+const API_GET_VIEW_LOG = API_HOST + "/c/viewLogs";
+const API_POST_VIEW_LOG = API_HOST + "/c/viewLogs";
+const API_PUT_VIEW_LOG_TIME = API_HOST + "/c/viewLog/{id}/duration";
 
 export const getVisitGuest = () => (dispatch, getState) => {
   return dispatch({
@@ -27,37 +30,48 @@ export const getVisitIntent = () => (dispatch, getState) => {
     })
   });
 };
-export const putVisit = (oprateId, data) => (dispatch, getState) => {
+export const putVisit = (operateId, data) => (dispatch, getState) => {
   return dispatch({
     type: API_PUT_VISIT,
     payload: request.put(API_PUT_VISIT, {
       header: {
         Authorization: getState().userReducer.token
       },
-      oprateId,
+      operateId,
       data
     })
   });
 };
 
-export const getVisitLog = oprateId => (dispatch, getState) => {
+export const getVisitLog = operateId => (dispatch, getState) => {
   return dispatch({
     type: API_GET_VISIT_LOG,
     payload: request.get(API_GET_VISIT_LOG, {
       header: {
         Authorization: getState().userReducer.token
       },
-      oprateId
+      operateId
     })
   });
 };
-export const getMessageBoxes = oprateId => (dispatch, getState) => {
+export const getViewlogs = () => (dispatch, getState) => {
   return dispatch({
-    type: API_GET_MESSAGEBOXES,
-    payload: request.get(API_GET_MESSAGEBOXES, {
+    type: API_GET_VIEW_LOG,
+    payload: request.get(API_GET_VIEW_LOG, {
       header: {
         Authorization: getState().userReducer.token
       }
+    })
+  });
+};
+export const postViewlogs = data => (dispatch, getState) => {
+  return dispatch({
+    type: API_POST_VIEW_LOG,
+    payload: request.post(API_POST_VIEW_LOG, {
+      header: {
+        Authorization: getState().userReducer.token
+      },
+      data
     })
   });
 };
@@ -65,7 +79,8 @@ export const getMessageBoxes = oprateId => (dispatch, getState) => {
 const init_state = {
   visitguest: "",
   visitintent: "",
-  visitlog: ""
+  visitlog: "",
+  viewlogs: ""
 };
 
 export default function reducer(state = init_state, action) {
@@ -84,6 +99,11 @@ export default function reducer(state = init_state, action) {
       return {
         ...state,
         visitlog: action.payload
+      };
+    case `${API_GET_VIEW_LOG}_FULFILLED`:
+      return {
+        ...state,
+        viewlogs: action.payload
       };
     default:
       return state;

@@ -1,7 +1,7 @@
 import Taro, { Component } from "@tarojs/taro";
 import { View, Button, Text, Input } from "@tarojs/components";
 
-import { AtListItem } from "taro-ui";
+import { AtListItem, AtCurtain, AtButton } from "taro-ui";
 
 import BaseView from "../components/BaseView";
 import HeightView from "../components/HeightView";
@@ -56,6 +56,18 @@ export default class extends Component {
       // }
     ];
   };
+  handleTopClick = value => {
+    switch (value) {
+      case 1:
+        break;
+      case 2:
+        Taro.navigateTo({ url: "/pages/viewlog/index" });
+        break;
+      case 3:
+        break;
+      default:
+    }
+  };
   handleListClick = item => {
     Taro.navigateTo({ url: item.tourl });
   };
@@ -63,8 +75,8 @@ export default class extends Component {
     this.props.onShare && this.props.onShare();
   };
   handleJoin = () => {
-    const { onpostWxMagicMessage } = this.props;
-    onpostWxMagicMessage({ hook: "joinGroup" });
+    const { onJoin } = this.props;
+    onJoin();
   };
   render() {
     let condition = false;
@@ -80,15 +92,24 @@ export default class extends Component {
     const header = (
       <View className="home_header_container bg_white shadow">
         <View className="at-row header">
-          <View className="at-col text_center">
+          <View
+            className="at-col text_center opacity"
+            onClick={this.handleTopClick.bind(this, 1)}
+          >
             <View className="number">0</View>
             <View className="text_black_light">今日提醒</View>
           </View>
-          <View className="at-col text_center">
+          <View
+            className="at-col text_center opacity"
+            onClick={this.handleTopClick.bind(this, 2)}
+          >
             <View className="number">2</View>
             <View className="text_black_light">今日访客</View>
           </View>
-          <View className="at-col text_center">
+          <View
+            className="at-col text_center opacity"
+            onClick={this.handleTopClick.bind(this, 3)}
+          >
             <View className="number">1</View>
             <View className="text_black_light">今日消息</View>
           </View>
@@ -131,8 +152,6 @@ export default class extends Component {
         </View>
       );
     });
-    const articleCard = <View className="bg_white">111</View>;
-    const postCard = <View className="bg_white">111</View>;
 
     return (
       <BaseView condition={condition}>

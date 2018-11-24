@@ -51,7 +51,7 @@ const config = {
     APP_COLOR_BLACK: '"#000"',
     APP_COLOR_LIGHT_BLACK: '"#aaa"',
     NIM_APP_KEY:'"e9382d44d2b92e4d448c1e0ff716ab31"',
-    CDN_URL: '"http://djpub.oss-cn-shenzhen.aliyuncs.com/"'
+    CDN_URL: '"https://djcdn.baicaiyun.com/"'
   },
   weapp: {
 

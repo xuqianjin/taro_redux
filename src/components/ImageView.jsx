@@ -1,27 +1,16 @@
-import Taro, {Component} from '@tarojs/taro'
-import {Image} from '@tarojs/components'
-const nopic = require('../static/image/noPicture.png')
-export const changeSrc = (src) => {
-  if (!src) {
-    return nopic
-  }
-  if (src && typeof src === 'string') {
-    if (src.indexOf('i/') === 0) {
-      src = CDN_URL + src;
-    }
-  }
-  return src
-};
+import Taro, { Component } from "@tarojs/taro";
+import { Image } from "@tarojs/components";
+import { changeSrc } from "../lib/utils";
+
 
 export default class extends Component {
-
-  static externalClasses = ['baseclassname']
+  static externalClasses = ["baseclassname"];
 
   constructor(props) {
     super(props);
     this.state = {
       src: changeSrc(props.src)
-    }
+    };
   }
 
   componentWillReceiveProps(nextProps) {
@@ -36,19 +25,28 @@ export default class extends Component {
     // })
   };
   onError = () => {
-    this.setState({src: nopic})
+    this.setState({ src: nopic });
   };
 
   render() {
-    const {src} = this.state
-    let {basestyle, mode} = this.props
+    const { src } = this.state;
+    let { basestyle, mode } = this.props;
 
     //  小程序bug兼容 https://nervjs.github.io/taro/docs/component-style.html
-    var className = 'baseclassname'
-    if (process.env.TARO_ENV !== 'weapp') {
-      className = this.props.baseclassname
+    var className = "baseclassname";
+    if (process.env.TARO_ENV !== "weapp") {
+      className = this.props.baseclassname;
     }
 
-    return <Image src={src} onLoad={this.onLoad} onError={this.onError} className={className} style={basestyle} mode={mode}></Image>
+    return (
+      <Image
+        src={src}
+        onLoad={this.onLoad}
+        onError={this.onError}
+        className={className}
+        style={basestyle}
+        mode={mode}
+      />
+    );
   }
 }

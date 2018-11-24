@@ -10,7 +10,7 @@ export default class extends Component {
   render() {
     return <View>
       <View>fsfs</View>
-      <WebView src='https://mp.weixin.qq.com/s/pXErki3wrQXlnpqlhawxJg'></WebView>
+      <WebView src='http://djpub.oss-cn-shenzhen.aliyuncs.com/a/8.html'></WebView>
     </View>
   }
 }

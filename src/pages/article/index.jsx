@@ -145,6 +145,7 @@ export default class extends Component {
           current={this.state.current}
           tabList={tabList}
           onClick={this.handleChangeTab.bind(this)}
+          swipeable={false}
         >
           <AtTabsPane current={this.state.current} index={0}>
             <View className="at-row bg_white fixtag">

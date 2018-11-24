@@ -3,6 +3,7 @@ import { connect } from "@tarojs/redux";
 import { bindActionCreators } from "redux";
 import { View, Text, ScrollView } from "@tarojs/components";
 import { AtList, AtListItem, AtIcon } from "taro-ui";
+import moment from "moment";
 
 import ImageView from "../components/ImageView";
 import HeightView from "../components/HeightView";
@@ -22,6 +23,8 @@ export default class extends Component {
   componentDidUpdate() {}
   componentWillUnmount() {}
   getUserList = () => {
+    const { usercarte, userinfodetail } = this.props;
+    const { vipEndAt } = userinfodetail || {};
     return [
       {
         icon: "message",
@@ -34,7 +37,9 @@ export default class extends Component {
       {
         icon: "sketch",
         title: "VIP会员",
-        extra: "1天1块钱",
+        extra: vipEndAt
+          ? `有效期到${moment(vipEndAt).format("YYYY-MM-DD")}`
+          : "1天8毛钱",
         onClick: () => {
           Taro.navigateTo({ url: "/pages/vip/index" });
         }
@@ -58,7 +63,10 @@ export default class extends Component {
     return [
       {
         icon: "phone",
-        title: "联系我们"
+        title: "联系我们",
+        onClick: () => {
+          this.props.onJoin && this.props.onJoin();
+        }
       }
     ];
   };
@@ -78,7 +86,7 @@ export default class extends Component {
     }
   };
   render() {
-    const { usercarte } = this.props;
+    const { usercarte, userinfodetail } = this.props;
     const userCard = (
       <View
         onClick={this.handleUserData}
