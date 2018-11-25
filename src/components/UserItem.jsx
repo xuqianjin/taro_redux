@@ -16,8 +16,10 @@ export default class extends Component {
   constructor(props) {
     super(props);
   }
-  handleClick = () => {
-    Taro.navigateTo({ url: "/pages/chat/index" });
+  handleItemClick = e => {
+    const { item } = this.props;
+    this.props.onItemClick(item);
+    e.stopPropagation();
   };
   handleSetIntent = e => {
     const { item } = this.props;
@@ -32,7 +34,7 @@ export default class extends Component {
     return (
       <View
         className="at-row bg_white opacity at-row__align--center"
-        onClick={this.handleClick}
+        onClick={this.handleItemClick}
       >
         <View style={imgstyle} className="at-col at-col-1 at-col--auto">
           <AtAvatar

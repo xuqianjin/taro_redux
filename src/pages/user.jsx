@@ -23,7 +23,7 @@ export default class extends Component {
   componentDidUpdate() {}
   componentWillUnmount() {}
   getUserList = () => {
-    const { usercarte, userinfodetail } = this.props;
+    const { userinfodetail } = this.props;
     const { vipEndAt } = userinfodetail || {};
     return [
       {
@@ -86,20 +86,20 @@ export default class extends Component {
     }
   };
   render() {
-    const { usercarte, userinfodetail } = this.props;
+    const { userinfodetail } = this.props;
     const userCard = (
       <View
         onClick={this.handleUserData}
         className="at-row bg_white home_card_container shadow opacity"
       >
         <View className="at-col at-col-1 at-col--auto">
-          <ImageView baseclassname="icon" src={usercarte.avatarUrl} />
+          <ImageView baseclassname="icon" src={userinfodetail.avatarUrl} />
         </View>
         <View className="at-col">
-          <View className="title">{usercarte.name}</View>
-          {usercarte.office && usercarte.corp && (
+          <View className="title">{userinfodetail.nickName}</View>
+          {userinfodetail.office && userinfodetail.corp && (
             <View className="desc text_black_light">
-              {usercarte.office}| {usercarte.corp}
+              {userinfodetail.office}| {userinfodetail.corp}
             </View>
           )}
         </View>

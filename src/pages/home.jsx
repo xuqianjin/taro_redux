@@ -8,15 +8,14 @@ import HeightView from "../components/HeightView";
 import ImageView from "../components/ImageView";
 
 import "./style.scss";
-const userheader =
-  "https://img12.360buyimg.com/jdphoto/s72x72_jfs/t6160/14/2008729947/2754/7d512a86/595c3aeeNa89ddf71.png";
 
 export default class extends Component {
   static options = {
     addGlobalClass: true
   };
   static defaultProps = {
-    usercarte: {}
+    userinfo: {},
+    statistic: {}
   };
 
   constructor(props) {
@@ -30,22 +29,22 @@ export default class extends Component {
   componentWillUnmount() {}
 
   getListData = () => {
-    const { usercarte } = this.props;
+    const { userinfo, statistic } = this.props;
     return [
       {
         title: "我的名片",
         icon: require("../static/icon/usercard.png"),
         desc: "个人展示页面 让好友认识你",
-        left: `访问 ${usercarte.numView}`,
-        right: `收藏 ${usercarte.numCollect}`,
-        tourl: "/pages/userinfo/index"
+        left: `访问 ${statistic.numCartesViewed}`,
+        right: `收藏 ${statistic.numCartesCollected}`,
+        tourl: `/pages/userinfo/index?userId=${userinfo.userId}`
       },
       {
         title: "获客文章",
         icon: require("../static/icon/article.png"),
         desc: "最新最全行业观点",
-        left: "转发 0",
-        right: "阅读 0",
+        left: `转发 ${statistic.numArticlesForwarded}`,
+        right: `阅读 ${statistic.numArticlesViewed}`,
         tourl: "/pages/article/index"
       }
       // , {
@@ -59,7 +58,6 @@ export default class extends Component {
   handleTopClick = value => {
     switch (value) {
       case 1:
-        break;
       case 2:
         Taro.navigateTo({ url: "/pages/viewlog/index" });
         break;
@@ -79,6 +77,7 @@ export default class extends Component {
     onJoin();
   };
   render() {
+    const { userinfo, statistic } = this.props;
     let condition = false;
     if (true) {
     } else {
@@ -96,21 +95,21 @@ export default class extends Component {
             className="at-col text_center opacity"
             onClick={this.handleTopClick.bind(this, 1)}
           >
-            <View className="number">0</View>
-            <View className="text_black_light">今日提醒</View>
+            <View className="number">{statistic.numViewed}</View>
+            <View className="text_black_light">历史访问</View>
           </View>
           <View
             className="at-col text_center opacity"
             onClick={this.handleTopClick.bind(this, 2)}
           >
-            <View className="number">2</View>
+            <View className="number">{statistic.numViewedToday}</View>
             <View className="text_black_light">今日访客</View>
           </View>
           <View
             className="at-col text_center opacity"
             onClick={this.handleTopClick.bind(this, 3)}
           >
-            <View className="number">1</View>
+            <View className="number">{statistic.numMsgsToday}</View>
             <View className="text_black_light">今日消息</View>
           </View>
         </View>

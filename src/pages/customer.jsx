@@ -4,7 +4,7 @@ import { bindActionCreators } from "redux";
 import { View, Button, Text, Input, ScrollView } from "@tarojs/components";
 import { AtTabBar, AtTabs, AtTabsPane, AtLoadMore } from "taro-ui";
 import UserItem from "../components/UserItem";
-import { putVisit } from "../reducers/customerReducer";
+import { putVisit, postFriendShip } from "../reducers/customerReducer";
 
 const mapStateToProps = state => {
   return {
@@ -14,7 +14,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
-      putVisit
+      putVisit,
+      postFriendShip
     },
     dispatch
   );
@@ -45,6 +46,27 @@ export default class extends Component {
   handleChangeTab(value) {
     this.setState({ current: value });
   }
+  onItemClick = item => {
+    const { Visitor, visitorId } = item;
+    Taro.showLoading();
+    this.props
+      .postFriendShip({ receiverId: visitorId })
+      .then(res => {
+        Taro.hideLoading();
+        Taro.navigateTo({
+          url: `/pages/chat/index?to=${visitorId}&avatarUrl=${
+            Visitor.avatarUrl
+          }&nickName=${Visitor.nickName}`
+        });
+      })
+      .catch(res => {
+        Taro.hideLoading();
+        Taro.atMessage({
+          message: res.message,
+          type: "error"
+        });
+      });
+  };
   onSetIntent = item => {
     const { id } = item;
     const postdata = {
@@ -85,6 +107,7 @@ export default class extends Component {
                   <UserItem
                     key={item.id}
                     item={item}
+                    onItemClick={this.onItemClick}
                     onSetIntent={this.onSetIntent}
                   />
                 );
@@ -101,6 +124,7 @@ export default class extends Component {
                     key={item.id}
                     item={item}
                     type={1}
+                    onItemClick={this.onItemClick}
                     onSetIntent={this.onSetIntent}
                   />
                 );

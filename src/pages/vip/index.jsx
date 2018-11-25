@@ -55,6 +55,7 @@ export default class extends Component {
         return Taro.requestPayment(value);
       })
       .then(res => {
+        Taro.eventCenter.trigger("getUserInfoDetail");
         Taro.showToast({ title: "购买成功" });
       });
   };

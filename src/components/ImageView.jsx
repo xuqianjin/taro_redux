@@ -2,20 +2,19 @@ import Taro, { Component } from "@tarojs/taro";
 import { Image } from "@tarojs/components";
 import { changeSrc } from "../lib/utils";
 
-
 export default class extends Component {
   static externalClasses = ["baseclassname"];
 
   constructor(props) {
     super(props);
     this.state = {
-      src: changeSrc(props.src)
+      src: changeSrc(this.props.src)
     };
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.src !== this.props.src) {
-      this.state.src = changeSrc(nextProps.src);
+      this.setState({ src: changeSrc(nextProps.src) });
     }
   }
 
@@ -30,7 +29,7 @@ export default class extends Component {
 
   render() {
     const { src } = this.state;
-    let { basestyle, mode } = this.props;
+    const { basestyle, mode } = this.props;
 
     //  小程序bug兼容 https://nervjs.github.io/taro/docs/component-style.html
     var className = "baseclassname";

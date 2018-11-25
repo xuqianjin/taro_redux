@@ -113,7 +113,7 @@ export const getUserCarte = operateId => (dispatch, getState) => {
     })
   });
 };
-export const getUserInfo = () => (dispatch, getState) => {
+export const getUserInfoDetail = () => (dispatch, getState) => {
   return dispatch({
     type: API_GET_USER_INFO,
     payload: request.get(API_GET_USER_INFO, {

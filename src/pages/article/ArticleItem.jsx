@@ -41,10 +41,10 @@ export default class extends Component {
     const color = APP_COLOR_GRAY
     return <View className='bg_white opacity' onClick={this.handleClick}>
       <HeightView height={20} color='transparent'></HeightView>
-      <View className='at-row articleitem '>
+      <View className='at-row articleitem'>
         <View className='at-col at-col--wrap'>
           <View className='title'>{item.title}</View>
-          <View className='at-row text_black_light desc'>
+          <View className='at-row text_black_light articledesc'>
             <View className='at-col'>阅读 {item.numView}</View>
             <View className='at-col'>收藏 {item.numCollect}</View>
             <View className='at-col'>转发 {item.numForward}</View>

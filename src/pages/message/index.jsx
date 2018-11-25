@@ -3,21 +3,27 @@ import { connect } from "@tarojs/redux";
 import { bindActionCreators } from "redux";
 
 import { View } from "@tarojs/components";
+import moment from "moment";
 
 import { AtList, AtListItem, AtBadge, AtLoadMore } from "taro-ui";
 
 import BaseView from "../../components/BaseView";
+import { changeSrc } from "../../lib/utils";
 
-import moment from "moment";
+import { getVisitChart } from "../../reducers/customerReducer";
 
 import "./style.scss";
 
 const mapStateToProps = state => {
-  return { userReducer: state.userReducer, commonReducer: state.commonReducer };
+  return {
+    userReducer: state.userReducer,
+    commonReducer: state.commonReducer,
+    customerReducer: state.customerReducer
+  };
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({}, dispatch);
+  return bindActionCreators({ getVisitChart }, dispatch);
 };
 
 @connect(
@@ -34,15 +40,39 @@ export default class extends Component {
   };
   constructor(props) {
     super(props);
+    this.state = { users: [] };
   }
-  componentWillMount() {}
+  componentWillMount() {
+    this.props.getVisitChart();
+    const { sessions } = this.props.commonReducer;
+    console.log(sessions);
+    const ids = sessions.map(session => {
+      return session.to;
+    });
+    wx.nim.getUsers({
+      accounts: ids,
+      done: (err, res) => {
+        let users = [];
+        for (var i in sessions) {
+          let user = {};
+          Object.assign(user, sessions[i], res[i]);
+          users.push(user);
+        }
+        this.setState({ users });
+      }
+    });
+  }
   handleClick = item => {
-    Taro.navigateTo({ url: "/pages/chat/index" });
+    const { avatar, to, nick } = item;
+    Taro.navigateTo({
+      url: `/pages/chat/index?to=${to}&avatarUrl=${avatar}&nickName=${nick}`
+    });
   };
   render() {
-    const { sessions } = this.props.commonReducer;
+    const { users } = this.state;
+    const { visitchart } = this.props.customerReducer;
     let condition = false;
-    if (sessions) {
+    if (users) {
     } else {
       condition = {
         state: "viewLoading",
@@ -52,10 +82,9 @@ export default class extends Component {
     return (
       <BaseView condition={condition}>
         <AtList>
-          {sessions &&
-            sessions.map(item => {
-              const { lastMsg, unread, updateTime } = item;
-              const { fromNick, latestMessage, text } = lastMsg;
+          {users &&
+            users.map(item => {
+              const { lastMsg, unread, updateTime, nick, avatar } = item;
               return (
                 <View
                   key={item.id}
@@ -64,12 +93,10 @@ export default class extends Component {
                 >
                   <AtBadge value={unread || ""} className="badge" />
                   <AtListItem
-                    title={fromNick || "未知昵称"}
-                    note={text}
+                    title={nick || "未知昵称"}
                     extraText={moment(updateTime).calendar()}
-                    thumb={
-                      "https://img12.360buyimg.com/jdphoto/s72x72_jfs/t6160/14/2008729947/2754/7d512a86/595c3aeeNa89ddf71.png"
-                    }
+                    note={lastMsg.text}
+                    thumb={avatar || require("../../static/icon/avatar.png")}
                   />
                 </View>
               );

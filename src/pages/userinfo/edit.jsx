@@ -20,6 +20,7 @@ import { gender, careerKind } from "../../components/Constant";
 
 import {
   putUserCarte,
+  getUserCarte,
   putWxUserPhone,
   postWxFormId,
   postWxQrCode
@@ -36,6 +37,7 @@ const mapDispatchToProps = dispatch => {
     {
       putWxUserPhone,
       putUserCarte,
+      getUserCarte,
       postWxFormId,
       postWxQrCode
     },
@@ -93,7 +95,9 @@ export default class extends Component {
   config = {
     navigationBarTitleText: "编辑名片"
   };
-  componentWillMount() {}
+  componentWillMount() {
+    Taro.eventCenter.trigger("getUserCarte");
+  }
   componentDidMount() {
     const { usercarte } = this.props.userReducer;
     const { listdata } = this.state;
@@ -126,7 +130,7 @@ export default class extends Component {
   onSubmit = value => {
     const { detail } = value;
     this.props.postWxFormId(detail.formId);
-    this.props.postWxQrCode('pages/index')
+    this.props.postWxQrCode("pages/index");
     const { listdata, desc } = this.state;
     let postdata = {};
     for (var item of listdata) {

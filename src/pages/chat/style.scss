@@ -30,7 +30,7 @@
     border-top: 16px solid transparent;
     position: absolute;
     top: 25px;
-    left: -16px;
+    left: -13px;
     z-index: 2;
   }
 }
@@ -52,13 +52,11 @@
     border-top: 16px solid transparent;
     position: absolute;
     top: 25px;
-    right: -16px;
+    right: -13px;
     z-index: 999;
   }
 }
 
-.fix {
-  position: fixed;
-  bottom: 0px;
+.bottomview {
   width: 100%;
 }

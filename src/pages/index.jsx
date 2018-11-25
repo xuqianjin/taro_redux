@@ -36,8 +36,7 @@ import {
   postWxMagicMessage,
   getDebugToken,
   getUserCarte,
-  getUserInfo,
-  getUserCarteDesc
+  getUserInfoDetail
 } from "../reducers/userReducer";
 import {
   getVisitGuest,
@@ -66,8 +65,7 @@ const mapDispatchToProps = dispatch => {
       getDeviceInfo,
       getStatistic,
       getUserCarte,
-      getUserInfo,
-      getUserCarteDesc,
+      getUserInfoDetail,
       getVisitGuest,
       getVisitIntent,
       getVisitLog,
@@ -99,9 +97,10 @@ class Index extends Component {
   componentWillMount() {
     Taro.eventCenter.on("getUserCarte", () => {
       const { userinfo } = this.props.userReducer;
-      this.props.getUserInfo();
       this.props.getUserCarte(userinfo.userId);
-      this.props.getUserCarteDesc(userinfo.userId);
+    });
+    Taro.eventCenter.on("getUserInfoDetail", () => {
+      this.props.getUserInfoDetail();
     });
     Taro.eventCenter.on("postViewlogs", data => {
       this.props.postViewlogs(data);
@@ -114,20 +113,13 @@ class Index extends Component {
 
   componentDidMount() {
     this.props.getDeviceInfo();
-    // this.props.getDebugToken(1).then(res => {
-    //   this.props.getUserCarte(1)
-    //   this.props.getStatistic()
-    //   this.props.getVisitGuest()
-    //   this.props.getVisitIntent()
-    // })
     Taro.login()
       .then(res => {
         return this.props.postWxLogin({ code: res.code });
       })
       .then(res => {
-        this.props.getVisitLog(29);
-        Taro.eventCenter.trigger("getUserCarte");
         Taro.eventCenter.trigger("getCustomer");
+        Taro.eventCenter.trigger("getUserInfoDetail");
         this.props.getStatistic();
 
         this.props.getImToken().then(({ value }) => {
@@ -141,6 +133,11 @@ class Index extends Component {
       }
     });
   }
+
+  goPage = () => {
+    const params = this.$router.params;
+    const { path, id } = params || {};
+  };
   initNim = imtoken => {
     const { userinfo } = this.props.userReducer;
     const { nickName, avatarUrl, gender, phonenum, userId } = userinfo;
@@ -149,46 +146,35 @@ class Index extends Component {
       appKey: NIM_APP_KEY,
       account: userId,
       token: imtoken,
-      autoMarkRead: false,
+      autoMarkRead: true,
       onconnect: () => {
         wx.nim.updateMyInfo({
           nick: nickName,
           avatar: avatarUrl,
           tel: phonenum
         });
-        wx.nim.getHistoryMsgs({
-          scene: "p2p",
-          to: 27,
-          done: res => {
-            console.log(res);
-          }
-        });
         wx.nim.getLocalSessions({
-          done: res => {
+          done: (err, res) => {
             console.log("getLocalSessions", res);
           }
         });
-        // wx.nim.sendText({ scene: "p2p", to: 27, text: "hello" });
       },
       onsessions: res => {
+        console.log("ssss", res);
         this.props.setState({ sessions: res });
       },
       onupdatesession: res => {
-        console.log(res);
+        const { sessions } = this.props.commonReducer;
         Taro.atMessage({
           message: `${res.lastMsg.fromNick}给你发来消息`,
           type: "success"
         });
       },
-      onofflinemsgs: res => {
-        console.log("offline", res);
-      },
       onmsg: res => {
         console.log(res);
       },
       onsysmsgunread: res => {
-        console.log("sssss");
-        console.log(res);
+        console.log("onsysmsgunread", res);
       },
       onupdatesysmsgunread: res => {
         console.log(res);
@@ -199,7 +185,7 @@ class Index extends Component {
     });
   };
   onShareAppMessage() {
-    return { title: "sfsf" };
+    return { title: "多装获客" };
   }
   componentDidShow() {}
 
@@ -251,14 +237,14 @@ class Index extends Component {
     ];
   };
   render() {
-    const { deviceinfo } = this.props.commonReducer;
-    const { usercarte, userinfodetail } = this.props.userReducer;
+    const { deviceinfo, statistic } = this.props.commonReducer;
+    const { usercarte, userinfo, userinfodetail } = this.props.userReducer;
     const { visitguest, visitintent } = this.props.customerReducer;
     const { current, showmodal, showshare, showcurtain } = this.state;
     const menuData = this.getMenuData();
 
     let condition = false;
-    if (deviceinfo && usercarte && userinfodetail) {
+    if (deviceinfo && userinfodetail) {
     } else {
       condition = {
         state: "viewLoading",
@@ -289,8 +275,9 @@ class Index extends Component {
         <AtTabs current={current}>
           <AtTabsPane current={current} index={0}>
             <Home
+              statistic={statistic}
+              userinfo={userinfo}
               onShare={this.handleShare}
-              usercarte={usercarte}
               onJoin={this.handleJoin}
             />
           </AtTabsPane>
@@ -304,7 +291,7 @@ class Index extends Component {
           <AtTabsPane current={current} index={2}>
             <User
               onShare={this.handleShare}
-              usercarte={usercarte}
+              userinfo={userinfo}
               onJoin={this.handleJoin}
               userinfodetail={userinfodetail}
             />

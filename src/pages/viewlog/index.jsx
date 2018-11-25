@@ -40,6 +40,14 @@ export default class extends Component {
   componentWillMount() {
     this.props.getViewlogs();
   }
+  handleClick = item => {
+    const { Visitor, visitorId } = item;
+    Taro.navigateTo({
+      url: `/pages/chat/index?to=${visitorId}&avatarUrl=${
+        Visitor.avatarUrl
+      }&nickName=${Visitor.nickName}`
+    });
+  };
   render() {
     const { viewlogs } = this.props.customerReducer;
     let condition = false;
@@ -73,7 +81,7 @@ export default class extends Component {
               <View
                 key={viewlog.id}
                 className="at-row bg_white opacity content shadow"
-                onClick={this.handleClick}
+                onClick={this.handleClick.bind(this, viewlog)}
               >
                 <View style={imgstyle} className="at-col at-col-1 at-col--auto">
                   <AtAvatar

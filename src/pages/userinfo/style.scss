@@ -55,9 +55,8 @@
   }
 
   & .desc {
-    margin-left: 20px;
     margin-top: 5px;
-    font-size: 20px;
+    font-size: 25px;
     margin-bottom: 5px;
   }
 }
@@ -106,5 +105,14 @@
 .userdesc {
   font-size: 25px;
   padding: 20px;
+}
+.content-min-height {
   min-height: 100px;
+}
+.fixbottom {
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
+  color: white;
+  padding: 20px;
 }
