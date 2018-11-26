@@ -18,7 +18,7 @@ import User from "./user";
 import ImageView from "../components/ImageView";
 import "moment/locale/zh-cn";
 
-import NimSDK from "../lib/NIM_Web_SDK_weixin_v5.8.0";
+import Nim from "../lib/NIM_Web_NIM_weixin_v5.8.0";
 
 import BaseView from "../components/BaseView";
 
@@ -141,46 +141,51 @@ class Index extends Component {
   initNim = imtoken => {
     const { userinfo } = this.props.userReducer;
     const { nickName, avatarUrl, gender, phonenum, userId } = userinfo;
-    wx.nim = NimSDK.NIM.getInstance({
+    wx.nim = Nim.getInstance({
       debug: false,
       appKey: NIM_APP_KEY,
       account: userId,
       token: imtoken,
-      autoMarkRead: true,
+      db: false,
       onconnect: () => {
         wx.nim.updateMyInfo({
           nick: nickName,
           avatar: avatarUrl,
           tel: phonenum
         });
-        wx.nim.getLocalSessions({
-          done: (err, res) => {
-            console.log("getLocalSessions", res);
-          }
-        });
       },
       onsessions: res => {
-        console.log("ssss", res);
+        console.log("onsessions", res);
         this.props.setState({ sessions: res });
       },
       onupdatesession: res => {
         const { sessions } = this.props.commonReducer;
-        Taro.atMessage({
-          message: `${res.lastMsg.fromNick}给你发来消息`,
-          type: "success"
-        });
+        console.log("onupdatesession", res);
       },
       onmsg: res => {
-        console.log(res);
+        console.log("onmsg", res);
+        Taro.atMessage({
+          message: `${res.fromNick}给你发来消息`,
+          type: "success"
+        });
       },
       onsysmsgunread: res => {
         console.log("onsysmsgunread", res);
       },
       onupdatesysmsgunread: res => {
-        console.log(res);
+        console.log("onupdatesysmsgunread", res);
       },
       onsysmsg: res => {
-        console.log(res);
+        console.log("onsysmsg", res);
+      },
+      onroamingsysmsgs: res => {
+        console.log("onroamingsysmsgs", res);
+      },
+      onofflinemsgs: res => {
+        console.log("onofflinemsgs", res);
+      },
+      onsyncdone: res => {
+        console.log("onsyncdone", res);
       }
     });
   };

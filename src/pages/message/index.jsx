@@ -45,6 +45,9 @@ export default class extends Component {
   componentWillMount() {
     this.props.getVisitChart();
     const { sessions } = this.props.commonReducer;
+    if (!sessions) {
+      return;
+    }
     console.log(sessions);
     const ids = sessions.map(session => {
       return session.to;

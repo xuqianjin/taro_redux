@@ -50,7 +50,7 @@ export default class extends Component {
     wx.nim.getHistoryMsgs({
       scene: "p2p",
       to: params.to,
-      reverse: true,
+      asc: true,
       done: (err, res) => {
         this.setState({
           messages: res.msgs,
