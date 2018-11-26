@@ -6,19 +6,19 @@ import { View, ScrollView } from "@tarojs/components";
 import moment from "moment";
 
 import {
-  AtList,
-  AtListItem,
-  AtBadge,
   AtForm,
   AtButton,
-  AtTextarea,
-  AtInput
+  AtInput,
+  AtCurtain,
+  AtIcon,
+  AtMessage
 } from "taro-ui";
 
 import BaseView from "../../components/BaseView";
 import HeightView from "../../components/HeightView";
 
 import chatItem from "./chatItem";
+import { postWxForcepush } from "../../reducers/userReducer";
 
 import "./style.scss";
 
@@ -31,7 +31,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({}, dispatch);
+  return bindActionCreators({ postWxForcepush }, dispatch);
 };
 
 @connect(
@@ -42,7 +42,12 @@ export default class extends Component {
   static defaultProps = {};
   constructor(props) {
     super(props);
-    this.state = { value: "", messages: [], scrollIntoView: "" };
+    this.state = {
+      value: "",
+      messages: [],
+      scrollIntoView: "",
+      showcurtain: false
+    };
   }
   componentWillMount() {
     const params = this.$router.params;
@@ -80,12 +85,51 @@ export default class extends Component {
   handleChange(value) {
     this.setState({ value });
   }
+  handleCurtainClose = () => {
+    this.setState({ showcurtain: false });
+  };
+  onForcePush = item => {
+    this.setState({ showcurtain: item });
+  };
+  handleClick = value => {
+    const { showcurtain } = this.state;
+    console.log(showcurtain);
+    switch (value) {
+      case 1:
+        const postdata = {
+          receiverId: Number(showcurtain.to),
+          content: showcurtain.text
+        };
+        Taro.showLoading();
+        this.props
+          .postWxForcepush(postdata)
+          .then(res => {
+            Taro.hideLoading();
+            Taro.atMessage({
+              message: "推送成功",
+              type: "success"
+            });
+          })
+          .catch(err => {
+            Taro.atMessage({
+              message: "推送失败" + err.message,
+              type: "error"
+            });
+            Taro.hideLoading();
+          });
+        this.setState({ showcurtain: false });
+        break;
+      case 2:
+        Taro.navigateTo({ url: "/pages/vip/index" });
+        break;
+      default:
+    }
+  };
   render() {
     const { deviceinfo } = this.props.commonReducer;
-    const { userinfo } = this.props.userReducer;
-    const { messages, scrollIntoView } = this.state;
+    const { userinfo, userinfodetail } = this.props.userReducer;
+    const { messages, scrollIntoView, showcurtain } = this.state;
     const params = this.$router.params;
-
     const scrollheight = Taro.pxTransform(
       (deviceinfo.windowHeight * 750) / deviceinfo.windowWidth - 97
     );
@@ -97,6 +141,8 @@ export default class extends Component {
         tipsString: "加载中..."
       };
     }
+    const isvip =
+      new Date(userinfodetail.vipEndAt).getTime() > new Date().getTime();
     return (
       <BaseView condition={condition}>
         <ScrollView
@@ -122,6 +168,7 @@ export default class extends Component {
                   key={idServer}
                   item={item}
                   avatar={isme ? userinfo.avatarUrl : params.avatarUrl}
+                  onForcePush={this.onForcePush}
                 />
               );
             })}
@@ -139,6 +186,34 @@ export default class extends Component {
             placeholder="请输入聊天信息"
           />
         </View>
+        <AtCurtain
+          isOpened={Boolean(showcurtain)}
+          onClose={this.handleCurtainClose}
+        >
+          <View
+            style="padding:20px;border-radius:5px"
+            className="bg_white text_center"
+          >
+            <View>强推为VIP特权</View>
+            <View style="font-size:16px" className="text_black_light">
+              -强推信息,直接触达客户微信列表-
+            </View>
+            <View style="font-size:16px" className="text_black_light">
+              新用户可试用3次
+            </View>
+            <AtIcon value="sketch" color="#f97b43" size={150} />
+            <AtButton type="primary" onClick={this.handleClick.bind(this, 1)}>
+              立即推送
+            </AtButton>
+            <HeightView height={20} color="transparent" />
+            {!isvip && (
+              <AtButton type="primary" onClick={this.handleClick.bind(this, 2)}>
+                开通VIP特权
+              </AtButton>
+            )}
+          </View>
+        </AtCurtain>
+        <AtMessage />
       </BaseView>
     );
   }

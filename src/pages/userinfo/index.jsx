@@ -50,31 +50,52 @@ const mapDispatchToProps = dispatch => {
 export default class extends Component {
   static defaultProps = {};
   config = {
-    navigationBarTitleText: "我的名片"
+    navigationBarTitleText: "查看名片"
   };
   constructor(props) {
     super(props);
     this.state = {
       showshare: false,
-      timebegin: ""
+      timebegin: "",
+      kind: 1,
+      isme: true,
+      pageuserid: ""
     };
   }
   componentWillMount() {
     this.setState({ timebegin: new Date().getTime() });
   }
   componentDidMount() {
+    const { usercarte, usercartedesc, userinfo } = this.props.userReducer;
     const params = this.$router.params;
+    const isme = params.userId == userinfo.userId;
     this.props.getUserCarte(params.userId);
     this.props.getUserCarteDesc(params.userId);
+    this.setState({ isme, pageuserid: params.userId });
   }
+
+  componentWillUnmount() {
+    this.postViewlog();
+  }
+  //上报数据
+  postViewlog = () => {
+    const { timebegin, kind, isme, pageuserid } = this.state;
+    const duration = (new Date().getTime() - timebegin) / 1000;
+    const postdata = {
+      kind,
+      sourceId: Number(pageuserid),
+      duration: parseInt(duration)
+    };
+    !isme && Taro.eventCenter.trigger("postViewlogs", postdata);
+  };
   onShareAppMessage() {
     const { usercarte } = this.props.userReducer;
     var pages = Taro.getCurrentPages(); //获取加载的页面
     var currentPage = pages[pages.length - 1]; //获取当前页面的对象
     var url = currentPage.route; //当前页面url
     return {
-      title: usercarte.name,
-      path: `/pages/index?path=${url}&id=${usercarte.id}`
+      title: usercarte.name + "的名片",
+      path: `/pages/index?path=/${url}&userId=${usercarte.id}`
     };
   }
   getCareerName = value => {
@@ -87,6 +108,7 @@ export default class extends Component {
     Taro.navigateTo({ url: "/pages/userinfo/edit" });
   };
   handleEditMine = () => {
+    this.postViewlog();
     Taro.redirectTo({ url: "/pages/userinfo/edit" });
   };
   handleShareShow = () => {
@@ -97,9 +119,8 @@ export default class extends Component {
   };
   render() {
     const params = this.$router.params;
-    const { showshare } = this.state;
+    const { showshare, isme } = this.state;
     const { usercarte, usercartedesc, userinfo } = this.props.userReducer;
-    const isme = params.userId == userinfo.userId;
     let condition = false;
     if (usercartedesc) {
     } else {

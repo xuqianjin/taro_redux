@@ -23,6 +23,7 @@ import Nim from "../lib/NIM_Web_NIM_weixin_v5.8.0";
 import BaseView from "../components/BaseView";
 
 import request from "../reducers/request";
+import { encodeSearchParams } from "../lib/utils";
 
 import {
   getDeviceInfo,
@@ -84,7 +85,6 @@ const mapDispatchToProps = dispatch => {
 )
 class Index extends Component {
   config = {};
-
   constructor(props) {
     super(props);
     this.state = {
@@ -94,6 +94,19 @@ class Index extends Component {
       showcurtain: false
     };
   }
+  checkNavigateTo = () => {
+    const params = this.$router.params;
+
+    const newobj = JSON.parse(JSON.stringify(params));
+    const { path, id } = newobj;
+    console.log(newobj);
+    if (path) {
+      delete newobj.path;
+      const redirectTourl = `${path}?${encodeSearchParams(newobj)}`;
+      console.log(redirectTourl);
+      Taro.navigateTo({ url: redirectTourl });
+    }
+  };
   componentWillMount() {
     Taro.eventCenter.on("getUserCarte", () => {
       const { userinfo } = this.props.userReducer;
@@ -126,17 +139,40 @@ class Index extends Component {
           this.initNim(value.token);
         });
       });
+
     Taro.getSetting().then(res => {
       const { authSetting } = res;
       if (!authSetting["scope.userInfo"]) {
         this.setState({ showmodal: true });
+      } else {
+        this.checkNavigateTo();
       }
     });
   }
 
-  goPage = () => {
-    const params = this.$router.params;
-    const { path, id } = params || {};
+  mergeUserInfoInSessions = newsessions => {
+    const { sessions } = this.props.commonReducer;
+    //不是第一个次切数量没变化,表示已经获取过用户信息,无需再获取
+    if (sessions && sessions.length === newsessions.length) {
+      this.props.setState({ sessions: newsessions });
+    } else {
+      const ids = newsessions.map(session => {
+        return session.to;
+      });
+      wx.nim.getUsers({
+        accounts: ids,
+        done: (err, res) => {
+          let users = [];
+          for (var i in newsessions) {
+            let user = {};
+            newsessions[i].unread = 12;
+            Object.assign(user, newsessions[i], res[i]);
+            users.push(user);
+          }
+          this.props.setState({ sessions: users });
+        }
+      });
+    }
   };
   initNim = imtoken => {
     const { userinfo } = this.props.userReducer;
@@ -156,11 +192,12 @@ class Index extends Component {
       },
       onsessions: res => {
         console.log("onsessions", res);
-        this.props.setState({ sessions: res });
+        this.mergeUserInfoInSessions(res);
       },
       onupdatesession: res => {
         const { sessions } = this.props.commonReducer;
-        console.log("onupdatesession", res);
+        const newsessions = wx.nim.mergeSessions(sessions, res);
+        this.mergeUserInfoInSessions(newsessions);
       },
       onmsg: res => {
         console.log("onmsg", res);
@@ -168,6 +205,13 @@ class Index extends Component {
           message: `${res.fromNick}给你发来消息`,
           type: "success"
         });
+      },
+      onfriends: friends => {
+        const newfriends = wx.nim.cutFriends(friends, friends.invalid);
+        console.log("newfriends", newfriends);
+      },
+      onusers: res => {
+        console.log("onusers", res);
       },
       onsysmsgunread: res => {
         console.log("onsysmsgunread", res);
@@ -226,6 +270,13 @@ class Index extends Component {
     this.setState({ showshare: false });
   };
   getMenuData = () => {
+    const { sessions } = this.props.commonReducer;
+    var unread = 0;
+    if (sessions) {
+      for (var session of sessions) {
+        unread += session.unread;
+      }
+    }
     return [
       {
         title: "首页",
@@ -237,12 +288,14 @@ class Index extends Component {
       },
       {
         title: "我的",
-        iconType: "user"
+        iconType: "user",
+        text: unread ? unread : "",
+        max: 99
       }
     ];
   };
   render() {
-    const { deviceinfo, statistic } = this.props.commonReducer;
+    const { deviceinfo, statistic, sessions } = this.props.commonReducer;
     const { usercarte, userinfo, userinfodetail } = this.props.userReducer;
     const { visitguest, visitintent } = this.props.customerReducer;
     const { current, showmodal, showshare, showcurtain } = this.state;
@@ -297,8 +350,9 @@ class Index extends Component {
             <User
               onShare={this.handleShare}
               userinfo={userinfo}
-              onJoin={this.handleJoin}
               userinfodetail={userinfodetail}
+              sessions={sessions}
+              onJoin={this.handleJoin}
             />
           </AtTabsPane>
         </AtTabs>

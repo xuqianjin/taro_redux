@@ -40,31 +40,11 @@ export default class extends Component {
   };
   constructor(props) {
     super(props);
-    this.state = { users: [] };
   }
   componentWillMount() {
     this.props.getVisitChart();
-    const { sessions } = this.props.commonReducer;
-    if (!sessions) {
-      return;
-    }
-    console.log(sessions);
-    const ids = sessions.map(session => {
-      return session.to;
-    });
-    wx.nim.getUsers({
-      accounts: ids,
-      done: (err, res) => {
-        let users = [];
-        for (var i in sessions) {
-          let user = {};
-          Object.assign(user, sessions[i], res[i]);
-          users.push(user);
-        }
-        this.setState({ users });
-      }
-    });
   }
+  componentDidMount() {}
   handleClick = item => {
     const { avatar, to, nick } = item;
     Taro.navigateTo({
@@ -72,21 +52,22 @@ export default class extends Component {
     });
   };
   render() {
-    const { users } = this.state;
+    const { sessions } = this.props.commonReducer;
     const { visitchart } = this.props.customerReducer;
     let condition = false;
-    if (users) {
+    if (true) {
     } else {
       condition = {
         state: "viewLoading",
         tipsString: "加载中..."
       };
     }
+    console.log(sessions);
     return (
       <BaseView condition={condition}>
         <AtList>
-          {users &&
-            users.map(item => {
+          {sessions &&
+            sessions.map(item => {
               const { lastMsg, unread, updateTime, nick, avatar } = item;
               return (
                 <View

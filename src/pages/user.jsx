@@ -2,7 +2,7 @@ import Taro, { Component } from "@tarojs/taro";
 import { connect } from "@tarojs/redux";
 import { bindActionCreators } from "redux";
 import { View, Text, ScrollView } from "@tarojs/components";
-import { AtList, AtListItem, AtIcon } from "taro-ui";
+import { AtList, AtListItem, AtIcon, AtBadge } from "taro-ui";
 import moment from "moment";
 
 import ImageView from "../components/ImageView";
@@ -23,13 +23,23 @@ export default class extends Component {
   componentDidUpdate() {}
   componentWillUnmount() {}
   getUserList = () => {
-    const { userinfodetail } = this.props;
+    const { userinfodetail, sessions } = this.props;
     const { vipEndAt } = userinfodetail || {};
+    var unread = 0;
+    if (sessions) {
+      for (var session of sessions) {
+        unread += session.unread;
+      }
+    }
+    if (unread > 99) {
+      unread = "99+";
+    }
     return [
       {
         icon: "message",
         title: "我的消息",
-        extra: "暂无消息",
+        extra: unread ? "你有新的消息" : "暂无消息",
+        unread: unread ? unread : "",
         onClick: () => {
           Taro.navigateTo({ url: "/pages/message/index" });
         }
@@ -119,7 +129,10 @@ export default class extends Component {
               <AtIcon size={18} value={item.icon} className="text_theme" />
             </View>
             <View className="at-col at-col-1 at-col--auto">
-              <View className="title">{item.title}</View>
+              <View className="title">
+                {item.title}
+                {item.unread && <Text className="badge">{item.unread}</Text>}
+              </View>
             </View>
             <View className="at-col right text_black_light text_right">
               <Text>{item.extra}</Text>

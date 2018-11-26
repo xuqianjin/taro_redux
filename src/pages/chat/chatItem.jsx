@@ -16,6 +16,10 @@ export default class extends Component {
     super(props);
   }
 
+  onForcePush = () => {
+    const { isme, item, avatar } = this.props;
+    this.props.onForcePush(item);
+  };
   render() {
     const { isme, item, avatar } = this.props;
     const from = (
@@ -41,6 +45,9 @@ export default class extends Component {
         <View className="at-row  at-row__justify--end">
           <View className="at-col at-col-1 at-col--auto at-col--wrap">
             <View className="messageme">{item.text}</View>
+            <View className="pushmessage" onClick={this.onForcePush}>
+              推至客户
+            </View>
           </View>
           <View className="at-col at-col-1 at-col--auto avatar">
             <AtAvatar image={avatar || defaultavatar} />
