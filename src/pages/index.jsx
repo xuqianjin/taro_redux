@@ -95,7 +95,7 @@ class Index extends Component {
     super(props);
     this.state = {
       current: 0,
-      showmodal: false,
+      showauth: false,
       showshare: false,
       showcurtain: false
     };
@@ -159,9 +159,8 @@ class Index extends Component {
         this.checkNavigateTo();
       })
       .catch(err => {
-        console.log(err.message === "noAuth");
         if (err.message === "noAuth") {
-          this.setState({ showmodal: true });
+          this.setState({ showauth: true });
         }
       });
   }
@@ -169,8 +168,8 @@ class Index extends Component {
   mergeUserInfoInSessions = newsessions => {
     const { sessions } = this.props.commonReducer;
     //不是第一个次切数量没变化,表示已经获取过用户信息,无需再获取
-    if (sessions && sessions.length === newsessions.length) {
       this.props.setState({ sessions: newsessions });
+    if (sessions && sessions.length === newsessions.length) {
     } else {
       const ids = newsessions.map(session => {
         return session.to;
@@ -181,7 +180,7 @@ class Index extends Component {
           let users = [];
           for (var i in newsessions) {
             let user = {};
-            Object.assign(user, newsessions[i], res[i]);
+            Object.assign(user, res[i], newsessions[i]);
             users.push(user);
           }
           this.props.setState({ sessions: users });
@@ -228,7 +227,8 @@ class Index extends Component {
       },
       onsessions: res => {
         console.log("onsessions", res);
-        this.mergeUserInfoInSessions(res);
+        const newsessions = wx.nim.mergeSessions([], res);
+        this.mergeUserInfoInSessions(newsessions);
       },
       onupdatesession: res => {
         const { sessions } = this.props.commonReducer;
@@ -281,17 +281,11 @@ class Index extends Component {
   handleMenuClick = current => {
     this.setState({ current });
   };
-  handleModalConfirm = () => {
-    // Taro.navigateTo({ url: "/pages/login/login" });
-    this.setState({ showmodal: false });
-  };
-  handleModalClose = () => {
-    // Taro.navigateTo({ url: "/pages/login/login" });
+  handleAuthClose = () => {
     Taro.atMessage({
       message: "请先授权",
       type: "error"
     });
-    // this.setState({ showmodal: false });
   };
   handleShare = () => {
     this.setState({ showshare: true });
@@ -336,10 +330,14 @@ class Index extends Component {
     const { encryptedData, iv, errMsg, userInfo } = detail;
     if (errMsg === "getUserInfo:ok") {
       const { avatarUrl, gender, nickName } = userInfo;
-      await this.props.putWxUserInfo({ encryptedData, iv });
+      const userinfo = await this.props.putWxUserInfo({ encryptedData, iv });
       await this.props.putUserCarte({ avatarUrl, gender, name: nickName });
-      Taro.eventCenter.trigger("getUserCarte");
-      this.setState({ showmodal: false });
+      wx.nim.updateMyInfo({
+        nick: nickName,
+        avatar: avatarUrl
+      });
+      this.setState({ showauth: false });
+      this.componentDidMount();
     }
   };
   render() {
@@ -351,7 +349,7 @@ class Index extends Component {
     } = this.props.commonReducer;
     const { usercarte, userinfo, userinfodetail } = this.props.userReducer;
     const { visitguest, visitintent } = this.props.customerReducer;
-    const { current, showmodal, showshare, showcurtain } = this.state;
+    const { current, showauth, showshare, showcurtain } = this.state;
     const menuData = this.getMenuData();
 
     let condition = false;
@@ -442,7 +440,7 @@ class Index extends Component {
         <AtCurtain isOpened={showcurtain} onClose={this.handleJoinClose}>
           {jion}
         </AtCurtain>
-        <AtCurtain isOpened={showmodal} onClose={this.handleModalClose}>
+        <AtCurtain isOpened={showauth} onClose={this.handleAuthClose}>
           {auth}
         </AtCurtain>
         <AtMessage />
