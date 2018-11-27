@@ -78,9 +78,15 @@
   margin: 20px 0px;
 }
 .badge {
-  padding: 5px 10px;
   background-color: red;
-  border-radius: 50%;
+  border-radius: 20px;
   color: white;
   font-size: 22px;
+  max-height: 40px;
+  min-height: 40px;
+  max-width: 40px;
+  min-width: 40px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
 }

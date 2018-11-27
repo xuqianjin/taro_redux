@@ -62,7 +62,6 @@ export default class extends Component {
         tipsString: "加载中..."
       };
     }
-    console.log(sessions);
     return (
       <BaseView condition={condition}>
         <AtList>

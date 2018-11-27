@@ -46,11 +46,15 @@ export default class extends Component {
       value: "",
       messages: [],
       scrollIntoView: "",
-      showcurtain: false
+      showcurtain: false,
+      presession: "",
+      params: {}
     };
   }
   componentWillMount() {
     const params = this.$router.params;
+    this.setState({ params });
+    wx.nim.setCurrSession(`p2p-${params.to}`);
     Taro.setNavigationBarTitle({ title: `与${params.nickName}聊天` });
     wx.nim.getHistoryMsgs({
       scene: "p2p",
@@ -64,23 +68,39 @@ export default class extends Component {
       }
     });
   }
+  componentDidMount() {
+    Taro.eventCenter.on("onupdatesession", session => {
+      const { value, messages } = this.state;
+      const { lastMsg } = session;
+      if (lastMsg.status === "success") {
+        messages.push(lastMsg);
+      }
+      if (lastMsg.status === "fail") {
+        Taro.atMessage({
+          message: "消息发送失败",
+          type: "error"
+        });
+      }
+      this.setState({
+        messages,
+        scrollIntoView: "scrollIntoView" + (messages.length - 1)
+      });
+    });
+  }
   componentWillUnmount() {
+    const { params } = this.state;
+    wx.nim.resetSessionUnread(`p2p-${params.to}`);
     Taro.eventCenter.off("onupdatesession");
   }
   handleonConfirm = () => {
-    const params = this.$router.params;
+    const { params } = this.state;
     const { value, messages } = this.state;
-    const session = wx.nim.sendText({
+    wx.nim.sendText({
       scene: "p2p",
       to: params.to,
       text: value
     });
-    messages.push(session);
-    this.setState({
-      value: "",
-      messages,
-      scrollIntoView: "scrollIntoView" + (messages.length - 1)
-    });
+    this.setState({ value: "" });
   };
   handleChange(value) {
     this.setState({ value });
@@ -128,8 +148,7 @@ export default class extends Component {
   render() {
     const { deviceinfo } = this.props.commonReducer;
     const { userinfo, userinfodetail } = this.props.userReducer;
-    const { messages, scrollIntoView, showcurtain } = this.state;
-    const params = this.$router.params;
+    const { messages, scrollIntoView, showcurtain, params } = this.state;
     const scrollheight = Taro.pxTransform(
       (deviceinfo.windowHeight * 750) / deviceinfo.windowWidth - 97
     );
@@ -152,14 +171,7 @@ export default class extends Component {
         >
           {messages &&
             messages.map((item, index) => {
-              const {
-                from,
-                latestMessage,
-                numUnreadMessages,
-                time,
-                idServer,
-                text
-              } = item;
+              const { from, idServer, text } = item;
               const isme = userinfo.userId == from;
               return (
                 <chatItem

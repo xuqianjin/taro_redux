@@ -62,6 +62,7 @@ export default class extends Component {
         Taro.navigateTo({ url: "/pages/viewlog/index" });
         break;
       case 3:
+        Taro.navigateTo({ url: "/pages/message/index" });
         break;
       default:
     }
@@ -77,7 +78,7 @@ export default class extends Component {
     onJoin();
   };
   render() {
-    const { userinfo, statistic } = this.props;
+    const { userinfo, statistic, numMsgsUnreadToday } = this.props;
     let condition = false;
     if (true) {
     } else {
@@ -109,7 +110,9 @@ export default class extends Component {
             className="at-col text_center opacity"
             onClick={this.handleTopClick.bind(this, 3)}
           >
-            <View className="number">{statistic.numMsgsToday}</View>
+            <View className="number">
+              {statistic.numMsgsToday + numMsgsUnreadToday}
+            </View>
             <View className="text_black_light">今日消息</View>
           </View>
         </View>

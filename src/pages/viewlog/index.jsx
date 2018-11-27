@@ -70,11 +70,10 @@ export default class extends Component {
           viewlogs.map(viewlog => {
             const {
               Visitor,
-              numView,
-              updatedAt,
               duration,
               kind,
-              count
+              count,
+              createdAt
             } = viewlog;
 
             return (
@@ -95,7 +94,7 @@ export default class extends Component {
                       {Visitor.nickName}
                     </View>
                     <View className="at-col at-col-1 at-col--auto text_black_light time">
-                      {moment(Visitor.createdAt).calendar()}
+                      {moment(createdAt).calendar()}
                     </View>
                   </View>
                   <View className="desc at-col--wrap text_black_light">

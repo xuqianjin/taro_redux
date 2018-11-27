@@ -32,7 +32,7 @@ export default class extends Component {
       }
     }
     if (unread > 99) {
-      unread = "99+";
+      unread = "99";
     }
     return [
       {
@@ -129,9 +129,15 @@ export default class extends Component {
               <AtIcon size={18} value={item.icon} className="text_theme" />
             </View>
             <View className="at-col at-col-1 at-col--auto">
-              <View className="title">
-                {item.title}
-                {item.unread && <Text className="badge">{item.unread}</Text>}
+              <View className="at-row">
+                <View className="at-col at-col-1 at-col--auto title">
+                  {item.title}
+                </View>
+                {item.unread && (
+                  <View className="at-col at-col-1 at-col--auto badge">
+                    {item.unread}
+                  </View>
+                )}
               </View>
             </View>
             <View className="at-col right text_black_light text_right">

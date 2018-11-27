@@ -63,7 +63,7 @@ export default class extends Component {
     };
   }
   componentWillMount() {
-    this.setState({ timebegin: new Date().getTime() });
+    this.setState({ timebegin: new Date().getTime() - 3000 });
   }
   componentDidMount() {
     const { usercarte, usercartedesc, userinfo } = this.props.userReducer;

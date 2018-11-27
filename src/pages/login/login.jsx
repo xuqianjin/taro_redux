@@ -40,7 +40,7 @@ export default class extends Component {
   }
   render() {
     const {height, color} = this.props
-    const style = 'height:80%;display:flex;align-items:center;justify-content:center; flex-direction:column'
+    const style = 'height:100%;display:flex;align-items:center;justify-content:center; flex-direction:column;background:white'
     return <View style={style}>
       <ImageView basestyle='height:100px;width:100px;' src={require('../../static/icon/wechat_friend.png')}></ImageView>
       <Text className='text_black_light'>使用微信账号快捷登录</Text>

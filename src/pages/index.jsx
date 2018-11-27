@@ -17,10 +17,12 @@ import Customer from "./customer";
 import User from "./user";
 import ImageView from "../components/ImageView";
 import "moment/locale/zh-cn";
+import moment from "moment";
 
 import Nim from "../lib/NIM_Web_NIM_weixin_v5.8.0";
 
 import BaseView from "../components/BaseView";
+import Login from "./login/login";
 
 import request from "../reducers/request";
 import { encodeSearchParams } from "../lib/utils";
@@ -37,7 +39,9 @@ import {
   postWxMagicMessage,
   getDebugToken,
   getUserCarte,
-  getUserInfoDetail
+  getUserInfoDetail,
+  putWxUserInfo,
+  putUserCarte
 } from "../reducers/userReducer";
 import {
   getVisitGuest,
@@ -73,6 +77,8 @@ const mapDispatchToProps = dispatch => {
       postViewlogs,
       getImToken,
       getVipKinds,
+      putWxUserInfo,
+      putUserCarte,
       setState
     },
     dispatch
@@ -99,11 +105,9 @@ class Index extends Component {
 
     const newobj = JSON.parse(JSON.stringify(params));
     const { path, id } = newobj;
-    console.log(newobj);
     if (path) {
       delete newobj.path;
       const redirectTourl = `${path}?${encodeSearchParams(newobj)}`;
-      console.log(redirectTourl);
       Taro.navigateTo({ url: redirectTourl });
     }
   };
@@ -138,16 +142,28 @@ class Index extends Component {
         this.props.getImToken().then(({ value }) => {
           this.initNim(value.token);
         });
-      });
-
-    Taro.getSetting().then(res => {
-      const { authSetting } = res;
-      if (!authSetting["scope.userInfo"]) {
-        this.setState({ showmodal: true });
-      } else {
+        //新用户未授权
+        if (!res.value.nickName) {
+          throw new Error("noAuth");
+        }
+      })
+      .then(res => {
+        return Taro.getSetting().then(res => {
+          const { authSetting } = res;
+          if (!authSetting["scope.userInfo"]) {
+            throw new Error("noAuth");
+          }
+        });
+      })
+      .then(res => {
         this.checkNavigateTo();
-      }
-    });
+      })
+      .catch(err => {
+        console.log(err.message === "noAuth");
+        if (err.message === "noAuth") {
+          this.setState({ showmodal: true });
+        }
+      });
   }
 
   mergeUserInfoInSessions = newsessions => {
@@ -165,7 +181,6 @@ class Index extends Component {
           let users = [];
           for (var i in newsessions) {
             let user = {};
-            newsessions[i].unread = 12;
             Object.assign(user, newsessions[i], res[i]);
             users.push(user);
           }
@@ -173,6 +188,27 @@ class Index extends Component {
         }
       });
     }
+    this.saveUnreadToLocal(newsessions);
+  };
+  saveUnreadToLocal = newsessions => {
+    const KEY = "todaymsg";
+    const todaymsg = Taro.getStorageSync(KEY);
+    var totalunread = 0;
+    for (var session of newsessions) {
+      totalunread += session.unread;
+    }
+    //有存过数据且日期时间同一天
+    if (
+      todaymsg &&
+      moment(todaymsg.time).format("YYYY-MM-DD") ===
+        moment().format("YYYY-MM-DD")
+    ) {
+      const { nummsg, time } = todaymsg;
+      totalunread = totalunread + nummsg;
+    }
+    this.props.setState({ numMsgsUnreadToday: totalunread });
+    const data = { nummsg: totalunread, time: new Date().getTime() };
+    Taro.setStorageSync(KEY, data);
   };
   initNim = imtoken => {
     const { userinfo } = this.props.userReducer;
@@ -198,6 +234,8 @@ class Index extends Component {
         const { sessions } = this.props.commonReducer;
         const newsessions = wx.nim.mergeSessions(sessions, res);
         this.mergeUserInfoInSessions(newsessions);
+        Taro.eventCenter.trigger("onupdatesession", res);
+        console.log("onupdatesession", res);
       },
       onmsg: res => {
         console.log("onmsg", res);
@@ -241,20 +279,19 @@ class Index extends Component {
   componentDidHide() {}
 
   handleMenuClick = current => {
-    // Taro.eventCenter.trigger("postViewlogs", {
-    //   kind: 1,
-    //   sourceId: 27,
-    //   duration: 20
-    // });
     this.setState({ current });
   };
   handleModalConfirm = () => {
-    Taro.navigateTo({ url: "/pages/login/login" });
+    // Taro.navigateTo({ url: "/pages/login/login" });
     this.setState({ showmodal: false });
   };
   handleModalClose = () => {
-    Taro.navigateTo({ url: "/pages/login/login" });
-    this.setState({ showmodal: false });
+    // Taro.navigateTo({ url: "/pages/login/login" });
+    Taro.atMessage({
+      message: "请先授权",
+      type: "error"
+    });
+    // this.setState({ showmodal: false });
   };
   handleShare = () => {
     this.setState({ showshare: true });
@@ -294,8 +331,24 @@ class Index extends Component {
       }
     ];
   };
+  onGetUserInfo = async res => {
+    const { detail } = res;
+    const { encryptedData, iv, errMsg, userInfo } = detail;
+    if (errMsg === "getUserInfo:ok") {
+      const { avatarUrl, gender, nickName } = userInfo;
+      await this.props.putWxUserInfo({ encryptedData, iv });
+      await this.props.putUserCarte({ avatarUrl, gender, name: nickName });
+      Taro.eventCenter.trigger("getUserCarte");
+      this.setState({ showmodal: false });
+    }
+  };
   render() {
-    const { deviceinfo, statistic, sessions } = this.props.commonReducer;
+    const {
+      deviceinfo,
+      statistic,
+      sessions,
+      numMsgsUnreadToday
+    } = this.props.commonReducer;
     const { usercarte, userinfo, userinfodetail } = this.props.userReducer;
     const { visitguest, visitintent } = this.props.customerReducer;
     const { current, showmodal, showshare, showcurtain } = this.state;
@@ -328,11 +381,34 @@ class Index extends Component {
         </AtButton>
       </View>
     );
+    const auth = (
+      <View
+        style="padding:20px;border-radius:5px"
+        className="bg_white text_center"
+      >
+        <View>授权提示</View>
+        <View style="font-size:16px;" className="text_black_light">
+          为了获得更好体验,我们需要您的微信授权点击去授权
+        </View>
+        <ImageView
+          basestyle="height:100px;width:100px;"
+          src={require("../static/icon/wechat_friend.png")}
+        />
+        <AtButton
+          type="primary"
+          openType="getUserInfo"
+          onGetUserInfo={this.onGetUserInfo}
+        >
+          微信授权登录
+        </AtButton>
+      </View>
+    );
     return (
       <BaseView condition={condition}>
         <AtTabs current={current}>
           <AtTabsPane current={current} index={0}>
             <Home
+              numMsgsUnreadToday={numMsgsUnreadToday}
               statistic={statistic}
               userinfo={userinfo}
               onShare={this.handleShare}
@@ -362,17 +438,12 @@ class Index extends Component {
           onClick={this.handleMenuClick.bind(this)}
           current={current}
         />
-        <AtModal
-          isOpened={showmodal}
-          title="提示"
-          confirmText="去授权"
-          onClose={this.handleModalClose.bind(this)}
-          onConfirm={this.handleModalConfirm.bind(this)}
-          content="为了获得更好体验,我们需要您的微信授权点击去授权"
-        />
         <ShareDialog isOpened={showshare} onClose={this.handleShareClose} />
         <AtCurtain isOpened={showcurtain} onClose={this.handleJoinClose}>
           {jion}
+        </AtCurtain>
+        <AtCurtain isOpened={showmodal} onClose={this.handleModalClose}>
+          {auth}
         </AtCurtain>
         <AtMessage />
       </BaseView>
