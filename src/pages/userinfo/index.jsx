@@ -24,20 +24,27 @@ import ArticleItem from "../article/ArticleItem";
 import { gender, careerKind } from "../../components/Constant";
 
 import { getUserCarte, getUserCarteDesc } from "../../reducers/userReducer";
+import { postViewlogs, putViewlogs } from "../../reducers/customerReducer";
 
 import "./edit";
 
 import "./style.scss";
 
 const mapStateToProps = state => {
-  return { userReducer: state.userReducer, commonReducer: state.commonReducer };
+  return {
+    userReducer: state.userReducer,
+    commonReducer: state.commonReducer,
+    customerReducer: state.customerReducer
+  };
 };
 
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       getUserCarte,
-      getUserCarteDesc
+      getUserCarteDesc,
+      postViewlogs,
+      putViewlogs
     },
     dispatch
   );
@@ -69,7 +76,10 @@ export default class extends Component {
     const isme = params.userId == userinfo.userId;
     this.props.getUserCarte(params.userId);
     this.props.getUserCarteDesc(params.userId);
-    this.setState({ isme, pageuserid: params.userId });
+    const promise = Promise.resolve();
+    this.setState({ isme, pageuserid: params.userId }, () => {
+      this.postViewlog();
+    });
   }
 
   componentWillUnmount() {
@@ -77,14 +87,24 @@ export default class extends Component {
   }
   //上报数据
   postViewlog = () => {
-    const { timebegin, kind, isme, pageuserid } = this.state;
+    const { timebegin, kind, isme, pageuserid, viewlogid } = this.state;
     const duration = (new Date().getTime() - timebegin) / 1000;
     const postdata = {
       kind,
       sourceId: Number(pageuserid),
       duration: parseInt(duration)
     };
-    !isme && Taro.eventCenter.trigger("postViewlogs", postdata);
+    console.log(isme, pageuserid);
+    if (!isme) {
+      if (viewlogid) {
+        this.props.putViewlogs(viewlogid, postdata);
+      } else {
+        this.props.postViewlogs(postdata).then(({ value }) => {
+          const { id } = value;
+          this.setState({ viewlogid: id });
+        });
+      }
+    }
   };
   onShareAppMessage() {
     const { usercarte } = this.props.userReducer;
@@ -106,7 +126,6 @@ export default class extends Component {
     Taro.navigateTo({ url: "/pages/userinfo/edit" });
   };
   handleEditMine = () => {
-    this.postViewlog();
     Taro.redirectTo({ url: "/pages/userinfo/edit" });
   };
   handleShareShow = () => {

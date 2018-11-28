@@ -179,7 +179,7 @@ export default class extends Component {
             </ScrollView>
           </AtTabsPane>
           <AtTabsPane current={this.state.current} index={1}>
-            {/*<View className="at-row bg_white fixtag">
+            <View className="at-row bg_white fixtag">
               {usertag.map(tag => {
                 let color =
                   tag.value == chooseuser ? "text_black" : "text_black_light";
@@ -193,7 +193,7 @@ export default class extends Component {
                   </View>
                 );
               })}
-            </View>*/}
+            </View>
             <ScrollView scrollY={true} style={`height:${scrollheight}`}>
               <HeightView height={10} />
               {userarticle &&

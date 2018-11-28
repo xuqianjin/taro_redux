@@ -33,18 +33,18 @@ export default class extends Component {
     const { userinfo } = this.props.userReducer;
     const params = this.$router.params;
     const isme = params.userId == userinfo.userId;
-    this.setState({ isme, pageuserid: params.userId });
+    this.setState({ isme, articleId: params.articleId });
   }
   componentWillUnmount() {
-    this.postViewlog();
+    // this.postViewlog();
   }
   //上报数据
   postViewlog = () => {
-    const { timebegin, kind, isme, pageuserid } = this.state;
+    const { timebegin, kind, isme, articleId } = this.state;
     const duration = (new Date().getTime() - timebegin) / 1000;
     const postdata = {
       kind,
-      sourceId: Number(pageuserid),
+      sourceId: Number(articleId),
       duration: parseInt(duration)
     };
     !isme && Taro.eventCenter.trigger("postViewlogs", postdata);
@@ -62,6 +62,6 @@ export default class extends Component {
   }
   render() {
     const { weburl } = this.state;
-    return <WebView src={weburl} />;
+    return <WebView src={weburl+'?overcarte=1'} />;
   }
 }

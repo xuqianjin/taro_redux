@@ -6,6 +6,7 @@ import { AtListItem, AtCurtain, AtButton } from "taro-ui";
 import BaseView from "../components/BaseView";
 import HeightView from "../components/HeightView";
 import ImageView from "../components/ImageView";
+import FormidButton from "../components/FormidButton";
 
 import "./style.scss";
 

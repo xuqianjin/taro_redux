@@ -2,7 +2,7 @@ const nopic = require("../static/image/noPicture.png");
 
 export const changeSrc = src => {
   if (!src) {
-    return nopic;
+    return null;
   }
   if (src && typeof src === "string") {
     if (src.indexOf("i/") === 0) {

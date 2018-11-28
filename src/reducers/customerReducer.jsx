@@ -100,6 +100,18 @@ export const postViewlogs = data => (dispatch, getState) => {
     })
   });
 };
+export const putViewlogs = (operateId, data) => (dispatch, getState) => {
+  return dispatch({
+    type: API_PUT_VIEW_LOG_TIME,
+    payload: request.put(API_PUT_VIEW_LOG_TIME, {
+      header: {
+        Authorization: getState().userReducer.token
+      },
+      operateId,
+      data
+    })
+  });
+};
 
 const init_state = {
   visitguest: "",

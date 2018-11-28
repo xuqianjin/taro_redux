@@ -40,7 +40,7 @@ export default class extends Component {
     const { item } = this.props;
     this.props.getArticle(item.id).then(({ value }) => {
       const weburl = `${API_HOST}/article/${value.id}`;
-      Taro.navigateTo({ url: `/pages/webview/index?weburl=${weburl}&userId=${item.userId}` });
+      Taro.navigateTo({ url: `/pages/webview/index?weburl=${weburl}&userId=${item.userId}&articleId=${value.id}` });
     });
   };
   render() {

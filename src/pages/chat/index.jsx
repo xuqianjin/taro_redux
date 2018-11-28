@@ -89,7 +89,7 @@ export default class extends Component {
   }
   componentWillUnmount() {
     const { params } = this.state;
-    wx.nim.resetSessionUnread(`p2p-${params.to}`);
+    wx.nim.resetCurrSession(`p2p-${params.to}`);
     Taro.eventCenter.off("onupdatesession");
   }
   handleonConfirm = () => {
@@ -190,7 +190,7 @@ export default class extends Component {
           <AtInput
             clear={true}
             border={true}
-            cursorSpacing={200}
+            cursorSpacing="20"
             value={this.state.value}
             onChange={this.handleChange.bind(this)}
             onConfirm={this.handleonConfirm.bind(this)}

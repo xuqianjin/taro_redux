@@ -218,6 +218,7 @@ class Index extends Component {
       account: userId,
       token: imtoken,
       db: false,
+      autoMarkRead: true,
       onconnect: () => {
         wx.nim.updateMyInfo({
           nick: nickName,

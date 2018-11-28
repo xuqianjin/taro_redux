@@ -35,7 +35,7 @@ export default class extends Component {
     };
   }
   handleJoinClose = () => {
-    this.setState({ showcurtain: false };
+    this.setState({ showcurtain: false });
     Taro.navigateBack();
   };
   componentDidMount() {
@@ -63,16 +63,19 @@ export default class extends Component {
     var title = "";
     var button = "";
     var desc = "";
+    var img = "";
     switch (Number(type)) {
       case 1:
         title = "文章分享提示";
         desc = '在客服会话回复"6"扫码分享';
         button = "回复6扫码分享";
+        img = `${CDN_URL}sharearticle.jpg`;
         break;
       case 3:
         title = "进群提示";
         desc = '在客服会话回复"6"扫码进群';
         button = "回复6扫码进群";
+        img = `${CDN_URL}intro_join_group.jpg`;
         break;
       default:
     }
@@ -85,11 +88,9 @@ export default class extends Component {
         <View style="font-size:16px" className="text_black_light">
           {desc}
         </View>
-        <ImageView
-          baseclassname="curtainimg"
-          src={`${CDN_URL}intro_join_group.jpg`}
-          mode="widthFix"
-        />
+        {img && (
+          <ImageView baseclassname="curtainimg" src={img} mode="widthFix" />
+        )}
         <AtButton type="primary" openType="contact">
           {button}
         </AtButton>

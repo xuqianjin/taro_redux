@@ -130,7 +130,6 @@ export default class extends Component {
   onSubmit = value => {
     const { detail } = value;
     this.props.postWxFormId(detail.formId);
-    this.props.postWxQrCode("pages/index");
     const { listdata, desc } = this.state;
     let postdata = {};
     for (var item of listdata) {
@@ -139,11 +138,15 @@ export default class extends Component {
         Taro.atMessage({ message: `${toast}${item.title}`, type: "error" });
         return;
       } else {
-        postdata[item.name] = item.func ? item.func(item.value) : item.value;
+        var temp = item.func ? item.func(item.value) : item.value;
+        if (temp) {
+          postdata[item.name] = temp;
+        }
       }
     }
-
-    postdata.desc = desc;
+    if (desc) {
+      postdata.desc = desc;
+    }
     postdata.avatarUrl = this.state.avatarUrl;
     Taro.showLoading();
     this.props

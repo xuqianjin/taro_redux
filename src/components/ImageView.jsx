@@ -1,6 +1,7 @@
 import Taro, { Component } from "@tarojs/taro";
 import { Image } from "@tarojs/components";
 import { changeSrc } from "../lib/utils";
+const nopic = require("../static/image/noPicture.png");
 
 export default class extends Component {
   static externalClasses = ["baseclassname"];
