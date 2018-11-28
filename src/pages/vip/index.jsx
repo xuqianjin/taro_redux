@@ -108,12 +108,12 @@ export default class extends Component {
         </View>
         <ImageView
           baseclassname="image"
-          src={`${CDN_URL}intro_vip_privileges.jpg`}
+          src={`${CDN_URL}intro_vip_privileges_2.jpg`}
           mode="widthFix"
         />
         <ImageView
           baseclassname="image"
-          src={`${CDN_URL}intro_vip_privileges_2.jpg`}
+          src={`${CDN_URL}intro_vip_privileges.jpg`}
           mode="widthFix"
         />
       </BaseView>

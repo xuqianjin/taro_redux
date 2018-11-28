@@ -56,15 +56,13 @@ export default class extends Component {
     super(props);
     this.state = {
       showshare: false,
-      timebegin: "",
+      timebegin: new Date().getTime() - 3000,
       kind: 1,
       isme: true,
       pageuserid: ""
     };
   }
-  componentWillMount() {
-    this.setState({ timebegin: new Date().getTime() - 3000 });
-  }
+  componentWillMount() {}
   componentDidMount() {
     const { usercarte, usercartedesc, userinfo } = this.props.userReducer;
     const params = this.$router.params;

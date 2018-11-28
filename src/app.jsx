@@ -34,12 +34,13 @@ class App extends Component {
       "pages/vip/index",
       "pages/chat/index",
       "pages/qrcode/index",
-      "pages/viewlog/index"
+      "pages/viewlog/index",
+      "pages/share/index"
     ],
     window: {
       backgroundTextStyle: "dark",
       navigationBarBackgroundColor: APP_COLOR_THEME,
-      navigationBarTitleText: "多装机器人",
+      navigationBarTitleText: "多装获客宝",
       navigationBarTextStyle: "white",
       backgroundColor: APP_COLOR_GRAY,
       backgroundColorTop: APP_COLOR_GRAY,

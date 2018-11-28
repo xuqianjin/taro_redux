@@ -104,7 +104,7 @@ class Index extends Component {
     const params = this.$router.params;
 
     const newobj = JSON.parse(JSON.stringify(params));
-    const { path, id } = newobj;
+    const { path } = newobj;
     if (path) {
       delete newobj.path;
       const redirectTourl = `${path}?${encodeSearchParams(newobj)}`;
@@ -168,7 +168,7 @@ class Index extends Component {
   mergeUserInfoInSessions = newsessions => {
     const { sessions } = this.props.commonReducer;
     //不是第一个次切数量没变化,表示已经获取过用户信息,无需再获取
-      this.props.setState({ sessions: newsessions });
+    this.props.setState({ sessions: newsessions });
     if (sessions && sessions.length === newsessions.length) {
     } else {
       const ids = newsessions.map(session => {
@@ -222,7 +222,7 @@ class Index extends Component {
         wx.nim.updateMyInfo({
           nick: nickName,
           avatar: avatarUrl,
-          tel: phonenum
+          tel: phonenum || 0
         });
       },
       onsessions: res => {
@@ -272,7 +272,7 @@ class Index extends Component {
     });
   };
   onShareAppMessage() {
-    return { title: "多装获客" };
+    return { title: "多装获客宝" };
   }
   componentDidShow() {}
 

@@ -39,11 +39,8 @@ export default class extends Component {
   handleClick = () => {
     const { item } = this.props;
     this.props.getArticle(item.id).then(({ value }) => {
-      const weburl = `${API_HOST}/article/${
-        value.id
-      }?inwxpub=1&from=groupmessage&isappinstalled=0`;
-      console.log(weburl);
-      Taro.navigateTo({ url: `/pages/webview/index?weburl=${weburl}` });
+      const weburl = `${API_HOST}/article/${value.id}`;
+      Taro.navigateTo({ url: `/pages/webview/index?weburl=${weburl}&userId=${item.userId}` });
     });
   };
   render() {
