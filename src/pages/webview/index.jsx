@@ -21,7 +21,8 @@ export default class extends Component {
     this.state = {
       timebegin: new Date().getTime() - 3000,
       kind: 2,
-      isme: true
+      isme: true,
+      share: ""
     };
   }
   componentWillMount() {
@@ -52,17 +53,30 @@ export default class extends Component {
 
   onShareAppMessage() {
     const { weburl } = this.state;
-    return {
+    let sharecontent = {
       path: `/pages/index?goto=webview&weburl=${weburl}`
     };
+    if (
+      this.share &&
+      this.share.currentTarget &&
+      this.share.currentTarget.data &&
+      this.share.currentTarget.data.length > 0
+    ) {
+      const content = this.share.currentTarget.data[0];
+      sharecontent.title = content.title;
+      sharecontent.imageUrl = content.imageUrl;
+    }
+    return sharecontent;
   }
+  bindMessage = data => {
+    this.share = data;
+  };
   render() {
     let { weburl, isSystem } = this.state;
     let url = weburl;
     if (isSystem) {
       url = weburl + "?overcarte=1";
     }
-    console.log(url);
-    return <WebView src={url} />;
+    return <WebView src={url} onMessage={this.bindMessage} />;
   }
 }

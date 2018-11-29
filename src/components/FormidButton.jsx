@@ -1,5 +1,5 @@
 import Taro, { Component } from "@tarojs/taro";
-import { View, Button } from "@tarojs/components";
+import { View, Button, Form } from "@tarojs/components";
 import { connect } from "@tarojs/redux";
 import { bindActionCreators } from "redux";
 
@@ -31,23 +31,37 @@ const mapDispatchToProps = dispatch => {
   mapDispatchToProps
 )
 export default class extends Component {
-  static options = {
-    addGlobalClass: true
+  static externalClasses = ["baseclassname"];
+  static defaultProps = {
+    onClick: () => {}
   };
-  static defaultProps = {};
   constructor(props) {
     super(props);
   }
-  onSubmit = info => {
-    console.log(info);
+  onSubmit = value => {
+    const { detail } = value;
+    console.log(detail);
+    this.props.postWxFormId(detail.formId);
   };
   render() {
+    const { basestyle, onClick } = this.props;
+
+    //  小程序bug兼容 https://nervjs.github.io/taro/docs/component-style.html
+    var className = "baseclassname";
+    if (process.env.TARO_ENV !== "weapp") {
+      className = this.props.baseclassname;
+    }
     return (
-      <AtForm onSubmit={this.onSubmit.bind(this)} reportSubmit={true}>
-        <AtButton className="formidbutton" type="primary" formType="submit">
-          提交
-        </AtButton>
-      </AtForm>
+      <Form onSubmit={this.onSubmit.bind(this)} reportSubmit={true}>
+        <Button
+          className={className}
+          style="border:0px;padding-left:0px;padding-right:0px;line-height:1;font-size:none"
+          plain={true}
+          formType="submit"
+        >
+          {this.props.children}
+        </Button>
+      </Form>
     );
   }
 }

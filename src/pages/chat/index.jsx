@@ -126,7 +126,6 @@ export default class extends Component {
   };
   handleClick = value => {
     const { showcurtain } = this.state;
-    console.log(showcurtain);
     switch (value) {
       case 1:
         const postdata = {
@@ -173,7 +172,7 @@ export default class extends Component {
         tipsString: "加载中..."
       };
     }
-    const isvip =
+    var isvip =
       new Date(userinfodetail.vipEndAt).getTime() > new Date().getTime();
     return (
       <BaseView condition={condition}>
@@ -219,17 +218,23 @@ export default class extends Component {
             style="padding:20px;border-radius:5px"
             className="bg_white text_center"
           >
-            <View>强推为VIP特权</View>
+            <View>{isvip ? "确认推至客户?" : "强推为VIP特权"}</View>
+            {isvip && <HeightView height={100} color="transparent" />}
             <View style="font-size:16px" className="text_black_light">
               -强推信息,直接触达客户微信列表-
             </View>
-            <View style="font-size:16px" className="text_black_light">
-              新用户可试用3次
-            </View>
-            <AtIcon value="sketch" color="#f97b43" size={150} />
-            <AtButton type="primary" onClick={this.handleClick.bind(this, 1)}>
-              立即推送
-            </AtButton>
+            {isvip && <HeightView height={100} color="transparent" />}
+            {!isvip && (
+              <View style="font-size:16px" className="text_black_light">
+                开通VIP特权,享受每天强推消息
+              </View>
+            )}
+            {!isvip && <AtIcon value="sketch" color="#f97b43" size={150} />}
+            {isvip && (
+              <AtButton type="primary" onClick={this.handleClick.bind(this, 1)}>
+                确认推送
+              </AtButton>
+            )}
             <HeightView height={20} color="transparent" />
             {!isvip && (
               <AtButton type="primary" onClick={this.handleClick.bind(this, 2)}>
