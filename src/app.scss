@@ -74,6 +74,8 @@ page {
 .formidbutton{
 	background-color: transparent;
 }
+
+
 //重写taro-ui样式
 
 .item-extra__info {
@@ -89,6 +91,15 @@ page {
 .layout-body,
 .layout-body__content {
 	min-height: inherit !important;
+}
+.layout-header {
+	background-color: white !important;
+	text-align: center;
+	font-weight: bold;
+	line-height: 2.5 !important;
+}
+.layout-header__title {
+	padding-right: 0px !important;
 }
 .at-avatar{
 	background:transparent !important;

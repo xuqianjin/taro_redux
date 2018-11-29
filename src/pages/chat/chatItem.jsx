@@ -1,5 +1,5 @@
 import Taro, { Component } from "@tarojs/taro";
-import { View } from "@tarojs/components";
+import { View, Text } from "@tarojs/components";
 import moment from "moment";
 
 import ImageView from "../../components/ImageView";
@@ -32,7 +32,9 @@ export default class extends Component {
             <AtAvatar image={avatar || defaultavatar} />
           </View>
           <View className="at-col at-col-1 at-col--auto at-col--wrap">
-            <View className="message">{item.text}</View>
+            <View className="message">
+              <Text className="at-col--wrap">{item.text}</Text>
+            </View>
           </View>
         </View>
       </View>
@@ -43,8 +45,10 @@ export default class extends Component {
           {moment(item.time).calendar()}
         </View>
         <View className="at-row  at-row__justify--end">
-          <View className="at-col at-col-1 at-col--auto at-col--wrap">
-            <View className="messageme">{item.text}</View>
+          <View className="at-col at-col-1 at-col--auto">
+            <View className="messageme">
+              <Text className="at-col--wrap">{item.text}</Text>
+            </View>
             <View className="pushmessage" onClick={this.onForcePush}>
               推至客户
             </View>

@@ -29,8 +29,9 @@ export default class extends Component {
   render() {
     const { isOpened } = this.props;
     const width = Taro.pxTransform(100);
-    const imgstyle = `width:${width};height:${width}`;
+    const imgstyle = `width:${width}`;
     const buttonstyle = "border:0;line-height:1;font-size:16px;";
+    const textstyle = "color:#666;font-size:15px;margin-top:20px;";
     return (
       <AtFloatLayout
         isOpened={isOpened}
@@ -49,8 +50,9 @@ export default class extends Component {
             <Image
               style={imgstyle}
               src={require("../static/icon/wechat_friend.png")}
+              mode="widthFix"
             />
-            <View>分享好友</View>
+            <View style={textstyle}>微信好友</View>
           </Button>
           <Button
             style={buttonstyle}
@@ -61,8 +63,9 @@ export default class extends Component {
             <Image
               style={imgstyle}
               src={require("../static/icon/wechat_circle.png")}
+              mode="widthFix"
             />
-            <View>分享朋友圈</View>
+            <View style={textstyle}>朋友圈</View>
           </Button>
         </View>
         <HeightView height={30} color="transparent" />

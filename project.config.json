@@ -35,7 +35,7 @@
 					"id": 0,
 					"name": "测试",
 					"pathName": "pages/index",
-					"query": "path=/pages/userinfo/index&userId=29"
+					"query": "goto=carte"
 				}
 			]
 		}

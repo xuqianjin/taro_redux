@@ -111,10 +111,10 @@ export default class extends Component {
             className="at-col text_center opacity"
             onClick={this.handleTopClick.bind(this, 3)}
           >
-            <View className="number">
+            <View className="number" style="color:red">
               {statistic.numMsgsToday + numMsgsUnreadToday}
             </View>
-            <View className="text_black_light">今日消息</View>
+            <View className="text_black_light">未读消息</View>
           </View>
         </View>
         <View className="at-row footer text_theme">

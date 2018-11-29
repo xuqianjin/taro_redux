@@ -94,7 +94,6 @@ export default class extends Component {
       sourceId: Number(pageuserid),
       duration: parseInt(duration)
     };
-    console.log(isme, pageuserid);
     if (!isme) {
       if (viewlogid) {
         this.props.putViewlogs(viewlogid, postdata);
@@ -108,12 +107,9 @@ export default class extends Component {
   };
   onShareAppMessage() {
     const { usercarte } = this.props.userReducer;
-    var pages = Taro.getCurrentPages(); //获取加载的页面
-    var currentPage = pages[pages.length - 1]; //获取当前页面的对象
-    var url = currentPage.route; //当前页面url
     return {
       title: usercarte.name + "的名片",
-      path: `/pages/index?path=/${url}&userId=${usercarte.id}`
+      path: `/pages/index?goto=carte&userId=${usercarte.id}`
     };
   }
   getCareerName = value => {

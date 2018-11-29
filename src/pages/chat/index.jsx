@@ -69,10 +69,21 @@ export default class extends Component {
     });
   }
   componentDidMount() {
+    Taro.eventCenter.on("onmsg", msg => {
+      const params = this.$router.params;
+      const { value, messages } = this.state;
+      if (params.to == msg.from) {
+        messages.push(msg);
+        this.setState({
+          messages,
+          scrollIntoView: "scrollIntoView" + (messages.length - 1)
+        });
+      }
+    });
     Taro.eventCenter.on("onupdatesession", session => {
       const { value, messages } = this.state;
       const { lastMsg } = session;
-      if (lastMsg.status === "success") {
+      if (lastMsg.status === "sending") {
         messages.push(lastMsg);
       }
       if (lastMsg.status === "fail") {
@@ -89,8 +100,10 @@ export default class extends Component {
   }
   componentWillUnmount() {
     const { params } = this.state;
-    wx.nim.resetCurrSession(`p2p-${params.to}`);
+    // wx.nim.resetSessionUnread(`p2p-${params.to}`)
+    wx.nim.resetCurrSession();
     Taro.eventCenter.off("onupdatesession");
+    Taro.eventCenter.off("onmsg");
   }
   handleonConfirm = () => {
     const { params } = this.state;

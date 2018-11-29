@@ -82,10 +82,10 @@ export default class extends Component {
     const { deviceinfo, visitguest, visitintent } = this.props;
     const tabList = [
       {
-        title: "意向客户"
+        title: "最近访客"
       },
       {
-        title: "最近访客"
+        title: "意向客户"
       }
     ];
     const scrollheight = Taro.pxTransform(
@@ -99,22 +99,6 @@ export default class extends Component {
         onClick={this.handleChangeTab.bind(this)}
         swipeable={false}
       >
-        <AtTabsPane current={this.state.current} index={0}>
-          <ScrollView scrollY={true} style={`height:${scrollheight}`}>
-            {visitintent &&
-              visitintent.map(item => {
-                return (
-                  <UserItem
-                    key={item.id}
-                    item={item}
-                    onItemClick={this.onItemClick}
-                    onSetIntent={this.onSetIntent}
-                  />
-                );
-              })}
-            <AtLoadMore status={"noMore"} />
-          </ScrollView>
-        </AtTabsPane>
         <AtTabsPane current={this.state.current} index={1}>
           <ScrollView scrollY={true} style={`height:${scrollheight}`}>
             {visitguest &&
@@ -124,6 +108,22 @@ export default class extends Component {
                     key={item.id}
                     item={item}
                     type={1}
+                    onItemClick={this.onItemClick}
+                    onSetIntent={this.onSetIntent}
+                  />
+                );
+              })}
+            <AtLoadMore status={"noMore"} />
+          </ScrollView>
+        </AtTabsPane>
+        <AtTabsPane current={this.state.current} index={0}>
+          <ScrollView scrollY={true} style={`height:${scrollheight}`}>
+            {visitintent &&
+              visitintent.map(item => {
+                return (
+                  <UserItem
+                    key={item.id}
+                    item={item}
                     onItemClick={this.onItemClick}
                     onSetIntent={this.onSetIntent}
                   />

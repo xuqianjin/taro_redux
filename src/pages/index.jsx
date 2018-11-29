@@ -103,11 +103,29 @@ class Index extends Component {
   checkNavigateTo = () => {
     const params = this.$router.params;
 
-    const newobj = JSON.parse(JSON.stringify(params));
-    const { path } = newobj;
-    if (path) {
-      delete newobj.path;
-      const redirectTourl = `${path}?${encodeSearchParams(newobj)}`;
+    var newobj = JSON.parse(JSON.stringify(params));
+    const { goto } = newobj;
+    // if (path) {
+    //   delete newobj.path;
+    //   const redirectTourl = `${path}?${encodeSearchParams(newobj)}`;
+    //   Taro.navigateTo({ url: redirectTourl });
+    // }
+    if (goto) {
+      delete newobj.goto;
+      const { userinfo } = this.props.userReducer;
+
+      const pathkey = {
+        visitors: "/pages/viewlog/index",
+        carte: `/pages/userinfo/index`,
+        vip: "/pages/vip/index",
+        messages: "/pages/message/index",
+        webview: "/pages/webview/index"
+      };
+      if (goto === "carte") {
+        newobj = Object.assign({}, { userId: userinfo.userId }, newobj);
+      }
+
+      const redirectTourl = `${pathkey[goto]}?${encodeSearchParams(newobj)}`;
       Taro.navigateTo({ url: redirectTourl });
     }
   };
@@ -187,7 +205,7 @@ class Index extends Component {
         }
       });
     }
-    this.saveUnreadToLocal(newsessions);
+    // this.saveUnreadToLocal(newsessions);
   };
   saveUnreadToLocal = newsessions => {
     const KEY = "todaymsg";
@@ -218,7 +236,8 @@ class Index extends Component {
       account: userId,
       token: imtoken,
       db: false,
-      autoMarkRead: true,
+      autoMarkRead: false,
+      syncSessionUnread: true,
       onconnect: () => {
         wx.nim.updateMyInfo({
           nick: nickName,
@@ -244,6 +263,7 @@ class Index extends Component {
           message: `${res.fromNick}给你发来消息`,
           type: "success"
         });
+        Taro.eventCenter.trigger("onmsg", res);
       },
       onfriends: friends => {
         const newfriends = wx.nim.cutFriends(friends, friends.invalid);
@@ -315,8 +335,8 @@ class Index extends Component {
         iconType: "home"
       },
       {
-        title: "客户",
-        iconType: "message"
+        title: "雷达",
+        iconType: "streaming"
       },
       {
         title: "我的",
@@ -342,12 +362,7 @@ class Index extends Component {
     }
   };
   render() {
-    const {
-      deviceinfo,
-      statistic,
-      sessions,
-      numMsgsUnreadToday
-    } = this.props.commonReducer;
+    const { deviceinfo, statistic, sessions } = this.props.commonReducer;
     const { usercarte, userinfo, userinfodetail } = this.props.userReducer;
     const { visitguest, visitintent } = this.props.customerReducer;
     const { current, showauth, showshare, showcurtain } = this.state;
@@ -407,7 +422,7 @@ class Index extends Component {
         <AtTabs current={current}>
           <AtTabsPane current={current} index={0}>
             <Home
-              numMsgsUnreadToday={numMsgsUnreadToday}
+              numMsgsUnreadToday={menuData[2].text}
               statistic={statistic}
               userinfo={userinfo}
               onShare={this.handleShare}

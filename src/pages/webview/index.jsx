@@ -26,8 +26,8 @@ export default class extends Component {
   }
   componentWillMount() {
     const params = this.$router.params;
-    const { weburl } = params;
-    this.setState({ weburl });
+    const { weburl, isSystem } = params;
+    this.setState({ weburl, isSystem });
   }
   componentDidMount() {
     const { userinfo } = this.props.userReducer;
@@ -51,17 +51,18 @@ export default class extends Component {
   };
 
   onShareAppMessage() {
-    const params = this.$router.params;
-    const { weburl } = params;
-    var pages = Taro.getCurrentPages(); //获取加载的页面
-    var currentPage = pages[pages.length - 1]; //获取当前页面的对象
-    var url = currentPage.route; //当前页面url
+    const { weburl } = this.state;
     return {
-      path: `/pages/index?path=/${url}&weburl=${weburl}`
+      path: `/pages/index?goto=webview&weburl=${weburl}`
     };
   }
   render() {
-    const { weburl } = this.state;
-    return <WebView src={weburl+'?overcarte=1'} />;
+    let { weburl, isSystem } = this.state;
+    let url = weburl;
+    if (isSystem) {
+      url = weburl + "?overcarte=1";
+    }
+    console.log(url);
+    return <WebView src={url} />;
   }
 }
