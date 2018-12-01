@@ -112,7 +112,7 @@ export default class extends Component {
             onClick={this.handleTopClick.bind(this, 3)}
           >
             <View className="number" style="color:red">
-              {statistic.numMsgsToday + numMsgsUnreadToday}
+              {numMsgsUnreadToday || 0}
             </View>
             <View className="text_black_light">未读消息</View>
           </View>

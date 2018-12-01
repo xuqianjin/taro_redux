@@ -59,7 +59,7 @@ export const putWxUserPhone = data => (dispatch, getState) => {
   });
 };
 
-export const postWxFormId = formId => (dispatch, getState) => {
+export const postWxFormId = (formId, senderId) => (dispatch, getState) => {
   if (process.env.NODE_ENV !== " production") {
     return null;
   }
@@ -71,7 +71,7 @@ export const postWxFormId = formId => (dispatch, getState) => {
       },
       data: {
         formid: formId,
-        senderId: getState().userReducer.userinfo.userId
+        senderId: Number(senderId) || getState().userReducer.userinfo.userId
       }
     })
   });

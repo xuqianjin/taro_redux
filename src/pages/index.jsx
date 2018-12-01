@@ -3,7 +3,6 @@ import { View, Button, Text, Input } from "@tarojs/components";
 import { connect } from "@tarojs/redux";
 import { bindActionCreators } from "redux";
 import {
-  AtTabBar,
   AtTabs,
   AtTabsPane,
   AtModal,
@@ -15,13 +14,16 @@ import {
 import Home from "./home";
 import Customer from "./customer";
 import User from "./user";
-import ImageView from "../components/ImageView";
 import "moment/locale/zh-cn";
 import moment from "moment";
 
 import Nim from "../lib/NIM_Web_NIM_weixin_v5.8.0";
 
+import ImageView from "../components/ImageView";
+import FormidButton from "../components/FormidButton";
 import BaseView from "../components/BaseView";
+import AtTabBar from "../components/TabBar";
+import HeightView from "../components/HeightView";
 import Login from "./login/login";
 
 import request from "../reducers/request";
@@ -39,6 +41,7 @@ import {
   postWxMagicMessage,
   getDebugToken,
   getUserCarte,
+  getUserCarteDesc,
   getUserInfoDetail,
   putWxUserInfo,
   putUserCarte
@@ -70,6 +73,7 @@ const mapDispatchToProps = dispatch => {
       getDeviceInfo,
       getStatistic,
       getUserCarte,
+      getUserCarteDesc,
       getUserInfoDetail,
       getVisitGuest,
       getVisitIntent,
@@ -97,19 +101,18 @@ class Index extends Component {
       current: 0,
       showauth: false,
       showshare: false,
-      showcurtain: false
+      showcurtain: false,
+      showsharemsg: false,
+      senderId: false
     };
   }
   checkNavigateTo = () => {
     const params = this.$router.params;
 
     var newobj = JSON.parse(JSON.stringify(params));
-    const { goto } = newobj;
-    // if (path) {
-    //   delete newobj.path;
-    //   const redirectTourl = `${path}?${encodeSearchParams(newobj)}`;
-    //   Taro.navigateTo({ url: redirectTourl });
-    // }
+    const { goto, name } = newobj;
+    const { showsharemsg } = this.state;
+
     if (goto) {
       delete newobj.goto;
       const { userinfo } = this.props.userReducer;
@@ -119,20 +122,39 @@ class Index extends Component {
         carte: `/pages/userinfo/index`,
         vip: "/pages/vip/index",
         messages: "/pages/message/index",
-        webview: "/pages/webview/index"
+        article: "/pages/webview/index"
       };
       if (goto === "carte") {
         newobj = Object.assign({}, { userId: userinfo.userId }, newobj);
       }
-
+      if (
+        goto === "carte" &&
+        newobj.userId != userinfo.userId &&
+        !showsharemsg
+      ) {
+        this.setState({
+          showsharemsg: `您正在查看${name || ""}分享给你名片`,
+          senderId: newobj.userId
+        });
+        return;
+      }
+      if (goto === "article" && !showsharemsg) {
+        this.setState({
+          showsharemsg: `您正在查看${name || ""}分享给你文章`,
+          senderId: newobj.userId
+        });
+        return;
+      }
       const redirectTourl = `${pathkey[goto]}?${encodeSearchParams(newobj)}`;
       Taro.navigateTo({ url: redirectTourl });
+      this.setState({ showsharemsg: "", senderId: false });
     }
   };
   componentWillMount() {
     Taro.eventCenter.on("getUserCarte", () => {
       const { userinfo } = this.props.userReducer;
       this.props.getUserCarte(userinfo.userId);
+      this.props.getUserCarteDesc(userinfo.userId);
     });
     Taro.eventCenter.on("getUserInfoDetail", () => {
       this.props.getUserInfoDetail();
@@ -321,6 +343,9 @@ class Index extends Component {
   handleShareClose = () => {
     this.setState({ showshare: false });
   };
+  handleShareMsgClose = () => {
+    this.setState({ showsharemsg: false });
+  };
   getMenuData = () => {
     const { sessions } = this.props.commonReducer;
     var unread = 0;
@@ -365,7 +390,14 @@ class Index extends Component {
     const { deviceinfo, statistic, sessions } = this.props.commonReducer;
     const { usercarte, userinfo, userinfodetail } = this.props.userReducer;
     const { visitguest, visitintent } = this.props.customerReducer;
-    const { current, showauth, showshare, showcurtain } = this.state;
+    const {
+      current,
+      showauth,
+      showshare,
+      showsharemsg,
+      senderId,
+      showcurtain
+    } = this.state;
     const menuData = this.getMenuData();
 
     let condition = false;
@@ -417,6 +449,29 @@ class Index extends Component {
         </AtButton>
       </View>
     );
+    const sharemsg = (
+      <View
+        style="padding:20px;border-radius:5px"
+        className="bg_white text_center"
+      >
+        <View>分享提示</View>
+        <HeightView height={100} color="transparent" />
+        <View style="font-size:16px;" className="text_black_light">
+          {showsharemsg}
+        </View>
+        <View style="font-size:16px;" className="text_black_light">
+          点击去看看
+        </View>
+        <HeightView height={100} color="transparent" />
+        <FormidButton
+          senderId={senderId}
+          onClick={this.checkNavigateTo}
+          basestyle={`background-color:${APP_COLOR_THEME};line-height:2.5;color:white`}
+        >
+          去看看
+        </FormidButton>
+      </View>
+    );
     return (
       <BaseView condition={condition}>
         <AtTabs current={current}>
@@ -458,6 +513,9 @@ class Index extends Component {
         </AtCurtain>
         <AtCurtain isOpened={showauth} onClose={this.handleAuthClose}>
           {auth}
+        </AtCurtain>
+        <AtCurtain isOpened={!!showsharemsg} onClose={this.handleShareMsgClose}>
+          {sharemsg}
         </AtCurtain>
         <AtMessage />
       </BaseView>

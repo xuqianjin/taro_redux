@@ -10,12 +10,15 @@ import {
   AtForm,
   Picker,
   AtTextarea,
-  AtMessage
+  AtMessage,
+  AtTag
 } from "taro-ui";
 import HeightView from "../../components/HeightView";
 import BaseView from "../../components/BaseView";
 import ImageView from "../../components/ImageView";
 import UploadFile from "../../components/UploadFile";
+import PopRegion from "../../components/PopRegion";
+import FormidButton from "../../components/FormidButton";
 import { gender, careerKind } from "../../components/Constant";
 
 import {
@@ -25,6 +28,8 @@ import {
   postWxFormId,
   postWxQrCode
 } from "../../reducers/userReducer";
+
+import { getTags } from "../../reducers/commonReducer";
 
 import "./style.scss";
 
@@ -39,7 +44,8 @@ const mapDispatchToProps = dispatch => {
       putUserCarte,
       getUserCarte,
       postWxFormId,
-      postWxQrCode
+      postWxQrCode,
+      getTags
     },
     dispatch
   );
@@ -78,6 +84,12 @@ export default class extends Component {
           isneed: true
         },
         {
+          title: "地址",
+          name: "regionId",
+          type: "region",
+          isneed: true
+        },
+        {
           title: "公司",
           name: "corp",
           type: "text"
@@ -88,27 +100,25 @@ export default class extends Component {
           type: "text"
         }
       ],
-      desc: "",
       avatarUrl: ""
     };
   }
   config = {
     navigationBarTitleText: "编辑名片"
   };
-  componentWillMount() {
-    Taro.eventCenter.trigger("getUserCarte");
-  }
   componentDidMount() {
-    const { usercarte } = this.props.userReducer;
-    const { listdata } = this.state;
-    var list = JSON.parse(JSON.stringify(listdata));
-    list.map(item => {
-      item.value = usercarte[item.name];
-    });
-    this.setState({
-      desc: usercarte.desc,
-      listdata: list,
-      avatarUrl: usercarte.avatarUrl
+    const { userinfo } = this.props.userReducer;
+    this.props.getUserCarte(userinfo.userId).then(({ value }) => {
+      const { usercarte } = this.props.userReducer;
+      const { listdata } = this.state;
+      var list = JSON.parse(JSON.stringify(listdata));
+      list.map(item => {
+        item.value = usercarte[item.name];
+      });
+      this.setState({
+        listdata: list,
+        avatarUrl: usercarte.avatarUrl
+      });
     });
   }
   onGetPhoneNumber = res => {
@@ -127,10 +137,8 @@ export default class extends Component {
   onUpload = images => {
     this.setState({ avatarUrl: images[0] });
   };
-  onSubmit = value => {
-    const { detail } = value;
-    this.props.postWxFormId(detail.formId);
-    const { listdata, desc } = this.state;
+  onSubmit = () => {
+    const { listdata } = this.state;
     let postdata = {};
     for (var item of listdata) {
       if (!item.value && item.isneed) {
@@ -143,9 +151,6 @@ export default class extends Component {
           postdata[item.name] = temp;
         }
       }
-    }
-    if (desc) {
-      postdata.desc = desc;
     }
     postdata.avatarUrl = this.state.avatarUrl;
     Taro.showLoading();
@@ -166,31 +171,39 @@ export default class extends Component {
     if (item.type === "select") {
       const { detail } = value;
       listdata[index].value = item.selector[Number(detail.value)].value;
+    } else if (item.type === "region") {
+      listdata[index].value = value[value.length - 1].id;
     } else {
       listdata[index].value = value;
     }
     this.setState({ listdata });
-  };
-
-  onDescChange = value => {
-    const { detail } = value;
-    this.setState({ desc: detail.value });
   };
   getTypeName = item => {
     const { selector } = item;
     if (!selector) return null;
     return selector.find(myitem => myitem.value === item.value).name;
   };
+  getRegionName = item => {
+    if (item.type !== "region") {
+      return null;
+    }
+    if (!this.PopRegion) {
+      this.forceUpdate();
+      return null;
+    }
+    const name = this.PopRegion.getRegionNameById(item.value);
+    return name;
+  };
   render() {
     const { usercarte } = this.props.userReducer;
-    const { listdata, avatarUrl, desc } = this.state;
+    const { listdata, avatarUrl } = this.state;
     return (
       <BaseView baseclassname="bg_white">
         <AtMessage />
         <HeightView height={20} color="transparent" />
-        <View className="headderbox">
+        <View className="">
           <UploadFile onUpload={this.onUpload}>
-            <ImageView baseclassname="headerimg" src={avatarUrl} />
+            <ImageView baseclassname="editheaderimg" src={avatarUrl} />
           </UploadFile>
         </View>
         <HeightView height={20} color="transparent" />
@@ -221,6 +234,25 @@ export default class extends Component {
                   <HeightView height={1} color="#d6e4ef" />
                 )}
               </Picker>
+            ) : item.type === "region" ? (
+              <PopRegion
+                key={item.name}
+                ref={ref => (this.PopRegion = ref)}
+                onChange={this.onChange.bind(this, item, index)}
+              >
+                <View className="inputpicker">
+                  <View className="left">{title}</View>
+                  {item.value ? (
+                    <View className="right select">
+                      {this.getRegionName(item)}
+                    </View>
+                  ) : (
+                    <View className="right default">{`请选择${
+                      item.title
+                    }`}</View>
+                  )}
+                </View>
+              </PopRegion>
             ) : (
               <AtInput
                 value={item.value}
@@ -246,22 +278,12 @@ export default class extends Component {
             );
           })}
         </AtForm>
-        <HeightView height={50} color="transparent" />
-        <View className="desc">
-          <AtTextarea
-            value={desc}
-            onChange={this.onDescChange.bind(this)}
-            height="200"
-            maxlength="200"
-            placeholder="个人简介..."
-          />
-        </View>
-        <HeightView height={50} color="transparent" />
-        <AtForm onSubmit={this.onSubmit.bind(this)} reportSubmit={true}>
-          <AtButton className="button" type="primary" formType="submit">
+        <HeightView height={100} color="transparent" />
+        <FormidButton onClick={this.onSubmit}>
+          <AtButton className="button" type="primary">
             提交
           </AtButton>
-        </AtForm>
+        </FormidButton>
         <HeightView height={100} color="transparent" />
       </BaseView>
     );

@@ -1,0 +1,45 @@
+
+.at-tab-bar {
+  display: flex;
+  width: 100%;
+  min-height: 50px;
+  padding: 12px 0 6px;
+  text-align: center;
+  box-sizing: border-box;
+  justify-content: center;
+  align-items: start;
+  background-color: #FFF;
+
+  &__item {
+    flex: 1;
+    padding: 12px 12px 0;
+    color: #333;
+    font-size: 20px;
+    transition: all 0.2s;
+  }
+
+  &__title {
+    display: block;
+    padding: 6px 0;
+    max-width: 200px;
+    font-size: 20px;
+    line-height: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &--fixed {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+  }
+
+  &--ipx {
+    &.at-tab-bar--fixed {
+      padding-bottom: 68px;
+    }
+  }
+}

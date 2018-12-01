@@ -1,4 +1,4 @@
-$APP_COLOR_THEME: #6190e8;
+$APP_COLOR_THEME: #008aff;
 $APP_COLOR_GRAY: #f0f1f5;
 $APP_COLOR_THEME_OPACITY: rgba(97,144,232,.8);
 
@@ -103,4 +103,24 @@ page {
 }
 .at-avatar{
 	background:transparent !important;
+}
+.at-avatar--large{
+	width: 150px !important;
+	height: 150px !important;
+}
+.item-content__info-note{
+	text-overflow: -o-ellipsis-lastline;
+   overflow: hidden;
+   text-overflow: ellipsis;
+   display: -webkit-box;
+   -webkit-line-clamp: 2;
+   -webkit-box-orient: vertical;
+   align-content: center;
+}
+.at-tag--active,
+.at-button--primary{
+	background-color: $APP_COLOR_THEME !important;
+}
+.at-tabs__item--active{
+	color: $APP_COLOR_THEME !important;
 }

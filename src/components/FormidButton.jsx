@@ -40,8 +40,9 @@ export default class extends Component {
   }
   onSubmit = value => {
     const { detail } = value;
-    console.log(detail);
-    this.props.postWxFormId(detail.formId);
+    const { senderId } = this.props;
+    this.props.postWxFormId(detail.formId, senderId);
+    this.props.onClick();
   };
   render() {
     const { basestyle, onClick } = this.props;
@@ -51,11 +52,12 @@ export default class extends Component {
     if (process.env.TARO_ENV !== "weapp") {
       className = this.props.baseclassname;
     }
+    const style = `border:0px;padding-left:0px;padding-right:0px;line-height:1;font-size:none;${basestyle}`;
     return (
       <Form onSubmit={this.onSubmit.bind(this)} reportSubmit={true}>
         <Button
           className={className}
-          style="border:0px;padding-left:0px;padding-right:0px;line-height:1;font-size:none"
+          style={style}
           plain={true}
           formType="submit"
         >

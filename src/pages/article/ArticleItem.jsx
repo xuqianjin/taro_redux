@@ -5,8 +5,9 @@ import { View } from "@tarojs/components";
 import moment from "moment";
 import ImageView from "../../components/ImageView";
 import HeightView from "../../components/HeightView";
-import "./style.scss";
+import { AtIcon } from "taro-ui";
 
+import "./style.scss";
 import { getArticle } from "../../reducers/articleReducer";
 
 const mapStateToProps = state => {
@@ -31,29 +32,25 @@ export default class extends Component {
     addGlobalClass: true
   };
   static defaultProps = {
-    item: {}
+    item: {},
+    onClick: () => {}
   };
   constructor(props) {
     super(props);
   }
-  handleClick = () => {
-    const { item } = this.props;
-    this.props.getArticle(item.id).then(({ value }) => {
-      const weburl = `${API_HOST}/article/${value.id}`;
-      Taro.navigateTo({
-        url: `/pages/webview/index?weburl=${weburl}&userId=${
-          item.userId
-        }&articleId=${value.id}&isSystem=${item.isSystem}`
-      });
-    });
-  };
+
   render() {
-    const { item, line } = this.props;
+    const { item, line, showChoose, isChoose, onClick } = this.props;
     const color = APP_COLOR_GRAY;
     return (
-      <View className="bg_white opacity" onClick={this.handleClick}>
+      <View className="bg_white opacity" onClick={onClick}>
         <HeightView height={20} color="transparent" />
         <View className="at-row articleitem">
+          {showChoose && (
+            <View className="at-col at-col-1 at-col--auto" onClick={onClick}>
+              <AtIcon value={isChoose ? "star-2" : "star"} color="red" />
+            </View>
+          )}
           <View className="at-col at-col--wrap">
             <View className="title">{item.title}</View>
             <View className="at-row text_black_light articledesc">

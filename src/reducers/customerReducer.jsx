@@ -79,13 +79,14 @@ export const getVisitLog = operateId => (dispatch, getState) => {
     })
   });
 };
-export const getViewlogs = () => (dispatch, getState) => {
+export const getViewlogs = params => (dispatch, getState) => {
   return dispatch({
     type: API_GET_VIEW_LOG,
     payload: request.get(API_GET_VIEW_LOG, {
       header: {
         Authorization: getState().userReducer.token
-      }
+      },
+      params
     })
   });
 };
@@ -146,7 +147,9 @@ export default function reducer(state = init_state, action) {
     case `${API_GET_VIEW_LOG}_FULFILLED`:
       return {
         ...state,
-        viewlogs: action.payload
+        viewlogs: state.viewlogs
+          ? state.viewlogs.concat(action.payload)
+          : action.payload
       };
     default:
       return state;

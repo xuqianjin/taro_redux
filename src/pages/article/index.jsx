@@ -108,6 +108,11 @@ export default class extends Component {
   handUpload = () => {
     Taro.navigateTo({ url: "/pages/article/upload" });
   };
+  handleItemClick = item => {
+    Taro.navigateTo({
+      url: `/pages/webview/index?id=${item.id}&overcarte=${item.isSystem}`
+    });
+  };
   render() {
     const { choosetag, chooseuser, userarticle, articleTag } = this.state;
     const { deviceinfo } = this.props.commonReducer;
@@ -172,6 +177,7 @@ export default class extends Component {
                       key={item.id}
                       item={item}
                       line={index < sysarticle.length - 1}
+                      onClick={this.handleItemClick.bind(this, item)}
                     />
                   );
                 })}
@@ -203,6 +209,7 @@ export default class extends Component {
                       key={item.id}
                       item={item}
                       line={index < userarticle.length - 1}
+                      onClick={this.handleItemClick.bind(this, item)}
                     />
                   );
                 })}

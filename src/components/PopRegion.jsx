@@ -27,9 +27,13 @@ export default class extends Component {
   static defaultProps = {};
   constructor(props) {
     super(props);
-    this.state = {
-      Children: []
-    };
+    this.state = {};
+    this.provinces = [];
+    this.citys = [];
+    this.dists = {};
+    this.province = {};
+    this.city = {};
+    this.dist = {};
   }
 
   componentWillMount() {
@@ -43,13 +47,30 @@ export default class extends Component {
     }
   }
   transReigon = regions => {
-    this.setState({ Children: regions[0].Children });
+    this.provinces = regions;
+    this.province = this.provinces[0];
+    this.citys = this.province.Children;
+    this.city = this.citys[0];
+    this.dists = this.city.Children;
+    this.dist = this.dists[0];
+    this.forceUpdate();
   };
   handleColumnChange = ({ detail }) => {
-    const { regions } = this.props.commonReducer;
-    if (detail.column == 0) {
-      this.setState({ Children: regions[detail.value].Children });
+    const { column, value } = detail;
+    if (column == 0) {
+      this.province = this.provinces[value];
+      this.citys = this.province.Children;
+      this.city = this.citys[0];
+      this.dists = this.city.Children;
+      this.dist = this.dists[0];
+    } else if (column == 1) {
+      this.city = this.citys[value];
+      this.dists = this.city.Children;
+      this.dist = this.dists[0];
+    } else if (column == 2) {
+      this.dist = this.dists[value];
     }
+    this.forceUpdate();
   };
   mapRegions = (regions, id) => {
     for (var province of regions) {
@@ -69,27 +90,25 @@ export default class extends Component {
     }
   };
   getRegionNameById = id => {
-    const { regions } = this.props.commonReducer;
-    const value = this.mapRegions(regions, 140202);
-    console.log(value);
-    return "sss";
+    const { provinces } = this;
+    const value = this.mapRegions(provinces, id);
+    if (value) {
+      const name = value.map(item => item.name).join(" ");
+      return name;
+    }
   };
 
   handleChange = ({ detail }) => {
-    const { regions } = this.props.commonReducer;
-    const { value } = detail;
-    const province = regions[value[0]];
-    const city = province.Children[value[1]];
-    this.props.onChange && this.props.onChange(province, city);
+    const { province, city, dist } = this;
+    this.props.onChange && this.props.onChange([province, city, dist]);
   };
 
   render() {
-    const { regions } = this.props.commonReducer;
-    const { Children } = this.state;
+    const { provinces, citys, dists } = this;
     return (
       <View>
         <Picker
-          range={[regions, Children]}
+          range={[provinces, citys, dists]}
           rangeKey="name"
           mode="multiSelector"
           onChange={this.handleChange}

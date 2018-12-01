@@ -2,13 +2,18 @@ import Taro, { Component } from "@tarojs/taro";
 import { WebView } from "@tarojs/components";
 import { connect } from "@tarojs/redux";
 import { bindActionCreators } from "redux";
+import { getArticle } from "../../reducers/articleReducer";
 
 const mapStateToProps = state => {
-  return { userReducer: state.userReducer, commonReducer: state.commonReducer };
+  return {
+    userReducer: state.userReducer,
+    commonReducer: state.commonReducer,
+    articleReducer: state.articleReducer
+  };
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({}, dispatch);
+  return bindActionCreators({ getArticle }, dispatch);
 };
 
 @connect(
@@ -18,43 +23,27 @@ const mapDispatchToProps = dispatch => {
 export default class extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      timebegin: new Date().getTime() - 3000,
-      kind: 2,
-      isme: true,
-      share: ""
-    };
+    this.state = {};
   }
   componentWillMount() {
     const params = this.$router.params;
-    const { weburl, isSystem } = params;
-    this.setState({ weburl, isSystem });
+    const { overcarte, id } = params;
+    const weburl = `${API_HOST}/article/${id}`;
+
+    this.props.getArticle(id).then(({ value }) => {
+      this.setState({ articleitem: value });
+    });
+    this.setState({ weburl, overcarte, id });
   }
-  componentDidMount() {
-    const { userinfo } = this.props.userReducer;
-    const params = this.$router.params;
-    const isme = params.userId == userinfo.userId;
-    this.setState({ isme, articleId: params.articleId });
-  }
-  componentWillUnmount() {
-    // this.postViewlog();
-  }
-  //上报数据
-  postViewlog = () => {
-    const { timebegin, kind, isme, articleId } = this.state;
-    const duration = (new Date().getTime() - timebegin) / 1000;
-    const postdata = {
-      kind,
-      sourceId: Number(articleId),
-      duration: parseInt(duration)
-    };
-    !isme && Taro.eventCenter.trigger("postViewlogs", postdata);
-  };
+  componentDidMount() {}
+  componentWillUnmount() {}
 
   onShareAppMessage() {
-    const { weburl } = this.state;
+    const { weburl, id, articleitem } = this.state;
     let sharecontent = {
-      path: `/pages/index?goto=webview&weburl=${weburl}`
+      path: `/pages/index?goto=article&id=${id}&name=${
+        articleitem.User.nickName
+      }`
     };
     if (
       this.share &&
@@ -72,9 +61,9 @@ export default class extends Component {
     this.share = data;
   };
   render() {
-    let { weburl, isSystem } = this.state;
+    let { weburl, overcarte, articleitem } = this.state;
     let url = weburl;
-    if (isSystem) {
+    if (overcarte) {
       url = weburl + "?overcarte=1";
     }
     return <WebView src={url} onMessage={this.bindMessage} />;

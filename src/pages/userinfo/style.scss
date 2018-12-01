@@ -1,14 +1,44 @@
 .headderbox {
-  width: 750px;
-  text-align: center;
+  width: 710px;
+  height: 400px;
+  margin: auto;
   position: relative;
+  // background: url(https://djcdn.baicaiyun.com/carte_bg.jpg) no-repeat center
+  //   center;
+  // background-size: 100% 100%;
+  background: #f0f1f5;
+  display: flex;
+  align-items: center;
+  border-radius: 20px;
+  margin-top: -150px;
+}
+.headercontent {
+  width: 630px;
+  margin: auto;
+  & .name {
+    font-weight: bold;
+    font-size: 40px;
+    line-height: 2;
+  }
+  & .career {
+    font-size: 28px;
+    line-height: 1.5;
+  }
+  & .info {
+    font-size: 25px;
+    line-height: 2;
+  }
 }
 
 .headerimg {
   width: 710px;
   height: 400px;
 }
-
+.editheaderimg {
+  width: 710px;
+  height: 400px;
+  margin-left: 20px;
+}
 .inputpicker {
   // height: 80px;
   display: flex;
@@ -32,78 +62,42 @@
     color: black;
   }
 }
-.desc {
-  width: 700px;
-  padding-left: 25px;
-}
+
 .button {
-  width: 700px;
-  margin-left: -7px !important;
-}
-
-.infotag {
   width: 710px;
-  position: absolute;
-  bottom: 10px;
-  left: 20px;
-  color: white;
-  text-align: left;
-
-  & .title {
-    margin-left: 20px;
-    margin-top: 5px;
-  }
-
-  & .desc {
-    margin-top: 5px;
-    font-size: 25px;
-    margin-bottom: 5px;
-  }
+  margin: auto;
 }
-
-.edittag {
-  background-color: rgba(136, 136, 136, 0.7);
-  position: absolute;
-  top: 10px;
-  right: 30px;
-  color: white;
-  font-size: 25px;
-  padding: 5px;
-}
-
 .headerboxbottom {
-  width: 710px;
-  margin-left: 20px;
+  width: 750px;
   font-size: 25px;
   height: 80px;
-  margin-top: -10px;
   align-items: center;
 }
 
 .paneltitle {
   position: relative;
-  font-weight: bold;
-  line-height: 2;
-  padding-left: 50px;
+  line-height: 2.5;
+  padding-left: 20px;
   color: black;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 35px;
 
-  &:before {
-    content: "";
-    display: inline-block;
-    position: absolute;
-    left: 0.512rem;
-    top: 50%;
-    margin-top: -0.42667rem;
-    width: 2px;
-    height: 0.85333rem;
-    background-color: #6190e8;
-    box-shadow: 0 0.14933rem 0.256rem 0 rgba(97, 144, 232, 0.2);
-    border-radius: 1px;
+  & .extra {
+    margin-right: 20px;
+    font-size: 30px;
+    font-weight: normal;
   }
+}
+.userinfoedit {
+  margin-right: 45px;
+  font-size: 30px;
+  font-weight: normal;
 }
 
 .userdesc {
-  font-size: 25px;
+  font-size: 28px;
   padding: 20px;
 }
 .content-min-height {

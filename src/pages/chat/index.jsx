@@ -162,7 +162,7 @@ export default class extends Component {
     const { userinfo, userinfodetail } = this.props.userReducer;
     const { messages, scrollIntoView, showcurtain, params } = this.state;
     const scrollheight = Taro.pxTransform(
-      (deviceinfo.windowHeight * 750) / deviceinfo.windowWidth - 97
+      (deviceinfo.windowHeight * 750) / deviceinfo.windowWidth - 100
     );
     let condition = false;
     if (messages) {
