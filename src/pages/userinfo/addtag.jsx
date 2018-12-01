@@ -132,7 +132,7 @@ export default class extends Component {
   };
   onInputConfirm = () => {
     const { editvalue, advantage } = this.state;
-    if (!advantage.includes(editvalue)) {
+    if (editvalue && !advantage.includes(editvalue)) {
       advantage.push(editvalue);
     }
     this.setState({ editvalue: "", showModal: false, advantage });
