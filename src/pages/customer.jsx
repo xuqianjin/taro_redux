@@ -48,24 +48,9 @@ export default class extends Component {
   }
   onItemClick = item => {
     const { Visitor, visitorId } = item;
-    Taro.showLoading();
-    this.props
-      .postFriendShip({ receiverId: visitorId })
-      .then(res => {
-        Taro.hideLoading();
-        Taro.navigateTo({
-          url: `/pages/chat/index?to=${visitorId}&avatarUrl=${
-            Visitor.avatarUrl
-          }&nickName=${Visitor.nickName}`
-        });
-      })
-      .catch(res => {
-        Taro.hideLoading();
-        Taro.atMessage({
-          message: res.message,
-          type: "error"
-        });
-      });
+    Taro.navigateTo({
+      url: `/pages/chat/index?to=${visitorId}`
+    });
   };
   onSetIntent = item => {
     const { id } = item;

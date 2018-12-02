@@ -42,13 +42,14 @@ export default class extends Component {
   render() {
     const { item, line, showChoose, isChoose, onClick } = this.props;
     const color = APP_COLOR_GRAY;
+    const themecolor = APP_COLOR_THEME;
     return (
       <View className="bg_white opacity" onClick={onClick}>
         <HeightView height={20} color="transparent" />
         <View className="at-row articleitem">
           {showChoose && (
             <View className="at-col at-col-1 at-col--auto" onClick={onClick}>
-              <AtIcon value={isChoose ? "star-2" : "star"} color="red" />
+              <AtIcon value={isChoose ? "star-2" : "star"} color={themecolor} />
             </View>
           )}
           <View className="at-col at-col--wrap">

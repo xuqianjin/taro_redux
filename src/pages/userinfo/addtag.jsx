@@ -70,7 +70,7 @@ export default class extends Component {
     };
   }
   config = {
-    navigationBarTitleText: "编辑名片"
+    navigationBarTitleText: "编辑标签"
   };
   componentDidMount() {
     const { userinfo } = this.props.userReducer;
@@ -197,7 +197,7 @@ export default class extends Component {
             <AtInput
               placeholder="最长十个字"
               maxlength={10}
-              autoFocus={true}
+              autoFocus={false}
               clear={true}
               value={editvalue}
               onChange={this.onChange}

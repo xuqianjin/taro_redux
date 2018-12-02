@@ -48,7 +48,7 @@ export default class extends Component {
   handleClick = item => {
     const { avatar, to, nick } = item;
     Taro.navigateTo({
-      url: `/pages/chat/index?to=${to}&avatarUrl=${avatar}&nickName=${nick}`
+      url: `/pages/chat/index?to=${to}`
     });
   };
   render() {

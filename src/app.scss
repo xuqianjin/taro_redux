@@ -1,6 +1,6 @@
 $APP_COLOR_THEME: #008aff;
 $APP_COLOR_GRAY: #f0f1f5;
-$APP_COLOR_THEME_OPACITY: rgba(97,144,232,.8);
+$APP_COLOR_THEME_OPACITY: rgba(0,138,255,.9);
 
 body,
 html {
@@ -16,6 +16,7 @@ page {
 .baseview {
 	// height: 100%;
 	min-height: 100%;
+	font-size: 28px;
 }
 
 .fullheight {

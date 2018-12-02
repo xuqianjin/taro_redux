@@ -7,6 +7,7 @@ import { AtAvatar, AtIcon, AtLoadMore } from "taro-ui";
 import { countTypeText } from "../../lib/utils";
 import moment from "moment";
 import BaseView from "../../components/BaseView";
+import HeightView from "../../components/HeightView";
 import { changeSrc } from "../../lib/utils";
 import { getViewlogs } from "../../reducers/customerReducer";
 import "./style.scss";
@@ -66,9 +67,7 @@ export default class extends Component {
   handleClick = item => {
     const { Visitor, visitorId } = item;
     Taro.navigateTo({
-      url: `/pages/chat/index?to=${visitorId}&avatarUrl=${
-        Visitor.avatarUrl
-      }&nickName=${Visitor.nickName}`
+      url: `/pages/chat/index?to=${visitorId}`
     });
   };
   render() {
@@ -91,6 +90,7 @@ export default class extends Component {
       (deviceinfo.windowHeight * 750) / deviceinfo.windowWidth
     );
     const imgstyle = `margin:${Taro.pxTransform(20)}`;
+    const descstyle = `font-size:${Taro.pxTransform(25)}`;
 
     return (
       <BaseView condition={condition}>
@@ -103,42 +103,55 @@ export default class extends Component {
           {viewlogs &&
             viewlogs.map(viewlog => {
               const { Visitor, duration, kind, count, createdAt } = viewlog;
-
               return (
-                <View
-                  key={viewlog.id}
-                  className="at-row bg_white opacity content shadow"
-                  onClick={this.handleClick.bind(this, viewlog)}
-                >
+                <View key={viewlog.id}>
                   <View
-                    style={imgstyle}
-                    className="at-col at-col-1 at-col--auto"
+                    className="at-row bg_white opacity at-row__align--center"
+                    onClick={this.handleClick.bind(this, viewlog)}
                   >
-                    <AtAvatar
-                      circle={true}
-                      image={changeSrc(Visitor && Visitor.avatarUrl)}
-                    />
-                  </View>
-                  <View className="at-col">
-                    <View className="at-row at-row__justify--between">
-                      <View className="at-col at-col-1 at-col--auto title">
-                        {Visitor.nickName}
+                    <View
+                      style={imgstyle}
+                      className="at-col at-col-1 at-col--auto"
+                    >
+                      <AtAvatar
+                        circle={true}
+                        image={changeSrc(Visitor && Visitor.avatarUrl)}
+                      />
+                    </View>
+                    <View className="at-row at-row__justify--between at-row__align--center">
+                      <View className="at-col">
+                        <HeightView height={20} color="transparent" />
+                        <View>{Visitor.nickName}</View>
+                        <HeightView height={10} color="transparent" />
+                        <View
+                          style={descstyle}
+                          className="at-row text_black_light at-row--wrap"
+                        >
+                          <Text>在你的</Text>
+                          <Text className="text_theme">{kindtype[kind]}</Text>
+                          <Text>停留了</Text>
+                          <Text className="text_theme">{duration}</Text>
+                          <Text>秒</Text>
+                        </View>
+                        <View
+                          style={descstyle}
+                          className="at-row text_black_light at-row--wrap"
+                        >
+                          <Text>这是他第</Text>
+                          <Text className="text_theme">{count}</Text>
+                          <Text>次访问你</Text>
+                        </View>
+                        <HeightView height={20} color="transparent" />
                       </View>
-                      <View className="at-col at-col-1 at-col--auto text_black_light time">
-                        {moment(createdAt).calendar()}
+                      <View
+                        style={imgstyle}
+                        className="at-col at-col-1 at-col--auto text_right text_black_light"
+                      >
+                        <View>{moment(createdAt).calendar()}</View>
                       </View>
                     </View>
-                    <View className="desc at-col--wrap text_black_light">
-                      <Text>在你的</Text>
-                      <Text className="text_theme">{kindtype[kind]}</Text>
-                      <Text>停留了</Text>
-                      <Text className="text_theme">{duration}</Text>
-                      <Text>秒,这是他第</Text>
-                      <Text className="text_theme">{count}</Text>
-                      <Text>访问你</Text>
-                      <Text>{countTypeText(count)}</Text>
-                    </View>
                   </View>
+                  <HeightView height={10} color="transparent" />
                 </View>
               );
             })}

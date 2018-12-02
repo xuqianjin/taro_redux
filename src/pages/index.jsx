@@ -153,6 +153,7 @@ class Index extends Component {
   componentWillMount() {
     Taro.eventCenter.on("getUserCarte", () => {
       const { userinfo } = this.props.userReducer;
+      console.log('sss');
       this.props.getUserCarte(userinfo.userId);
       this.props.getUserCarteDesc(userinfo.userId);
     });
@@ -175,6 +176,7 @@ class Index extends Component {
         return this.props.postWxLogin({ code: res.code });
       })
       .then(res => {
+        Taro.eventCenter.trigger("getUserCarte");
         Taro.eventCenter.trigger("getCustomer");
         Taro.eventCenter.trigger("getUserInfoDetail");
         this.props.getStatistic();
@@ -495,6 +497,7 @@ class Index extends Component {
             <User
               onShare={this.handleShare}
               userinfo={userinfo}
+              usercarte={usercarte}
               userinfodetail={userinfodetail}
               sessions={sessions}
               onJoin={this.handleJoin}

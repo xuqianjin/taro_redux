@@ -1,7 +1,7 @@
 import Taro, { Component } from "@tarojs/taro";
 import { View, Button, Text, Input } from "@tarojs/components";
 
-import { AtListItem, AtCurtain, AtButton } from "taro-ui";
+import { AtListItem, AtCurtain, AtButton, AtIcon } from "taro-ui";
 
 import BaseView from "../components/BaseView";
 import HeightView from "../components/HeightView";
@@ -117,17 +117,19 @@ export default class extends Component {
             <View className="text_black_light">未读消息</View>
           </View>
         </View>
-        <View className="at-row footer text_theme">
+        <View className="at-row at-row__align--center footer text_theme">
           <View
             className="at-col text_center line opacity"
             onClick={this.handleShare}
           >
+            <AtIcon value="share" size={16} />
             邀请好友获VIP
           </View>
           <View
             className="at-col text_center opacity"
             onClick={this.handleJoin}
           >
+            <AtIcon value="message" size={18} />
             加入群聊
           </View>
         </View>

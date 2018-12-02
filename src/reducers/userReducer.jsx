@@ -14,7 +14,9 @@ const API_POST_MAGICMESSAGE = API_HOST + "/c/wxlite/magicMessageHook";
 const API_GET_USER_INFO = API_HOST + "/c/user";
 const API_PUT_USER_CARTE = API_HOST + "/c/carte";
 const API_GET_USER_CARTE = API_HOST + "/c/carte/{id}";
+const API_GET_USER_CARTE_OTHER = API_HOST + "/c/carte/{id}_other";
 const API_GET_USER_CARTE_DEC = API_HOST + "/c/carte/{id}/decorate";
+const API_GET_USER_CARTE_DEC_OTHER = API_HOST + "/c/carte/{id}/decorate_other";
 
 const API_PUT_USER_CARTE_COLLECT = API_HOST + "/c/carte/{id}/collect";
 const API_DEL_USER_CARTE_COLLECT = API_HOST + "/c/carte/{id}/uncollect";
@@ -60,7 +62,7 @@ export const putWxUserPhone = data => (dispatch, getState) => {
 };
 
 export const postWxFormId = (formId, senderId) => (dispatch, getState) => {
-  if (process.env.NODE_ENV !== " production") {
+  if (process.env.NODE_ENV === "development") {
     return null;
   }
   return dispatch({
@@ -124,6 +126,17 @@ export const getUserCarte = operateId => (dispatch, getState) => {
     })
   });
 };
+export const getUserCarteOther = operateId => (dispatch, getState) => {
+  return dispatch({
+    type: API_GET_USER_CARTE_OTHER,
+    payload: request.get(API_GET_USER_CARTE, {
+      header: {
+        Authorization: getState().userReducer.token
+      },
+      operateId
+    })
+  });
+};
 export const getUserInfoDetail = () => (dispatch, getState) => {
   return dispatch({
     type: API_GET_USER_INFO,
@@ -150,6 +163,18 @@ export const putUserCarte = data => (dispatch, getState) => {
 export const getUserCarteDesc = operateId => (dispatch, getState) => {
   return dispatch({
     type: API_GET_USER_CARTE_DEC,
+    payload: request.get(API_GET_USER_CARTE_DEC, {
+      header: {
+        Authorization: getState().userReducer.token
+      },
+      operateId
+    })
+  });
+};
+
+export const getUserCarteDescOther = operateId => (dispatch, getState) => {
+  return dispatch({
+    type: API_GET_USER_CARTE_DEC_OTHER,
     payload: request.get(API_GET_USER_CARTE_DEC, {
       header: {
         Authorization: getState().userReducer.token

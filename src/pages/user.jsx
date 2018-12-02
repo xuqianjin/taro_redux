@@ -99,20 +99,20 @@ export default class extends Component {
     }
   };
   render() {
-    const { userinfodetail } = this.props;
+    const { userinfodetail, usercarte } = this.props;
     const userCard = (
       <View
         onClick={this.handleUserData}
         className="at-row bg_white home_card_container shadow opacity"
       >
         <View className="at-col at-col-1 at-col--auto">
-          <ImageView baseclassname="icon" src={userinfodetail.avatarUrl} />
+          <ImageView baseclassname="icon border-radius" src={usercarte.avatarUrl} />
         </View>
         <View className="at-col">
-          <View className="title">{userinfodetail.nickName}</View>
-          {userinfodetail.office && userinfodetail.corp && (
+          <View className="title">{usercarte.name}</View>
+          {usercarte.office && usercarte.corp && (
             <View className="desc text_black_light">
-              {userinfodetail.office}| {userinfodetail.corp}
+              {usercarte.corp} | {usercarte.office}
             </View>
           )}
         </View>

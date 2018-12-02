@@ -6,6 +6,31 @@ import { View, Picker } from "@tarojs/components";
 
 import { getRegion } from "../reducers/commonReducer";
 
+export const mapRegions = (regions, id) => {
+  for (var province of regions) {
+    if (province.id === id) {
+      return province;
+    }
+    for (var city of province.Children) {
+      if (city.id === id) {
+        return [province, city];
+      }
+      for (var dist of city.Children) {
+        if (dist.id === id) {
+          return [province, city, dist];
+        }
+      }
+    }
+  }
+};
+export const getRegionNameById = (id, provinces) => {
+  const value = mapRegions(provinces, id);
+  if (value) {
+    const name = value.map(item => item.name).join(" ");
+    return name;
+  }
+};
+
 const mapStateToProps = state => {
   return { commonReducer: state.commonReducer };
 };
@@ -71,31 +96,6 @@ export default class extends Component {
       this.dist = this.dists[value];
     }
     this.forceUpdate();
-  };
-  mapRegions = (regions, id) => {
-    for (var province of regions) {
-      if (province.id === id) {
-        return province;
-      }
-      for (var city of province.Children) {
-        if (city.id === id) {
-          return [province, city];
-        }
-        for (var dist of city.Children) {
-          if (dist.id === id) {
-            return [province, city, dist];
-          }
-        }
-      }
-    }
-  };
-  getRegionNameById = id => {
-    const { provinces } = this;
-    const value = this.mapRegions(provinces, id);
-    if (value) {
-      const name = value.map(item => item.name).join(" ");
-      return name;
-    }
   };
 
   handleChange = ({ detail }) => {

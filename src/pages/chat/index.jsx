@@ -16,9 +16,10 @@ import {
 
 import BaseView from "../../components/BaseView";
 import HeightView from "../../components/HeightView";
+import { changeSrc } from "../../lib/utils";
 
 import chatItem from "./chatItem";
-import { postWxForcepush } from "../../reducers/userReducer";
+import { postWxForcepush, getUserCarteOther } from "../../reducers/userReducer";
 
 import "./style.scss";
 
@@ -31,7 +32,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ postWxForcepush }, dispatch);
+  return bindActionCreators({ postWxForcepush, getUserCarteOther }, dispatch);
 };
 
 @connect(
@@ -47,25 +48,32 @@ export default class extends Component {
       messages: [],
       scrollIntoView: "",
       showcurtain: false,
-      presession: "",
-      params: {}
+      params: {},
+      pagecarte: ""
     };
   }
   componentWillMount() {
     const params = this.$router.params;
     this.setState({ params });
     wx.nim.setCurrSession(`p2p-${params.to}`);
-    Taro.setNavigationBarTitle({ title: `与${params.nickName}聊天` });
     wx.nim.getHistoryMsgs({
       scene: "p2p",
       to: params.to,
       asc: true,
       done: (err, res) => {
-        this.setState({
-          messages: res.msgs,
-          scrollIntoView: "scrollIntoView" + (res.msgs.length - 1)
-        });
+        if (res && res.msgs) {
+          this.setState({
+            messages: res.msgs,
+            scrollIntoView: "scrollIntoView" + (res.msgs.length - 1)
+          });
+        }
       }
+    });
+
+    this.props.getUserCarteOther(params.to).then(res => {
+      const { value } = res;
+      Taro.setNavigationBarTitle({ title: `与${value.name}聊天` });
+      this.setState({ pagecarte: value });
     });
   }
   componentDidMount() {
@@ -159,13 +167,13 @@ export default class extends Component {
   };
   render() {
     const { deviceinfo } = this.props.commonReducer;
-    const { userinfo, userinfodetail } = this.props.userReducer;
-    const { messages, scrollIntoView, showcurtain, params } = this.state;
+    const { usercarte, userinfo, userinfodetail } = this.props.userReducer;
+    const { messages, scrollIntoView, showcurtain, pagecarte } = this.state;
     const scrollheight = Taro.pxTransform(
       (deviceinfo.windowHeight * 750) / deviceinfo.windowWidth - 100
     );
     let condition = false;
-    if (messages) {
+    if (messages && pagecarte) {
     } else {
       condition = {
         state: "viewLoading",
@@ -191,7 +199,11 @@ export default class extends Component {
                   isme={isme}
                   key={idServer}
                   item={item}
-                  avatar={isme ? userinfo.avatarUrl : params.avatarUrl}
+                  avatar={
+                    isme
+                      ? changeSrc(usercarte.avatarUrl)
+                      : changeSrc(pagecarte.avatarUrl)
+                  }
                   onForcePush={this.onForcePush}
                 />
               );

@@ -17,7 +17,7 @@ import HeightView from "../../components/HeightView";
 import BaseView from "../../components/BaseView";
 import ImageView from "../../components/ImageView";
 import UploadFile from "../../components/UploadFile";
-import PopRegion from "../../components/PopRegion";
+import PopRegion, { getRegionNameById } from "../../components/PopRegion";
 import FormidButton from "../../components/FormidButton";
 import { gender, careerKind } from "../../components/Constant";
 
@@ -34,7 +34,7 @@ import { getTags } from "../../reducers/commonReducer";
 import "./style.scss";
 
 const mapStateToProps = state => {
-  return { userReducer: state.userReducer };
+  return { userReducer: state.userReducer, commonReducer: state.commonReducer };
 };
 
 const mapDispatchToProps = dispatch => {
@@ -63,7 +63,7 @@ export default class extends Component {
     this.state = {
       listdata: [
         {
-          title: "手机号码",
+          title: "手机",
           name: "contactPhonenum",
           type: "phone",
           isneed: true
@@ -106,6 +106,9 @@ export default class extends Component {
   config = {
     navigationBarTitleText: "编辑名片"
   };
+  componentWillMount() {
+    this.props.userReducer.usercarte = "";
+  }
   componentDidMount() {
     const { userinfo } = this.props.userReducer;
     this.props.getUserCarte(userinfo.userId).then(({ value }) => {
@@ -187,18 +190,25 @@ export default class extends Component {
     if (item.type !== "region") {
       return null;
     }
-    if (!this.PopRegion) {
-      this.forceUpdate();
-      return null;
-    }
-    const name = this.PopRegion.getRegionNameById(item.value);
+    const { regions } = this.props.commonReducer;
+    const name = getRegionNameById(item.value, regions);
     return name;
   };
   render() {
     const { usercarte } = this.props.userReducer;
     const { listdata, avatarUrl } = this.state;
+
+    const { regions } = this.props.commonReducer;
+
+    let condition = false;
+    if (usercarte && regions) {
+    } else {
+      condition = {
+        state: "viewLoading"
+      };
+    }
     return (
-      <BaseView baseclassname="bg_white">
+      <BaseView condition={condition} baseclassname="bg_white">
         <AtMessage />
         <HeightView height={20} color="transparent" />
         <View className="">
@@ -209,7 +219,7 @@ export default class extends Component {
         <HeightView height={20} color="transparent" />
         <AtForm>
           {listdata.map((item, index) => {
-            const title = item.isneed ? "*" + item.title : item.title;
+            const title = item.isneed ? `${item.title}*` : ` ${item.title}`;
 
             return item.type === "select" ? (
               <Picker
@@ -252,6 +262,9 @@ export default class extends Component {
                     }`}</View>
                   )}
                 </View>
+                {index + 1 < listdata.length && (
+                  <HeightView height={1} color="#d6e4ef" />
+                )}
               </PopRegion>
             ) : (
               <AtInput

@@ -217,7 +217,7 @@ export default class extends Component {
             </ScrollView>
           </AtTabsPane>
         </AtTabs>
-        <View className="fix bg_theme opacity" onClick={this.handUpload}>
+        <View className="fix bg_theme" onClick={this.handUpload}>
           <AtIcon value="share-2" size={18} />
           <HeightView height={5} color="transparent" />
           <Text>上传文章</Text>
