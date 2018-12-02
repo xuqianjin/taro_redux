@@ -18,6 +18,7 @@ import "moment/locale/zh-cn";
 import moment from "moment";
 
 import Nim from "../lib/NIM_Web_NIM_weixin_v5.8.0";
+import IO from "weapp.socket.io";
 
 import ImageView from "../components/ImageView";
 import FormidButton from "../components/FormidButton";
@@ -151,9 +152,31 @@ class Index extends Component {
     }
   };
   componentWillMount() {
+
+    const socket = Taro.connectSocket({
+      url: "wss://dj.baicaiyun.com/s/?transport=websocket",
+      success: () => {
+        console.log("sss");
+      }
+    }).then(task => {
+      task.onOpen(function() {
+        console.log("onOpen");
+        task.send({ data: "xxx" });
+      });
+      task.onMessage(function(msg) {
+        console.log("onMessage: ", msg);
+        task.close();
+      });
+      task.onError(function(err) {
+        console.log("onError", err);
+      });
+      task.onClose(function(e) {
+        console.log("onClose: ", e);
+      });
+    });
+
     Taro.eventCenter.on("getUserCarte", () => {
       const { userinfo } = this.props.userReducer;
-      console.log('sss');
       this.props.getUserCarte(userinfo.userId);
       this.props.getUserCarteDesc(userinfo.userId);
     });
@@ -180,6 +203,30 @@ class Index extends Component {
         Taro.eventCenter.trigger("getCustomer");
         Taro.eventCenter.trigger("getUserInfoDetail");
         this.props.getStatistic();
+
+        // wx.socket = IO.connect(
+        //   "https://dj.baicaiyun.com",
+        //   {
+        //     path: "/s",
+        //     transports: ["websocket"]
+        //   }
+        // );
+        // wx.socket.on("connect", () => {
+        //   wx.socket.emit("authenticate", { token: res.value.token }, err => {
+        //     console.log(err);
+        //   }); // 登录, 链接后需要立刻调用
+        //   // socket.emit("enterChat", { toUserId }, err => {}); // 进入与 toUserId 聊天页
+        //   // socket.emit("exitChat", null, err => {}); // 退出与 toUserId 的聊天页
+        //   // socket.emit("msg", { content }, err => {
+        //   //   if (err) {
+        //   //     // 错误信息
+        //   //   }
+        //   // }); // 发送消息
+        // });
+        //
+        // wx.socket.on("msg", msg => {
+        //   console.log("msg-----------", msg);
+        // }); // 接收消息
 
         this.props.getImToken().then(({ value }) => {
           this.initNim(value.token);
@@ -317,7 +364,10 @@ class Index extends Component {
     });
   };
   onShareAppMessage() {
-    return { title: "多装获客宝" };
+    return {
+      title: "多装获客宝",
+      path: `/pages/index`
+    };
   }
   componentDidShow() {}
 

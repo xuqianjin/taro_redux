@@ -92,7 +92,7 @@ export const getViewlogs = params => (dispatch, getState) => {
 };
 export const postViewlogs = data => (dispatch, getState) => {
   return dispatch({
-    type: API_POST_VIEW_LOG,
+    type: API_POST_VIEW_LOG + "POST",
     payload: request.post(API_POST_VIEW_LOG, {
       header: {
         Authorization: getState().userReducer.token

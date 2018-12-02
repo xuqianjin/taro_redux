@@ -30,6 +30,7 @@ class App extends Component {
       "pages/userinfo/articles",
       "pages/userinfo/adddesc",
       "pages/userinfo/addtag",
+      "pages/userinfo/collect",
       "pages/article/index",
       "pages/article/upload",
       "pages/webview/index",

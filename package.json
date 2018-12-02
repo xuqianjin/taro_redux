@@ -34,7 +34,8 @@
     "redux-logger": "^3.0.6",
     "redux-promise-middleware": "^5.1.1",
     "redux-thunk": "^2.3.0",
-    "taro-ui": "^1.4.0"
+    "taro-ui": "^1.4.0",
+    "weapp.socket.io": "^2.0.1"
   },
   "devDependencies": {
     "@types/react": "^16.4.8",

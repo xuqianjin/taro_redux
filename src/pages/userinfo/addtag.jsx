@@ -62,8 +62,23 @@ export default class extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      carteTag: [],
-      tags: [],
+      carteTag: [
+        "全屋整装",
+        "全屋定制",
+        "空间改造",
+        "老房改造",
+        "局部改造",
+        "厂房改造",
+        "小户型",
+        "个性化定制",
+        "家装设计",
+        "复式设计",
+        "样板房",
+        "别墅豪宅",
+        "办公空间",
+        "整体软装",
+        "智能家居"
+      ],
       advantage: [],
       showModal: false,
       editvalue: ""
@@ -74,13 +89,12 @@ export default class extends Component {
   };
   componentDidMount() {
     const { userinfo } = this.props.userReducer;
-    this.props.getTags({ kind: 1 }).then(res => {
-      this.setState({ carteTag: res.value });
-    });
+    // this.props.getTags({ kind: 1 }).then(res => {
+    //   this.setState({ carteTag: res.value });
+    // });
     this.props.getUserCarte(userinfo.userId).then(({ value }) => {
       const { usercarte } = this.props.userReducer;
       this.setState({
-        tags: usercarte.CarteTags.map(item => item.tagId),
         advantage: JSON.parse(usercarte.advantage) || []
       });
     });
@@ -147,17 +161,17 @@ export default class extends Component {
         <View style={`margin:auto;width:${Taro.pxTransform(710)}`}>
           <View style="font-size:15px">推荐标签</View>
           <HeightView height={20} color="transparent" />
-          {carteTag.map(tag => {
+          {carteTag.map((tag, index) => {
             return (
               <AtTag
-                active={advantage.includes(tag.name)}
-                key={tag.id}
-                name={tag.name}
+                active={advantage.includes(tag)}
+                key={index}
+                name={tag}
                 type="primary"
                 circle={true}
                 onClick={this.handleTagClick}
               >
-                {tag.name}
+                {tag}
               </AtTag>
             );
           })}

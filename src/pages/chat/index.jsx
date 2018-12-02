@@ -55,6 +55,11 @@ export default class extends Component {
   componentWillMount() {
     const params = this.$router.params;
     this.setState({ params });
+
+    wx.socket.emit("enterChat", { toUserId: params.to }, err => {
+      console.log(err);
+    }); // 进入与 toUserId 聊天页
+
     wx.nim.setCurrSession(`p2p-${params.to}`);
     wx.nim.getHistoryMsgs({
       scene: "p2p",
@@ -116,6 +121,11 @@ export default class extends Component {
   handleonConfirm = () => {
     const { params } = this.state;
     const { value, messages } = this.state;
+
+    wx.socket.emit("msg", { content: value }, err => {
+      console.log(err);
+    }); // 发送消息
+
     wx.nim.sendText({
       scene: "p2p",
       to: params.to,

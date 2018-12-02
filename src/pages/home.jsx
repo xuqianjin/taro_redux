@@ -35,7 +35,7 @@ export default class extends Component {
       {
         title: "我的名片",
         icon: require("../static/icon/usercard.png"),
-        desc: "个人展示页面 让好友认识你",
+        desc: "智能社交名片，全员微信营销",
         left: `访问 ${statistic.numCartesViewed}`,
         right: `收藏 ${statistic.numCartesCollected}`,
         tourl: `/pages/userinfo/index?userId=${userinfo.userId}`
@@ -43,7 +43,7 @@ export default class extends Component {
       {
         title: "获客文章",
         icon: require("../static/icon/article.png"),
-        desc: "最新最全行业观点",
+        desc: "带名片专业文章，内容即客流",
         left: `转发 ${statistic.numArticlesForwarded}`,
         right: `阅读 ${statistic.numArticlesViewed}`,
         tourl: "/pages/article/index"
@@ -123,14 +123,14 @@ export default class extends Component {
             onClick={this.handleShare}
           >
             <AtIcon value="share" size={16} />
-            邀请好友获VIP
+            <Text>\t邀请好友获VIP</Text>
           </View>
           <View
             className="at-col text_center opacity"
             onClick={this.handleJoin}
           >
             <AtIcon value="message" size={18} />
-            加入群聊
+            <Text>\t加入群聊</Text>
           </View>
         </View>
       </View>

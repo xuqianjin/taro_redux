@@ -35,15 +35,15 @@
   height: 400px;
 }
 .editheaderimg {
-  width: 710px;
-  height: 400px;
-  margin-left: 20px;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  margin-left: 275px;
 }
 .inputpicker {
-  // height: 80px;
   display: flex;
   padding: 24px 0;
-
+  line-height: 1.5;
   & .left {
     width: 172px;
     font-size: 32px;
@@ -124,4 +124,23 @@
   height: 110px;
   width: 110px;
   border-radius: 50%;
+}
+//收藏
+.collectContent {
+  width: 710px;
+  margin: auto;
+
+  & .collectItem {
+    border-radius: 10px;
+  }
+
+  & .collectImg {
+    margin: 20px 0px 20px 20px;
+  }
+  & .collectRight {
+    margin: 20px;
+  }
+  & .collectfontsmall {
+    font-size: 25px;
+  }
 }

@@ -18,6 +18,7 @@ const API_GET_USER_CARTE_OTHER = API_HOST + "/c/carte/{id}_other";
 const API_GET_USER_CARTE_DEC = API_HOST + "/c/carte/{id}/decorate";
 const API_GET_USER_CARTE_DEC_OTHER = API_HOST + "/c/carte/{id}/decorate_other";
 
+const API_GET_USER_CARTE_COLLECT = API_HOST + "/c/cartes/collect";
 const API_PUT_USER_CARTE_COLLECT = API_HOST + "/c/carte/{id}/collect";
 const API_DEL_USER_CARTE_COLLECT = API_HOST + "/c/carte/{id}/uncollect";
 
@@ -196,10 +197,22 @@ export const putUserCarteCollect = operateId => (dispatch, getState) => {
   });
 };
 
+export const getUserCarteCollect = params => (dispatch, getState) => {
+  return dispatch({
+    type: API_GET_USER_CARTE_COLLECT,
+    payload: request.get(API_GET_USER_CARTE_COLLECT, {
+      header: {
+        Authorization: getState().userReducer.token
+      },
+      params
+    })
+  });
+};
+
 export const delUserCarteCollect = operateId => (dispatch, getState) => {
   return dispatch({
     type: API_DEL_USER_CARTE_COLLECT,
-    payload: request.delete(API_DEL_USER_CARTE_COLLECT, {
+    payload: request.put(API_DEL_USER_CARTE_COLLECT, {
       header: {
         Authorization: getState().userReducer.token
       },
@@ -225,7 +238,8 @@ const init_state = {
   userinfo: "",
   userinfodetail: "",
   usercarte: "",
-  usercartedesc: ""
+  usercartedesc: "",
+  cartecollect: ""
 };
 
 export default function reducer(state = init_state, action) {
@@ -236,6 +250,7 @@ export default function reducer(state = init_state, action) {
         token: action.payload.token,
         userinfo: action.payload
       };
+
     case `${API_GET_USER_CARTE}_FULFILLED`:
       return {
         ...state,
@@ -245,6 +260,11 @@ export default function reducer(state = init_state, action) {
       return {
         ...state,
         usercartedesc: action.payload
+      };
+    case `${API_GET_USER_CARTE_COLLECT}_FULFILLED`:
+      return {
+        ...state,
+        cartecollect: action.payload
       };
     case `${API_POST_WXLOGIN}_FULFILLED`:
       return {

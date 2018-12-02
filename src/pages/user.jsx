@@ -45,6 +45,14 @@ export default class extends Component {
         }
       },
       {
+        icon: "star",
+        title: "收藏名片",
+        extra: "收藏起来不丢失",
+        onClick: () => {
+          Taro.navigateTo({ url: "/pages/userinfo/collect" });
+        }
+      },
+      {
         icon: "sketch",
         title: "VIP会员",
         extra: vipEndAt
@@ -106,10 +114,13 @@ export default class extends Component {
         className="at-row bg_white home_card_container shadow opacity"
       >
         <View className="at-col at-col-1 at-col--auto">
-          <ImageView baseclassname="icon border-radius" src={usercarte.avatarUrl} />
+          <ImageView
+            baseclassname="icon border-radius"
+            src={usercarte.avatarUrl}
+          />
         </View>
         <View className="at-col">
-          <View className="title">{usercarte.name}</View>
+          <View className="fontbig">{usercarte.name}</View>
           {usercarte.office && usercarte.corp && (
             <View className="desc text_black_light">
               {usercarte.corp} | {usercarte.office}
@@ -133,7 +144,7 @@ export default class extends Component {
             </View>
             <View className="at-col at-col-1 at-col--auto">
               <View className="at-row">
-                <View className="at-col at-col-1 at-col--auto title">
+                <View className="at-col at-col-1 at-col--auto  fontbig">
                   {item.title}
                 </View>
                 {item.unread && (
@@ -149,7 +160,7 @@ export default class extends Component {
             </View>
           </View>
           {index < list1data.length - 1 && (
-            <HeightView height={2} color="transparent" />
+            <HeightView height={3} color="transparent" />
           )}
         </View>
       );
@@ -162,7 +173,7 @@ export default class extends Component {
             <View className="at-col at-col-1 at-col--auto icon">
               <AtIcon size={18} value={item.icon} className="text_theme" />
             </View>
-            <View className="at-col at-col-1 at-col--auto">
+            <View className="at-col at-col-1 at-col--auto fontbig">
               <View className="title">{item.title}</View>
             </View>
             <View className="at-col right text_black_light text_right">
@@ -171,7 +182,7 @@ export default class extends Component {
             </View>
           </View>
           {index < list1data.length - 1 && (
-            <HeightView height={2} color="transparent" />
+            <HeightView height={3} color="transparent" />
           )}
         </View>
       );

@@ -14,7 +14,8 @@ import {
   AtListItem,
   AtLoadMore,
   AtAvatar,
-  AtTag
+  AtTag,
+  AtMessage
 } from "taro-ui";
 import HeightView from "../../components/HeightView";
 import BaseView from "../../components/BaseView";
@@ -32,7 +33,9 @@ import {
   getUserCarte,
   getUserCarteOther,
   getUserCarteDesc,
-  getUserCarteDescOther
+  getUserCarteDescOther,
+  putUserCarteCollect,
+  getUserCarteCollect
 } from "../../reducers/userReducer";
 import { postViewlogs, putViewlogs } from "../../reducers/customerReducer";
 import { getTags } from "../../reducers/commonReducer";
@@ -56,6 +59,8 @@ const mapDispatchToProps = dispatch => {
       getUserCarteOther,
       getUserCarteDesc,
       getUserCarteDescOther,
+      putUserCarteCollect,
+      getUserCarteCollect,
       postViewlogs,
       putViewlogs,
       getTags
@@ -97,6 +102,7 @@ export default class extends Component {
       : this.props.getUserCarteDescOther;
 
     Taro.eventCenter.on("getUserCarte", () => {
+      this.props.getUserCarteCollect();
       getcarte(params.userId).then(({ value }) => {
         this.setState({ pagecarte: value });
       });
@@ -196,9 +202,25 @@ export default class extends Component {
       url: `/pages/webview/index?id=${item.id}&overcarte=${item.isSystem}`
     });
   };
+  handleCollect = isCollect => {
+    const { isme, pagecarte } = this.state;
+    console.log(!isme, !isCollect);
+    if (!isme && !isCollect) {
+      Taro.showLoading();
+      this.props.putUserCarteCollect(pagecarte.id).then(res => {
+        Taro.hideLoading();
+        Taro.atMessage({
+          message: "名片已放到收藏夹",
+          type: "success"
+        });
+        Taro.eventCenter.trigger("getUserCarte");
+      });
+    }
+  };
   render() {
     const { showshare, isme, pagecarte, pagecartedesc } = this.state;
     const { regions } = this.props.commonReducer;
+    const { cartecollect } = this.props.userReducer;
     let condition = false;
     if (pagecarte && pagecartedesc && regions) {
     } else {
@@ -211,6 +233,11 @@ export default class extends Component {
         pagecarte.advantage &&
         JSON.parse(pagecarte.advantage || "")) ||
       [];
+    const isCollect =
+      !isme &&
+      cartecollect &&
+      cartecollect.find(item => item.id === pagecarte.id);
+    const themcolor = APP_COLOR_THEME;
     return (
       <BaseView baseclassname="" condition={condition}>
         <HeightView height={150} color={APP_COLOR_THEME} />
@@ -265,11 +292,18 @@ export default class extends Component {
           <View className="at-row headerboxbottom text_center bg_white">
             <View className="at-col text_black_light">
               <AtIcon value="eye" size={20} />
-              人气 {pagecarte.numView}
+              <Text>\t人气\t{pagecarte.numView}</Text>
             </View>
-            <View className="at-col text_black_light">
-              <AtIcon value="heart" size={18} />
-              收藏 {pagecarte.numCollect}
+            <View
+              className="at-col text_black_light"
+              onClick={this.handleCollect.bind(this, isCollect)}
+            >
+              <AtIcon
+                value={isCollect ? "heart-2" : "heart"}
+                color={isCollect ? themcolor : "text_black_light"}
+                size={18}
+              />
+              <Text>\t收藏\t{pagecarte.numCollect}</Text>
             </View>
             <View className="at-col">
               <AtButton
@@ -393,6 +427,7 @@ export default class extends Component {
           </View>
         )}
         <PopRegion ref={ref => (this.PopRegion = ref)} />
+        <AtMessage />
       </BaseView>
     );
   }

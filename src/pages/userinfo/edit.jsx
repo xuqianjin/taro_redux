@@ -241,7 +241,7 @@ export default class extends Component {
                   )}
                 </View>
                 {index + 1 < listdata.length && (
-                  <HeightView height={1} color="#d6e4ef" />
+                  <HeightView height={3} color="#d6e4ef" />
                 )}
               </Picker>
             ) : item.type === "region" ? (
@@ -263,7 +263,7 @@ export default class extends Component {
                   )}
                 </View>
                 {index + 1 < listdata.length && (
-                  <HeightView height={1} color="#d6e4ef" />
+                  <HeightView height={3} color="#d6e4ef" />
                 )}
               </PopRegion>
             ) : (
