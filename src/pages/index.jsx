@@ -52,7 +52,8 @@ import {
   getVisitIntent,
   getVisitLog,
   putVisit,
-  postViewlogs
+  postViewlogs,
+  getMessageBoxes
 } from "../reducers/customerReducer";
 
 import ShareDialog from "../components/ShareDialog";
@@ -84,6 +85,7 @@ const mapDispatchToProps = dispatch => {
       getVipKinds,
       putWxUserInfo,
       putUserCarte,
+      getMessageBoxes,
       setState
     },
     dispatch
@@ -167,6 +169,9 @@ class Index extends Component {
       this.props.getVisitGuest();
       this.props.getVisitIntent();
     });
+    Taro.eventCenter.on("getMessageBoxes", () => {
+      this.props.getMessageBoxes();
+    });
   }
 
   componentDidMount() {
@@ -179,33 +184,11 @@ class Index extends Component {
         Taro.eventCenter.trigger("getUserCarte");
         Taro.eventCenter.trigger("getCustomer");
         Taro.eventCenter.trigger("getUserInfoDetail");
+        Taro.eventCenter.trigger("getMessageBoxes");
         this.props.getStatistic();
 
-        // const socket = Taro.connectSocket({
-        //   url: "wss://dj.baicaiyun.com/s/?EIO=3&transport=websocket",
-        //   success: () => {
-        //     console.log("sss");
-        //   }
-        // }).then(task => {
-        //   // wx.task = task;
-        //   task.onOpen(function() {
-        //     console.log("onOpen");
-        //     task.send({ data: { token: "sdfsfsf" } });
-        //   });
-        //   task.onMessage(function(msg) {
-        //     console.log("onMessage: ", msg);
-        //     // task.close();
-        //   });
-        //   task.onError(function(err) {
-        //     console.log("onError", err);
-        //   });
-        //   task.onClose(function(e) {
-        //     console.log("onClose: ", e);
-        //   });
-        // });
-
         wx.socket = IO.connect(
-          "https://dj.baicaiyun.com",
+          API_HOST,
           {
             path: "/s",
             transports: ["websocket"]
@@ -216,19 +199,20 @@ class Index extends Component {
             console.log(err);
           }); // 登录, 链接后需要立刻调用
 
-          wx.socket.emit("enterChat", { toUserId: 38 }, err => {
-            console.log(err);
-          }); // 进入与 toUserId 聊天页
-
+          // wx.socket.emit("enterChat", { toUserId: 32 }, err => {
+          //   console.log(err);
+          // }); // 进入与 toUserId 聊天页
         });
-
+        wx.socket.on("msgnotify", msg => {
+          console.log(msg);
+        });
         wx.socket.on("msg", msg => {
           console.log("msg-----------", msg);
         }); // 接收消息
 
-        this.props.getImToken().then(({ value }) => {
-          // this.initNim(value.token);
-        });
+        // this.props.getImToken().then(({ value }) => {
+        //   this.initNim(value.token);
+        // });
         //新用户未授权
         if (!res.value.nickName) {
           throw new Error("noAuth");
@@ -373,9 +357,9 @@ class Index extends Component {
 
   handleMenuClick = current => {
     // socket.emit("exitChat", null, err => {}); // 退出与 toUserId 的聊天页
-    wx.socket.emit("msg", { content: "测试" }, err => {
-      console.log(err);
-    }); // 发送消息
+    // wx.socket.emit("msg", { content: "测试" }, err => {
+    //   console.log(err);
+    // }); // 发送消息
 
     // wx.task.send({ enterChat: { toUserId: 32 } });
     this.setState({ current });

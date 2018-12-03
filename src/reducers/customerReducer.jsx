@@ -8,6 +8,8 @@ const API_GET_VISIT_CHART = API_HOST + "/c/visits/chart";
 const API_PUT_VISIT = API_HOST + "/c/visit/{id}";
 const API_GET_VISIT_LOG = API_HOST + "/c/visit/{id}/viewLogs";
 const API_POST_FRIENDSHIP = API_HOST + "/c/friendship";
+const API_GET_MESSAGE_BOXES = API_HOST + "/c/messageBoxes";
+const API_GET_MESSAGE_BOXES_DETAIL = API_HOST + "/c/socketMessages/{toUserId}";
 
 const API_GET_VIEW_LOG = API_HOST + "/c/viewLogs";
 const API_POST_VIEW_LOG = API_HOST + "/c/viewLogs";
@@ -40,6 +42,27 @@ export const getVisitChart = () => (dispatch, getState) => {
       header: {
         Authorization: getState().userReducer.token
       }
+    })
+  });
+};
+export const getMessageBoxes = () => (dispatch, getState) => {
+  return dispatch({
+    type: API_GET_MESSAGE_BOXES,
+    payload: request.get(API_GET_MESSAGE_BOXES, {
+      header: {
+        Authorization: getState().userReducer.token
+      }
+    })
+  });
+};
+export const getMessageBoxesDetail = operateId => (dispatch, getState) => {
+  return dispatch({
+    type: API_GET_MESSAGE_BOXES_DETAIL,
+    payload: request.get(API_GET_MESSAGE_BOXES_DETAIL, {
+      header: {
+        Authorization: getState().userReducer.token
+      },
+      operateId
     })
   });
 };
@@ -119,7 +142,8 @@ const init_state = {
   visitintent: "",
   visitchart: "",
   visitlog: "",
-  viewlogs: ""
+  viewlogs: "",
+  messageboxes: []
 };
 
 export default function reducer(state = init_state, action) {
@@ -139,6 +163,13 @@ export default function reducer(state = init_state, action) {
         ...state,
         visitchart: action.payload
       };
+
+    case `${API_GET_MESSAGE_BOXES}_FULFILLED`:
+      return {
+        ...state,
+        messageboxes: action.payload
+      };
+
     case `${API_GET_VISIT_LOG}_FULFILLED`:
       return {
         ...state,
