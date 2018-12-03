@@ -152,29 +152,6 @@ class Index extends Component {
     }
   };
   componentWillMount() {
-
-    const socket = Taro.connectSocket({
-      url: "wss://dj.baicaiyun.com/s/?transport=websocket",
-      success: () => {
-        console.log("sss");
-      }
-    }).then(task => {
-      task.onOpen(function() {
-        console.log("onOpen");
-        task.send({ data: "xxx" });
-      });
-      task.onMessage(function(msg) {
-        console.log("onMessage: ", msg);
-        task.close();
-      });
-      task.onError(function(err) {
-        console.log("onError", err);
-      });
-      task.onClose(function(e) {
-        console.log("onClose: ", e);
-      });
-    });
-
     Taro.eventCenter.on("getUserCarte", () => {
       const { userinfo } = this.props.userReducer;
       this.props.getUserCarte(userinfo.userId);
@@ -204,32 +181,53 @@ class Index extends Component {
         Taro.eventCenter.trigger("getUserInfoDetail");
         this.props.getStatistic();
 
-        // wx.socket = IO.connect(
-        //   "https://dj.baicaiyun.com",
-        //   {
-        //     path: "/s",
-        //     transports: ["websocket"]
+        // const socket = Taro.connectSocket({
+        //   url: "wss://dj.baicaiyun.com/s/?EIO=3&transport=websocket",
+        //   success: () => {
+        //     console.log("sss");
         //   }
-        // );
-        // wx.socket.on("connect", () => {
-        //   wx.socket.emit("authenticate", { token: res.value.token }, err => {
-        //     console.log(err);
-        //   }); // 登录, 链接后需要立刻调用
-        //   // socket.emit("enterChat", { toUserId }, err => {}); // 进入与 toUserId 聊天页
-        //   // socket.emit("exitChat", null, err => {}); // 退出与 toUserId 的聊天页
-        //   // socket.emit("msg", { content }, err => {
-        //   //   if (err) {
-        //   //     // 错误信息
-        //   //   }
-        //   // }); // 发送消息
+        // }).then(task => {
+        //   // wx.task = task;
+        //   task.onOpen(function() {
+        //     console.log("onOpen");
+        //     task.send({ data: { token: "sdfsfsf" } });
+        //   });
+        //   task.onMessage(function(msg) {
+        //     console.log("onMessage: ", msg);
+        //     // task.close();
+        //   });
+        //   task.onError(function(err) {
+        //     console.log("onError", err);
+        //   });
+        //   task.onClose(function(e) {
+        //     console.log("onClose: ", e);
+        //   });
         // });
-        //
-        // wx.socket.on("msg", msg => {
-        //   console.log("msg-----------", msg);
-        // }); // 接收消息
+
+        wx.socket = IO.connect(
+          "https://dj.baicaiyun.com",
+          {
+            path: "/s",
+            transports: ["websocket"]
+          }
+        );
+        wx.socket.on("connect", () => {
+          wx.socket.emit("authenticate", { token: res.value.token }, err => {
+            console.log(err);
+          }); // 登录, 链接后需要立刻调用
+
+          wx.socket.emit("enterChat", { toUserId: 38 }, err => {
+            console.log(err);
+          }); // 进入与 toUserId 聊天页
+
+        });
+
+        wx.socket.on("msg", msg => {
+          console.log("msg-----------", msg);
+        }); // 接收消息
 
         this.props.getImToken().then(({ value }) => {
-          this.initNim(value.token);
+          // this.initNim(value.token);
         });
         //新用户未授权
         if (!res.value.nickName) {
@@ -374,6 +372,12 @@ class Index extends Component {
   componentDidHide() {}
 
   handleMenuClick = current => {
+    // socket.emit("exitChat", null, err => {}); // 退出与 toUserId 的聊天页
+    wx.socket.emit("msg", { content: "测试" }, err => {
+      console.log(err);
+    }); // 发送消息
+
+    // wx.task.send({ enterChat: { toUserId: 32 } });
     this.setState({ current });
   };
   handleAuthClose = () => {

@@ -65,13 +65,14 @@ export default class AtTabBar extends Component {
 
   componentDidMount() {
     const curEnv = Taro.getEnv();
-
-    if (
-      curEnv === Taro.ENV_TYPE.WEAPP &&
-      Taro.getSystemInfoSync().model.indexOf("iPhone X") >= 0
-    ) {
-      this.setState({ isIPhoneX: true });
-    }
+    // const model = Taro.getSystemInfoSync().model;
+    // if (
+    //   curEnv === Taro.ENV_TYPE.WEAPP &&
+    //   model &&
+    //   model.indexOf("iPhone X") >= 0
+    // ) {
+    //   this.setState({ isIPhoneX: true });
+    // }
   }
 
   handleClick(i) {

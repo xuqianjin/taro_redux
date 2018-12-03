@@ -56,7 +56,7 @@ export default class extends Component {
     const params = this.$router.params;
     this.setState({ params });
 
-    wx.socket.emit("enterChat", { toUserId: params.to }, err => {
+    wx.socket.emit("enterChat", { toUserId: Number(params.to) }, err => {
       console.log(err);
     }); // 进入与 toUserId 聊天页
 
