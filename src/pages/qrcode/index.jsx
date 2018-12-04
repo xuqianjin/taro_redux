@@ -8,6 +8,8 @@ import HeightView from "../../components/HeightView";
 import ImageView from "../../components/ImageView";
 import { putWxUserInfo, putUserCarte } from "../../reducers/userReducer";
 
+const path4 = require("../../static/icon/wechat_circle.png");
+
 const mapStateToProps = state => {
   return { userReducer: state.userReducer };
 };
@@ -32,33 +34,39 @@ export default class extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      imagePath: "",
+      avatarTempUrl: "",
       canvasHidden: true
     };
   }
+  componentWillMount() {
+    const { usercarte } = this.props.userReducer;
+    Taro.getImageInfo({ src: usercarte.avatarUrl }).then(res => {
+      this.setState({ avatarTempUrl: res.path });
+    });
+  }
   onClick = () => {
     var context = wx.createCanvasContext("canvas");
-    var path4 = require("../../static/icon/wechat_circle.png");
     context.setFillStyle("#ffe200");
-    context.fillRect(0, 0, 375, 667);
+    // context.fillRect(0, 0, 375, 667);
+    context.fillText("开心", 200, 130);
     context.drawImage(path4, 25, 520, 184, 82);
     context.draw();
     //将生成好的图片保存到本地，需要延迟一会，绘制期间耗时
-    setTimeout(() => {
-      wx.canvasToTempFilePath({
-        canvasId: "canvas",
-        success: res => {
-          var tempFilePath = res.tempFilePath;
-          this.setState({
-            imagePath: tempFilePath,
-            canvasHidden: true
-          });
-        },
-        fail: res => {
-          console.log(res);
-        }
-      });
-    }, 200);
+    // setTimeout(() => {
+    //   wx.canvasToTempFilePath({
+    //     canvasId: "canvas",
+    //     success: res => {
+    //       var tempFilePath = res.tempFilePath;
+    //       this.setState({
+    //         imagePath: tempFilePath,
+    //         canvasHidden: true
+    //       });
+    //     },
+    //     fail: res => {
+    //       console.log(res);
+    //     }
+    //   });
+    // }, 200);
   };
   render() {
     const { imagePath } = this.state;

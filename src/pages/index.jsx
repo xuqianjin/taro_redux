@@ -17,7 +17,6 @@ import User from "./user";
 import "moment/locale/zh-cn";
 import moment from "moment";
 
-import Nim from "../lib/NIM_Web_NIM_weixin_v5.8.0";
 import IO from "weapp.socket.io";
 
 import ImageView from "../components/ImageView";
@@ -170,6 +169,7 @@ class Index extends Component {
       this.props.getVisitIntent();
     });
     Taro.eventCenter.on("getMessageBoxes", () => {
+      this.props.getStatistic();
       this.props.getMessageBoxes();
     });
   }
@@ -185,34 +185,7 @@ class Index extends Component {
         Taro.eventCenter.trigger("getCustomer");
         Taro.eventCenter.trigger("getUserInfoDetail");
         Taro.eventCenter.trigger("getMessageBoxes");
-        this.props.getStatistic();
-
-        wx.socket = IO.connect(
-          API_HOST,
-          {
-            path: "/s",
-            transports: ["websocket"]
-          }
-        );
-        wx.socket.on("connect", () => {
-          wx.socket.emit("authenticate", { token: res.value.token }, err => {
-            console.log(err);
-          }); // 登录, 链接后需要立刻调用
-
-          // wx.socket.emit("enterChat", { toUserId: 32 }, err => {
-          //   console.log(err);
-          // }); // 进入与 toUserId 聊天页
-        });
-        wx.socket.on("msgnotify", msg => {
-          console.log(msg);
-        });
-        wx.socket.on("msg", msg => {
-          console.log("msg-----------", msg);
-        }); // 接收消息
-
-        // this.props.getImToken().then(({ value }) => {
-        //   this.initNim(value.token);
-        // });
+        this.initSocket(res.value.token);
         //新用户未授权
         if (!res.value.nickName) {
           throw new Error("noAuth");
@@ -236,30 +209,39 @@ class Index extends Component {
       });
   }
 
-  mergeUserInfoInSessions = newsessions => {
-    const { sessions } = this.props.commonReducer;
-    //不是第一个次切数量没变化,表示已经获取过用户信息,无需再获取
-    this.props.setState({ sessions: newsessions });
-    if (sessions && sessions.length === newsessions.length) {
-    } else {
-      const ids = newsessions.map(session => {
-        return session.to;
+  initSocket = token => {
+    wx.socket = IO.connect(
+      API_HOST,
+      {
+        path: "/s",
+        transports: ["websocket"]
+      }
+    );
+    wx.socket.on("connect", () => {
+      wx.socket.emit("authenticate", { token }, err => {
+        console.log(err);
+      }); // 登录, 链接后需要立刻调用
+      wx.socket.emit("leaveChat", null);
+    });
+    wx.socket.on("msgnotify", msg => {
+      Taro.atMessage({
+        message: `${msg.name}给你发来消息`,
+        type: "success"
       });
-      wx.nim.getUsers({
-        accounts: ids,
-        done: (err, res) => {
-          let users = [];
-          for (var i in newsessions) {
-            let user = {};
-            Object.assign(user, res[i], newsessions[i]);
-            users.push(user);
-          }
-          this.props.setState({ sessions: users });
-        }
-      });
-    }
-    // this.saveUnreadToLocal(newsessions);
+      Taro.eventCenter.trigger("getMessageBoxes");
+    });
+    wx.socket.on("msg", msg => {
+      const { id, ...rest } = msg;
+      const postdata = {
+        userId: id,
+        createdAt: new Date(),
+        ...rest
+      };
+      Taro.eventCenter.trigger("getMessageBoxes");
+      Taro.eventCenter.trigger("onupdatemsg", postdata);
+    });
   };
+
   saveUnreadToLocal = newsessions => {
     const KEY = "todaymsg";
     const todaymsg = Taro.getStorageSync(KEY);
@@ -276,75 +258,10 @@ class Index extends Component {
       const { nummsg, time } = todaymsg;
       totalunread = totalunread + nummsg;
     }
-    this.props.setState({ numMsgsUnreadToday: totalunread });
     const data = { nummsg: totalunread, time: new Date().getTime() };
     Taro.setStorageSync(KEY, data);
   };
-  initNim = imtoken => {
-    const { userinfo } = this.props.userReducer;
-    const { nickName, avatarUrl, gender, phonenum, userId } = userinfo;
-    wx.nim = Nim.getInstance({
-      debug: false,
-      appKey: NIM_APP_KEY,
-      account: userId,
-      token: imtoken,
-      db: false,
-      autoMarkRead: false,
-      syncSessionUnread: true,
-      onconnect: () => {
-        wx.nim.updateMyInfo({
-          nick: nickName,
-          avatar: avatarUrl,
-          tel: phonenum || 0
-        });
-      },
-      onsessions: res => {
-        console.log("onsessions", res);
-        const newsessions = wx.nim.mergeSessions([], res);
-        this.mergeUserInfoInSessions(newsessions);
-      },
-      onupdatesession: res => {
-        const { sessions } = this.props.commonReducer;
-        const newsessions = wx.nim.mergeSessions(sessions, res);
-        this.mergeUserInfoInSessions(newsessions);
-        Taro.eventCenter.trigger("onupdatesession", res);
-        console.log("onupdatesession", res);
-      },
-      onmsg: res => {
-        console.log("onmsg", res);
-        Taro.atMessage({
-          message: `${res.fromNick}给你发来消息`,
-          type: "success"
-        });
-        Taro.eventCenter.trigger("onmsg", res);
-      },
-      onfriends: friends => {
-        const newfriends = wx.nim.cutFriends(friends, friends.invalid);
-        console.log("newfriends", newfriends);
-      },
-      onusers: res => {
-        console.log("onusers", res);
-      },
-      onsysmsgunread: res => {
-        console.log("onsysmsgunread", res);
-      },
-      onupdatesysmsgunread: res => {
-        console.log("onupdatesysmsgunread", res);
-      },
-      onsysmsg: res => {
-        console.log("onsysmsg", res);
-      },
-      onroamingsysmsgs: res => {
-        console.log("onroamingsysmsgs", res);
-      },
-      onofflinemsgs: res => {
-        console.log("onofflinemsgs", res);
-      },
-      onsyncdone: res => {
-        console.log("onsyncdone", res);
-      }
-    });
-  };
+
   onShareAppMessage() {
     return {
       title: "多装获客宝",
@@ -356,12 +273,6 @@ class Index extends Component {
   componentDidHide() {}
 
   handleMenuClick = current => {
-    // socket.emit("exitChat", null, err => {}); // 退出与 toUserId 的聊天页
-    // wx.socket.emit("msg", { content: "测试" }, err => {
-    //   console.log(err);
-    // }); // 发送消息
-
-    // wx.task.send({ enterChat: { toUserId: 32 } });
     this.setState({ current });
   };
   handleAuthClose = () => {
@@ -387,11 +298,11 @@ class Index extends Component {
     this.setState({ showsharemsg: false });
   };
   getMenuData = () => {
-    const { sessions } = this.props.commonReducer;
+    const { messageboxes } = this.props.customerReducer;
     var unread = 0;
-    if (sessions) {
-      for (var session of sessions) {
-        unread += session.unread;
+    if (messageboxes) {
+      for (var message of messageboxes) {
+        unread += message.numUnread;
       }
     }
     return [
@@ -416,20 +327,20 @@ class Index extends Component {
     const { encryptedData, iv, errMsg, userInfo } = detail;
     if (errMsg === "getUserInfo:ok") {
       const { avatarUrl, gender, nickName } = userInfo;
+      this.setState({ showauth: false });
       const userinfo = await this.props.putWxUserInfo({ encryptedData, iv });
       await this.props.putUserCarte({ avatarUrl, gender, name: nickName });
-      wx.nim.updateMyInfo({
-        nick: nickName,
-        avatar: avatarUrl
-      });
-      this.setState({ showauth: false });
       this.componentDidMount();
     }
   };
   render() {
-    const { deviceinfo, statistic, sessions } = this.props.commonReducer;
+    const { deviceinfo, statistic } = this.props.commonReducer;
     const { usercarte, userinfo, userinfodetail } = this.props.userReducer;
-    const { visitguest, visitintent } = this.props.customerReducer;
+    const {
+      visitguest,
+      visitintent,
+      messageboxes
+    } = this.props.customerReducer;
     const {
       current,
       showauth,
@@ -517,7 +428,6 @@ class Index extends Component {
         <AtTabs current={current}>
           <AtTabsPane current={current} index={0}>
             <Home
-              numMsgsUnreadToday={menuData[2].text}
               statistic={statistic}
               userinfo={userinfo}
               onShare={this.handleShare}
@@ -537,7 +447,7 @@ class Index extends Component {
               userinfo={userinfo}
               usercarte={usercarte}
               userinfodetail={userinfodetail}
-              sessions={sessions}
+              messageboxes={messageboxes}
               onJoin={this.handleJoin}
             />
           </AtTabsPane>

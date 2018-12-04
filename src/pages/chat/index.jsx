@@ -20,6 +20,7 @@ import { changeSrc } from "../../lib/utils";
 
 import chatItem from "./chatItem";
 import { postWxForcepush, getUserCarteOther } from "../../reducers/userReducer";
+import { getMessageBoxesDetail } from "../../reducers/customerReducer";
 
 import "./style.scss";
 
@@ -32,7 +33,10 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ postWxForcepush, getUserCarteOther }, dispatch);
+  return bindActionCreators(
+    { postWxForcepush, getUserCarteOther, getMessageBoxesDetail },
+    dispatch
+  );
 };
 
 @connect(
@@ -45,7 +49,7 @@ export default class extends Component {
     super(props);
     this.state = {
       value: "",
-      messages: [],
+      messages: "",
       scrollIntoView: "",
       showcurtain: false,
       params: {},
@@ -55,56 +59,28 @@ export default class extends Component {
   componentWillMount() {
     const params = this.$router.params;
     this.setState({ params });
-
-    wx.socket.emit("enterChat", { toUserId: Number(params.to) }, err => {
-      console.log(err);
-    }); // 进入与 toUserId 聊天页
-
-    wx.nim.setCurrSession(`p2p-${params.to}`);
-    wx.nim.getHistoryMsgs({
-      scene: "p2p",
-      to: params.to,
-      asc: true,
-      done: (err, res) => {
-        if (res && res.msgs) {
-          this.setState({
-            messages: res.msgs,
-            scrollIntoView: "scrollIntoView" + (res.msgs.length - 1)
-          });
-        }
-      }
-    });
-
     this.props.getUserCarteOther(params.to).then(res => {
       const { value } = res;
       Taro.setNavigationBarTitle({ title: `与${value.name}聊天` });
       this.setState({ pagecarte: value });
     });
   }
+  componentDidShow() {
+    this.enterRoom();
+  }
   componentDidMount() {
-    Taro.eventCenter.on("onmsg", msg => {
-      const params = this.$router.params;
-      const { value, messages } = this.state;
-      if (params.to == msg.from) {
-        messages.push(msg);
-        this.setState({
-          messages,
-          scrollIntoView: "scrollIntoView" + (messages.length - 1)
-        });
-      }
+    const params = this.$router.params;
+    this.props.getMessageBoxesDetail(Number(params.to)).then(res => {
+      const messages = res.value.reverse();
+      this.setState({
+        messages,
+        scrollIntoView: "scrollIntoView" + (messages.length - 1)
+      });
     });
-    Taro.eventCenter.on("onupdatesession", session => {
+
+    Taro.eventCenter.on("onupdatemsg", session => {
       const { value, messages } = this.state;
-      const { lastMsg } = session;
-      if (lastMsg.status === "sending") {
-        messages.push(lastMsg);
-      }
-      if (lastMsg.status === "fail") {
-        Taro.atMessage({
-          message: "消息发送失败",
-          type: "error"
-        });
-      }
+      messages.push(session);
       this.setState({
         messages,
         scrollIntoView: "scrollIntoView" + (messages.length - 1)
@@ -112,26 +88,36 @@ export default class extends Component {
     });
   }
   componentWillUnmount() {
-    const { params } = this.state;
-    // wx.nim.resetSessionUnread(`p2p-${params.to}`)
-    wx.nim.resetCurrSession();
-    Taro.eventCenter.off("onupdatesession");
-    Taro.eventCenter.off("onmsg");
+    Taro.eventCenter.off("onupdatemsg");
+    Taro.eventCenter.off("onnewmsg");
+    wx.socket.emit("leaveChat", null);
   }
+  enterRoom = () => {
+    const params = this.$router.params;
+    wx.socket.emit("leaveChat", null);
+    wx.socket.emit("enterChat", { toUserId: Number(params.to) }, err => {
+      if (err) {
+        Taro.atMessage({ message: err.message, type: "error" });
+      }
+    });
+  };
   handleonConfirm = () => {
-    const { params } = this.state;
+    const { usercarte } = this.props.userReducer;
     const { value, messages } = this.state;
 
     wx.socket.emit("msg", { content: value }, err => {
-      console.log(err);
-    }); // 发送消息
-
-    wx.nim.sendText({
-      scene: "p2p",
-      to: params.to,
-      text: value
+      if (err) {
+        Taro.atMessage({ message: err.message, type: "error" });
+      } else {
+        const postdata = {
+          userId: usercarte.id,
+          content: value,
+          createdAt: new Date()
+        };
+        Taro.eventCenter.trigger("onupdatemsg", postdata);
+        this.setState({ value: "" });
+      }
     });
-    this.setState({ value: "" });
   };
   handleChange(value) {
     this.setState({ value });
@@ -177,6 +163,7 @@ export default class extends Component {
   };
   render() {
     const { deviceinfo } = this.props.commonReducer;
+    const { messageboxesdetail } = this.props.customerReducer;
     const { usercarte, userinfo, userinfodetail } = this.props.userReducer;
     const { messages, scrollIntoView, showcurtain, pagecarte } = this.state;
     const scrollheight = Taro.pxTransform(
@@ -201,13 +188,13 @@ export default class extends Component {
         >
           {messages &&
             messages.map((item, index) => {
-              const { from, idServer, text } = item;
-              const isme = userinfo.userId == from;
+              const { userId } = item;
+              const isme = userinfo.userId == userId;
               return (
                 <chatItem
                   id={"scrollIntoView" + index}
                   isme={isme}
-                  key={idServer}
+                  key={index}
                   item={item}
                   avatar={
                     isme

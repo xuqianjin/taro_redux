@@ -143,7 +143,8 @@ const init_state = {
   visitchart: "",
   visitlog: "",
   viewlogs: "",
-  messageboxes: []
+  messageboxes: [],
+  messageboxesdetail: ""
 };
 
 export default function reducer(state = init_state, action) {
@@ -168,6 +169,12 @@ export default function reducer(state = init_state, action) {
       return {
         ...state,
         messageboxes: action.payload
+      };
+
+    case `${API_GET_MESSAGE_BOXES_DETAIL}_FULFILLED`:
+      return {
+        ...state,
+        messageboxesdetail: action.payload
       };
 
     case `${API_GET_VISIT_LOG}_FULFILLED`:

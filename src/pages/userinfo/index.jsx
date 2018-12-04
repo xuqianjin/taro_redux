@@ -243,7 +243,7 @@ export default class extends Component {
         <HeightView height={150} color={APP_COLOR_THEME} />
         <View className="bg_white">
           <HeightView height={20} color="transparent" />
-          <View className="headderbox">
+          <View className="headderbox shadow">
             <View className="headercontent">
               <View className="at-row at-row at-row__justify--between at-row__align--center">
                 <View className="at-col  at-col-1 at-col--auto">

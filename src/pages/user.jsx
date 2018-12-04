@@ -23,12 +23,12 @@ export default class extends Component {
   componentDidUpdate() {}
   componentWillUnmount() {}
   getUserList = () => {
-    const { userinfodetail, sessions } = this.props;
+    const { userinfodetail, messageboxes } = this.props;
     const { vipEndAt } = userinfodetail || {};
     var unread = 0;
-    if (sessions) {
-      for (var session of sessions) {
-        unread += session.unread;
+    if (messageboxes) {
+      for (var session of messageboxes) {
+        unread += session.numUnread;
       }
     }
     if (unread > 99) {

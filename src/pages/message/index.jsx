@@ -31,29 +31,23 @@ const mapDispatchToProps = dispatch => {
   mapDispatchToProps
 )
 export default class extends Component {
-  static defaultProps = {
-    height: 1,
-    color: APP_COLOR_GRAY
-  };
+  static defaultProps = {};
   config = {
     navigationBarTitleText: "我的消息"
   };
   constructor(props) {
     super(props);
   }
-  componentWillMount() {
-    this.props.getVisitChart();
-  }
+  componentWillMount() {}
   componentDidMount() {}
   handleClick = item => {
-    const { avatar, to, nick } = item;
+    const { toUserId, id } = item;
     Taro.navigateTo({
-      url: `/pages/chat/index?to=${to}`
+      url: `/pages/chat/index?to=${toUserId}`
     });
   };
   render() {
-    const { sessions } = this.props.commonReducer;
-    const { visitchart } = this.props.customerReducer;
+    const { visitchart, messageboxes } = this.props.customerReducer;
     let condition = false;
     if (true) {
     } else {
@@ -65,21 +59,24 @@ export default class extends Component {
     return (
       <BaseView condition={condition}>
         <AtList>
-          {sessions &&
-            sessions.map(item => {
-              const { lastMsg, unread, updateTime, nick, avatar } = item;
+          {messageboxes &&
+            messageboxes.map(item => {
+              const { User, SocketMessage, latestMessageAt, numUnread } = item;
               return (
                 <View
                   key={item.id}
                   className="item"
                   onClick={this.handleClick.bind(this, item)}
                 >
-                  <AtBadge value={unread || ""} className="badge" />
+                  <AtBadge value={numUnread || ""} className="badge" />
                   <AtListItem
-                    title={nick || "未知昵称"}
-                    extraText={moment(updateTime).calendar()}
-                    note={lastMsg.text}
-                    thumb={avatar || require("../../static/icon/avatar.png")}
+                    title={User.nickName || "未知昵称"}
+                    extraText={moment(latestMessageAt).calendar()}
+                    note={SocketMessage.content}
+                    thumb={
+                      changeSrc(User.avatarUrl) ||
+                      require("../../static/icon/avatar.png")
+                    }
                   />
                 </View>
               );

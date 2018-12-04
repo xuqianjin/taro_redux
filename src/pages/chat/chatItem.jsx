@@ -25,7 +25,7 @@ export default class extends Component {
     const from = (
       <View>
         <View className="time text_black_light text_center">
-          {moment(item.time).calendar()}
+          {moment(item.createdAt).calendar()}
         </View>
         <View className="at-row">
           <View className="at-col at-col-1 at-col--auto avatar">
@@ -33,7 +33,7 @@ export default class extends Component {
           </View>
           <View className="at-col at-col-1 at-col--auto at-col--wrap">
             <View className="message">
-              <Text className="at-col--wrap">{item.text}</Text>
+              <Text className="at-col--wrap">{item.content}</Text>
             </View>
           </View>
         </View>
@@ -42,12 +42,12 @@ export default class extends Component {
     const me = (
       <View>
         <View className="time text_black_light text_center">
-          {moment(item.time).calendar()}
+          {moment(item.createdAt).calendar()}
         </View>
         <View className="at-row  at-row__justify--end">
           <View className="at-col at-col-1 at-col--auto">
             <View className="messageme">
-              <Text className="at-col--wrap">{item.text}</Text>
+              <Text className="at-col--wrap">{item.content}</Text>
             </View>
             <View className="pushmessage" onClick={this.onForcePush}>
               推至客户
