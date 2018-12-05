@@ -18,14 +18,8 @@ export default class extends Component {
       this.setState({ src: changeSrc(nextProps.src) });
     }
   }
-
-  onLoad = () => {
-    // this.setState({
-    //   src: changeSrc(require('../static/image/noPicture.png'))
-    // })
-  };
   onError = () => {
-    // this.setState({ src: nopic });
+    this.setState({ src: nopic });
   };
 
   render() {
@@ -41,7 +35,6 @@ export default class extends Component {
     return (
       <Image
         src={src}
-        onLoad={this.onLoad}
         onError={this.onError}
         className={className}
         style={basestyle}

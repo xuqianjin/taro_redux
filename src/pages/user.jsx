@@ -2,10 +2,10 @@ import Taro, { Component } from "@tarojs/taro";
 import { connect } from "@tarojs/redux";
 import { bindActionCreators } from "redux";
 import { View, Text, ScrollView } from "@tarojs/components";
-import { AtList, AtListItem, AtIcon, AtBadge } from "taro-ui";
+import { AtList, AtListItem, AtIcon, AtBadge, AtAvatar } from "taro-ui";
 import moment from "moment";
+import { changeSrc } from "../lib/utils";
 
-import ImageView from "../components/ImageView";
 import HeightView from "../components/HeightView";
 import "./style.scss";
 
@@ -114,10 +114,7 @@ export default class extends Component {
         className="at-row bg_white home_card_container shadow opacity"
       >
         <View className="at-col at-col-1 at-col--auto">
-          <ImageView
-            baseclassname="icon border-radius"
-            src={usercarte.avatarUrl}
-          />
+          <AtAvatar className='icon' circle={true} image={changeSrc(usercarte && usercarte.avatarUrl)} />
         </View>
         <View className="at-col">
           <View className="fontbig">{usercarte.name}</View>

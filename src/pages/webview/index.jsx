@@ -29,11 +29,10 @@ export default class extends Component {
     const params = this.$router.params;
     const { overcarte, id } = params;
     const weburl = `${API_HOST}/article/${id}`;
-
     this.props.getArticle(id).then(({ value }) => {
       this.setState({ articleitem: value });
     });
-    this.setState({ weburl, overcarte, id });
+    this.setState({ weburl, overcarte:Number(overcarte), id });
   }
   componentDidMount() {}
   componentWillUnmount() {}
@@ -66,6 +65,7 @@ export default class extends Component {
     if (overcarte) {
       url = weburl + "?overcarte=1";
     }
+    console.log(url);
     return <WebView src={url} onMessage={this.bindMessage} />;
   }
 }
