@@ -3,8 +3,8 @@ import request from "./request";
 
 const API_GET_SYS_ARTICLE = API_HOST + "/c/articles/system";
 const API_POST_SYS_ARTICLE = API_HOST + "/c/articles";
-const API_GET_USER_ARTICLE_CREATE = API_HOST + "/c/articles/create";
-const API_GET_USER_ARTICLE_FORWARD = API_HOST + "/c/articles/forward";
+const API_GET_USER_ARTICLE_MY = API_HOST + "/c/articles/my";
+
 const API_GET_USER_ARTICLE_COLLECT = API_HOST + "/c/articles/collect";
 const API_PUT_USER_ARTICLE_STAR = API_HOST + "/c/articles/star";
 const API_PUT_USER_ARTICLE_UNSTAR = API_HOST + "/c/articles/unstar";
@@ -23,23 +23,14 @@ export const getArticle = operateId => (dispatch, getState) => {
     payload: request.get(API_GET_ARTICLE, { operateId })
   });
 };
-export const getUserArticleCreate = () => (dispatch, getState) => {
+export const getUserArticleMy = params => (dispatch, getState) => {
   return dispatch({
-    type: API_GET_USER_ARTICLE_CREATE,
-    payload: request.get(API_GET_USER_ARTICLE_CREATE, {
+    type: API_GET_USER_ARTICLE_MY,
+    payload: request.get(API_GET_USER_ARTICLE_MY, {
       header: {
         Authorization: getState().userReducer.token
-      }
-    })
-  });
-};
-export const getUserArticleForward = () => (dispatch, getState) => {
-  return dispatch({
-    type: API_GET_USER_ARTICLE_FORWARD,
-    payload: request.get(API_GET_USER_ARTICLE_FORWARD, {
-      header: {
-        Authorization: getState().userReducer.token
-      }
+      },
+      params
     })
   });
 };
@@ -91,8 +82,7 @@ export const postSysArticle = data => (dispatch, getState) => {
 const init_state = {
   deviceinfo: "",
   osstoken: "",
-  sysarticle: "",
-  userarticle: ""
+  sysarticle: ""
 };
 
 export default function reducer(state = init_state, action) {
@@ -101,11 +91,6 @@ export default function reducer(state = init_state, action) {
       return {
         ...state,
         sysarticle: action.payload
-      };
-    case `${API_GET_USER_ARTICLE_CREATE}_FULFILLED`:
-      return {
-        ...state,
-        userarticle: action.payload
       };
     default:
       return state;

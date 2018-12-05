@@ -4,7 +4,7 @@
 	"description": "todo-list",
 	"appid": "wx3381d91b259e012d",
 	"setting": {
-		"urlCheck": false,
+		"urlCheck": true,
 		"es6": false,
 		"postcss": false,
 		"minified": false,
@@ -35,7 +35,7 @@
 					"id": 0,
 					"name": "测试",
 					"pathName": "pages/index",
-					"query": "goto=carte"
+					"query": "goto=carte&userId= 38"
 				}
 			]
 		}

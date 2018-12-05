@@ -5,12 +5,11 @@ import { bindActionCreators } from "redux";
 import { View } from "@tarojs/components";
 import moment from "moment";
 
-import { AtList, AtListItem, AtBadge, AtLoadMore } from "taro-ui";
+import { AtList, AtListItem, AtBadge, AtLoadMore, AtAvatar } from "taro-ui";
 
 import BaseView from "../../components/BaseView";
+import HeightView from "../../components/HeightView";
 import { changeSrc } from "../../lib/utils";
-
-import { getVisitChart } from "../../reducers/customerReducer";
 
 import "./style.scss";
 
@@ -23,7 +22,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ getVisitChart }, dispatch);
+  return bindActionCreators({}, dispatch);
 };
 
 @connect(
@@ -47,7 +46,7 @@ export default class extends Component {
     });
   };
   render() {
-    const { visitchart, messageboxes } = this.props.customerReducer;
+    const { messageboxes } = this.props.customerReducer;
     let condition = false;
     if (true) {
     } else {
@@ -56,32 +55,51 @@ export default class extends Component {
         tipsString: "加载中..."
       };
     }
+    const imgstyle = `margin:${Taro.pxTransform(20)}`;
     return (
       <BaseView condition={condition}>
-        <AtList>
-          {messageboxes &&
-            messageboxes.map(item => {
-              const { User, SocketMessage, latestMessageAt, numUnread } = item;
-              return (
+        {messageboxes &&
+          messageboxes.map(item => {
+            const { ToUser, SocketMessage, latestMessageAt, numUnread } = item;
+            return (
+              <View key={item.id}>
                 <View
-                  key={item.id}
-                  className="item"
+                  className="at-row bg_white opacity at-row__align--center"
                   onClick={this.handleClick.bind(this, item)}
                 >
-                  <AtBadge value={numUnread || ""} className="badge" />
-                  <AtListItem
-                    title={User.nickName || "未知昵称"}
-                    extraText={moment(latestMessageAt).calendar()}
-                    note={SocketMessage.content}
-                    thumb={
-                      changeSrc(User.avatarUrl) ||
-                      require("../../static/icon/avatar.png")
-                    }
-                  />
+                  <View
+                    style={imgstyle}
+                    className="at-col at-col-1 at-col--auto"
+                  >
+                    <AtBadge value={numUnread || ""}>
+                      <AtAvatar
+                        circle={true}
+                        image={
+                          changeSrc(ToUser.avatarUrl) ||
+                          require("../../static/icon/avatar.png")
+                        }
+                      />
+                    </AtBadge>
+                  </View>
+                  <View className="at-col">
+                    <View className="at-row at-row__justify--between at-row__align--center">
+                      <View className="at-col at-col-1 at-col--auto">
+                        {ToUser.nickName || "未知昵称"}
+                      </View>
+                      <View className="at-col at-col-1 at-col--auto text_right text_black_light timestyle">
+                        {moment(latestMessageAt).calendar()}
+                      </View>
+                    </View>
+                    <HeightView height={10} color="transparent" />
+                    <View className="text_black_light item-content__info-note  at-col--wrap descstyle">
+                      <Text>{SocketMessage.content}</Text>
+                    </View>
+                  </View>
                 </View>
-              );
-            })}
-        </AtList>
+                <HeightView height={10} color="transparent" />
+              </View>
+            );
+          })}
         <AtLoadMore status={"noMore"} />
       </BaseView>
     );

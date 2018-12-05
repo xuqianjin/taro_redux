@@ -3,7 +3,6 @@ import request from "./request";
 
 const API_GET_VISIT_GUEST = API_HOST + "/c/visits/guest";
 const API_GET_VISIT_INTENT = API_HOST + "/c/visits/intent";
-const API_GET_VISIT_CHART = API_HOST + "/c/visits/chart";
 
 const API_PUT_VISIT = API_HOST + "/c/visit/{id}";
 const API_GET_VISIT_LOG = API_HOST + "/c/visit/{id}/viewLogs";
@@ -29,16 +28,6 @@ export const getVisitIntent = () => (dispatch, getState) => {
   return dispatch({
     type: API_GET_VISIT_INTENT,
     payload: request.get(API_GET_VISIT_INTENT, {
-      header: {
-        Authorization: getState().userReducer.token
-      }
-    })
-  });
-};
-export const getVisitChart = () => (dispatch, getState) => {
-  return dispatch({
-    type: API_GET_VISIT_CHART,
-    payload: request.get(API_GET_VISIT_CHART, {
       header: {
         Authorization: getState().userReducer.token
       }
@@ -140,7 +129,6 @@ export const putViewlogs = (operateId, data) => (dispatch, getState) => {
 const init_state = {
   visitguest: "",
   visitintent: "",
-  visitchart: "",
   visitlog: "",
   viewlogs: "",
   messageboxes: [],
@@ -158,11 +146,6 @@ export default function reducer(state = init_state, action) {
       return {
         ...state,
         visitintent: action.payload
-      };
-    case `${API_GET_VISIT_CHART}_FULFILLED`:
-      return {
-        ...state,
-        visitchart: action.payload
       };
 
     case `${API_GET_MESSAGE_BOXES}_FULFILLED`:

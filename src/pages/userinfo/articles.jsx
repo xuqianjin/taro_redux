@@ -15,8 +15,7 @@ import ArticleItem from "../article/ArticleItem";
 import HeightView from "../../components/HeightView";
 import {
   getSysArticle,
-  getUserArticleCreate,
-  getUserArticleForward,
+  getUserArticleMy,
   getUserArticleCollect,
   putUserArticleStar,
   putUserArticleUnStar
@@ -36,8 +35,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
-      getUserArticleCreate,
-      getUserArticleForward,
+      getUserArticleMy,
       getUserArticleCollect,
       getSysArticle,
       putUserArticleStar,
@@ -70,7 +68,7 @@ export default class extends Component {
       this.setState({ articleTag: res.value });
     });
     Taro.eventCenter.on("getUserArticleCreate", () => {
-      this.props.getUserArticleCreate().then(res => {
+      this.props.getUserArticleMy().then(res => {
         const { usercartedesc } = this.props.userReducer;
         const { articles } = usercartedesc;
         const chooseids = articles.map(item => item.id);

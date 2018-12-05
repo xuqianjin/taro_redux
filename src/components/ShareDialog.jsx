@@ -16,8 +16,7 @@ export default class extends Component {
   }
 
   handleClickCircle = () => {
-    Taro.previewImage({ urls: [`${CDN_URL}dzhcb_post.jpg`] });
-    // Taro.navigateTo({ url: "/pages/qrcode/index" });
+    Taro.navigateTo({ url: "/pages/qrcode/index" });
     this.handleClose();
   };
   handleClickFriend = () => {

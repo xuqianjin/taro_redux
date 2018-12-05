@@ -2,7 +2,7 @@ import Taro, { Component } from "@tarojs/taro";
 import { connect } from "@tarojs/redux";
 import { bindActionCreators } from "redux";
 
-import { View, ScrollView } from "@tarojs/components";
+import { View, ScrollView, Button } from "@tarojs/components";
 import moment from "moment";
 
 import {
@@ -16,6 +16,7 @@ import {
 
 import BaseView from "../../components/BaseView";
 import HeightView from "../../components/HeightView";
+import ImageView from "../../components/ImageView";
 import { changeSrc } from "../../lib/utils";
 
 import chatItem from "./chatItem";
@@ -52,6 +53,7 @@ export default class extends Component {
       messages: "",
       scrollIntoView: "",
       showcurtain: false,
+      showHow: false,
       params: {},
       pagecarte: ""
     };
@@ -65,11 +67,9 @@ export default class extends Component {
       this.setState({ pagecarte: value });
     });
   }
-  componentDidShow() {
-    this.enterRoom();
-  }
   componentDidMount() {
     const params = this.$router.params;
+    this.enterRoom();
     this.props.getMessageBoxesDetail(Number(params.to)).then(res => {
       const messages = res.value.reverse();
       this.setState({
@@ -90,14 +90,18 @@ export default class extends Component {
   componentWillUnmount() {
     Taro.eventCenter.off("onupdatemsg");
     Taro.eventCenter.off("onnewmsg");
+    Taro.eventCenter.trigger("getMessageBoxes");
     wx.socket.emit("leaveChat", null);
   }
   enterRoom = () => {
     const params = this.$router.params;
-    wx.socket.emit("leaveChat", null);
     wx.socket.emit("enterChat", { toUserId: Number(params.to) }, err => {
+      console.log(err);
       if (err) {
         Taro.atMessage({ message: err.message, type: "error" });
+      } else {
+        //刷新UI
+        Taro.eventCenter.trigger("getMessageBoxes");
       }
     });
   };
@@ -119,11 +123,14 @@ export default class extends Component {
       }
     });
   };
-  handleChange(value) {
+  handleChange = value => {
     this.setState({ value });
-  }
+  };
+  handlieShowHow = () => {
+    this.setState({ showHow: true, showcurtain: false });
+  };
   handleCurtainClose = () => {
-    this.setState({ showcurtain: false });
+    this.setState({ showcurtain: false, showHow: false });
   };
   onForcePush = item => {
     this.setState({ showcurtain: item });
@@ -133,14 +140,20 @@ export default class extends Component {
     switch (value) {
       case 1:
         const postdata = {
-          receiverId: Number(showcurtain.to),
-          content: showcurtain.text
+          receiverId: showcurtain.toUserId,
+          content: showcurtain.content
         };
         Taro.showLoading();
         this.props
           .postWxForcepush(postdata)
           .then(res => {
             Taro.hideLoading();
+            Taro.showModal({
+              title: "推送成功",
+              content: `今日剩余推送次数${res.value.count}`,
+              showCancel: false,
+              confirmText: "我知道了"
+            });
             Taro.atMessage({
               message: "推送成功",
               type: "success"
@@ -148,7 +161,7 @@ export default class extends Component {
           })
           .catch(err => {
             Taro.atMessage({
-              message: "推送失败" + err.message,
+              message: "推送失败",
               type: "error"
             });
             Taro.hideLoading();
@@ -165,7 +178,13 @@ export default class extends Component {
     const { deviceinfo } = this.props.commonReducer;
     const { messageboxesdetail } = this.props.customerReducer;
     const { usercarte, userinfo, userinfodetail } = this.props.userReducer;
-    const { messages, scrollIntoView, showcurtain, pagecarte } = this.state;
+    const {
+      messages,
+      scrollIntoView,
+      showcurtain,
+      showHow,
+      pagecarte
+    } = this.state;
     const scrollheight = Taro.pxTransform(
       (deviceinfo.windowHeight * 750) / deviceinfo.windowWidth - 100
     );
@@ -179,6 +198,7 @@ export default class extends Component {
     }
     var isvip =
       new Date(userinfodetail.vipEndAt).getTime() > new Date().getTime();
+
     return (
       <BaseView condition={condition}>
         <ScrollView
@@ -227,14 +247,27 @@ export default class extends Component {
             style="padding:20px;border-radius:5px"
             className="bg_white text_center"
           >
-            <View>{isvip ? "确认推至客户?" : "强推为VIP特权"}</View>
-            {isvip && <HeightView height={100} color="transparent" />}
-            <View style="font-size:16px" className="text_black_light">
+            <View style="font-size:16px">
+              {isvip ? "确认推至客户?" : "强推为VIP特权"}
+            </View>
+            <HeightView height={50} color="transparent" />
+            <View style="font-size:14px" className="text_black_light">
               -强推信息,直接触达客户微信列表-
             </View>
-            {isvip && <HeightView height={100} color="transparent" />}
+
+            {isvip && <HeightView height={50} color="transparent" />}
+            {isvip && (
+              <View
+                style="font-size:14px;color:orange"
+                onClick={this.handlieShowHow}
+              >
+                如何增加推送次数?
+              </View>
+            )}
+            {isvip && <HeightView height={50} color="transparent" />}
+
             {!isvip && (
-              <View style="font-size:16px" className="text_black_light">
+              <View style="font-size:14px" className="text_black_light">
                 开通VIP特权,享受每天强推消息
               </View>
             )}
@@ -250,6 +283,29 @@ export default class extends Component {
                 开通VIP特权
               </AtButton>
             )}
+          </View>
+        </AtCurtain>
+
+        <AtCurtain isOpened={showHow} onClose={this.handleCurtainClose}>
+          <View
+            style="padding:20px;border-radius:5px"
+            className="bg_white text_center"
+          >
+            <View style="font-size:16px">推至客户</View>
+            <HeightView height={30} color="transparent" />
+            <View style="font-size:14px" className="text_black_light">
+              不加微信和客户微信聊天,聊天后直接触达客户微信列表,高效陌拜客户
+            </View>
+            <HeightView height={30} color="transparent" />
+            <View style="font-size:14px;color:orange">如何增加推送次数?</View>
+            <View style="font-size:14px" className="text_black_light">
+              客户浏览您的名片,文章等都会增加您对该客户的推送次数
+            </View>
+            <ImageView
+              baseclassname="curtainimg"
+              mode="widthFix"
+              src={`${CDN_URL}push_to_user.jpg`}
+            />
           </View>
         </AtCurtain>
         <AtMessage />

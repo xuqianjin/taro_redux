@@ -224,6 +224,7 @@ class Index extends Component {
       wx.socket.emit("leaveChat", null);
     });
     wx.socket.on("msgnotify", msg => {
+      console.log(msg);
       Taro.atMessage({
         message: `${msg.name}给你发来消息`,
         type: "success"
@@ -237,7 +238,6 @@ class Index extends Component {
         createdAt: new Date(),
         ...rest
       };
-      Taro.eventCenter.trigger("getMessageBoxes");
       Taro.eventCenter.trigger("onupdatemsg", postdata);
     });
   };
@@ -364,8 +364,8 @@ class Index extends Component {
         style="padding:20px;border-radius:5px"
         className="bg_white text_center"
       >
-        <View>进群提示</View>
-        <View style="font-size:16px" className="text_black_light">
+        <View style="font-size:20px;">进群提示</View>
+        <View style="font-size:14px" className="text_black_light">
           {'在客服会话回复"6"扫码进群'}
         </View>
         <ImageView
@@ -383,8 +383,8 @@ class Index extends Component {
         style="padding:20px;border-radius:5px"
         className="bg_white text_center"
       >
-        <View>授权提示</View>
-        <View style="font-size:16px;" className="text_black_light">
+        <View style="font-size:20px;">授权提示</View>
+        <View style="font-size:14px;" className="text_black_light">
           为了获得更好体验,我们需要您的微信授权点击去授权
         </View>
         <ImageView
@@ -405,12 +405,12 @@ class Index extends Component {
         style="padding:20px;border-radius:5px"
         className="bg_white text_center"
       >
-        <View>分享提示</View>
+        <View style="font-size:20px;">分享提示</View>
         <HeightView height={100} color="transparent" />
-        <View style="font-size:16px;" className="text_black_light">
+        <View style="font-size:14px;" className="text_black_light">
           {showsharemsg}
         </View>
-        <View style="font-size:16px;" className="text_black_light">
+        <View style="font-size:14px;" className="text_black_light">
           点击去看看
         </View>
         <HeightView height={100} color="transparent" />

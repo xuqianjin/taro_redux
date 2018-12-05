@@ -8,8 +8,7 @@ import ArticleItem from "./ArticleItem";
 import HeightView from "../../components/HeightView";
 import {
   getSysArticle,
-  getUserArticleCreate,
-  getUserArticleForward,
+  getUserArticleMy,
   getUserArticleCollect
 } from "../../reducers/articleReducer";
 import { getTags } from "../../reducers/commonReducer";
@@ -26,8 +25,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
-      getUserArticleCreate,
-      getUserArticleForward,
+      getUserArticleMy,
       getUserArticleCollect,
       getSysArticle,
       getTags
@@ -62,9 +60,7 @@ export default class extends Component {
     this.props.getSysArticle();
 
     Taro.eventCenter.on("getUserArticleCreate", () => {
-      this.props.getUserArticleCreate().then(res => {
-        this.setState({ userarticle: res.value });
-      });
+      this.handleUserClick(1);
     });
 
     Taro.eventCenter.trigger("getUserArticleCreate");
@@ -82,27 +78,24 @@ export default class extends Component {
   };
   handleUserClick = value => {
     const { chooseuser } = this.state;
-    if (value == chooseuser) {
-    } else {
-      this.setState({ chooseuser: value });
-      switch (value) {
-        case 1:
-          this.props.getUserArticleCreate().then(res => {
-            this.setState({ userarticle: res.value });
-          });
-          break;
-        case 2:
-          this.props.getUserArticleCollect().then(res => {
-            this.setState({ userarticle: res.value });
-          });
-          break;
-        case 3:
-          this.props.getUserArticleForward().then(res => {
-            this.setState({ userarticle: res.value });
-          });
-          break;
-        default:
-      }
+    this.setState({ chooseuser: value });
+    switch (value) {
+      case 1:
+        this.props.getUserArticleMy({ ownKind: 1 }).then(res => {
+          this.setState({ userarticle: res.value });
+        });
+        break;
+      case 2:
+        this.props.getUserArticleCollect().then(res => {
+          this.setState({ userarticle: res.value });
+        });
+        break;
+      case 3:
+        this.props.getUserArticleMy({ ownKind: 2 }).then(res => {
+          this.setState({ userarticle: res.value });
+        });
+        break;
+      default:
     }
   };
   handUpload = () => {

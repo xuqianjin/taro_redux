@@ -147,7 +147,7 @@ export default class extends Component {
             <ImageView baseclassname="icon" src={item.icon} />
           </View>
           <View className="at-col">
-            <View className="title">{item.title}</View>
+            <View className="title fontbig">{item.title}</View>
             <View className="desc text_black_light">{item.desc}</View>
             <View className="at-row text_black_light">
               <Text className="at-col">{item.left}</Text>

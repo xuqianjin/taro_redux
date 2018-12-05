@@ -25,7 +25,7 @@ export default class extends Component {
     // })
   };
   onError = () => {
-    this.setState({ src: nopic });
+    // this.setState({ src: nopic });
   };
 
   render() {
