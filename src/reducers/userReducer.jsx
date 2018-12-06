@@ -63,7 +63,8 @@ export const putWxUserPhone = data => (dispatch, getState) => {
 };
 
 export const postWxFormId = (formId, senderId) => (dispatch, getState) => {
-  if (process.env.NODE_ENV === "development") {
+  console.log({formId, senderId});
+  if (formId === "the formId is a mock one") {
     return null;
   }
   return dispatch({

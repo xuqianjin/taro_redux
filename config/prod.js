@@ -3,7 +3,7 @@ module.exports = {
     NODE_ENV: '"production"'
   },
   defineConstants: {
-    API_HOST: '"http://dj.sigoden.com"'
+    API_HOST: '"https://dj.baicaiyun.com"'
   },
   weapp: {},
   h5: {}

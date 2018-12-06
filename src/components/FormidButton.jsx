@@ -41,7 +41,6 @@ export default class extends Component {
   onSubmit = value => {
     const { detail } = value;
     const { senderId } = this.props;
-    console.log(detail, senderId);
     this.props.postWxFormId(detail.formId, senderId);
     this.props.onClick();
   };
