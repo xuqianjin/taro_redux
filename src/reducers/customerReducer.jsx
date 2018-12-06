@@ -14,44 +14,51 @@ const API_GET_VIEW_LOG = API_HOST + "/c/viewLogs";
 const API_POST_VIEW_LOG = API_HOST + "/c/viewLogs";
 const API_PUT_VIEW_LOG_TIME = API_HOST + "/c/viewLog/{id}/duration";
 
-export const getVisitGuest = () => (dispatch, getState) => {
+export const getVisitGuest = params => (dispatch, getState) => {
   return dispatch({
     type: API_GET_VISIT_GUEST,
     payload: request.get(API_GET_VISIT_GUEST, {
       header: {
         Authorization: getState().userReducer.token
-      }
+      },
+      params: { pageSize: 100 }
     })
   });
 };
-export const getVisitIntent = () => (dispatch, getState) => {
+export const getVisitIntent = params => (dispatch, getState) => {
   return dispatch({
     type: API_GET_VISIT_INTENT,
     payload: request.get(API_GET_VISIT_INTENT, {
       header: {
         Authorization: getState().userReducer.token
-      }
+      },
+      params: { pageSize: 100 }
     })
   });
 };
-export const getMessageBoxes = () => (dispatch, getState) => {
+export const getMessageBoxes = params => (dispatch, getState) => {
   return dispatch({
     type: API_GET_MESSAGE_BOXES,
     payload: request.get(API_GET_MESSAGE_BOXES, {
       header: {
         Authorization: getState().userReducer.token
-      }
+      },
+      params: { pageSize: 100 }
     })
   });
 };
-export const getMessageBoxesDetail = operateId => (dispatch, getState) => {
+export const getMessageBoxesDetail = (operateId, params) => (
+  dispatch,
+  getState
+) => {
   return dispatch({
     type: API_GET_MESSAGE_BOXES_DETAIL,
     payload: request.get(API_GET_MESSAGE_BOXES_DETAIL, {
       header: {
         Authorization: getState().userReducer.token
       },
-      operateId
+      operateId,
+      params: { pageSize: 100 }
     })
   });
 };

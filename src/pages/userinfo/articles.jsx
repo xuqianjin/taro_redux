@@ -60,24 +60,19 @@ export default class extends Component {
     this.state = {
       userarticle: "",
       articleTag: [],
-      chooseids: []
+      chooseids: [],
+      hasMore: true
+    };
+    this.page = {
+      pageNo: 0,
+      pageSize: 10
     };
   }
   componentWillMount() {
     this.props.getTags({ kind: 2 }).then(res => {
       this.setState({ articleTag: res.value });
     });
-    Taro.eventCenter.on("getUserArticleCreate", () => {
-      this.props.getUserArticleMy().then(res => {
-        const { usercartedesc } = this.props.userReducer;
-        const { articles } = usercartedesc;
-        const chooseids = articles.map(item => item.id);
-
-        this.setState({ userarticle: res.value, chooseids });
-      });
-    });
-
-    Taro.eventCenter.trigger("getUserArticleCreate");
+    this.requestList();
   }
   handleChoose = item => {
     const { chooseids } = this.state;
@@ -87,6 +82,30 @@ export default class extends Component {
       chooseids.push(item.id);
     }
     this.setState({ chooseids });
+  };
+  requestList = () => {
+    if (!this.state.hasMore) {
+      return;
+    }
+    this.props.getUserArticleMy(this.page).then(({ value }) => {
+      const { userarticle } = this.state;
+      const { usercartedesc } = this.props.userReducer;
+      const { articles } = usercartedesc;
+      const chooseids = articles.map(item => item.id);
+
+      this.setState({
+        chooseids,
+        userarticle: userarticle ? userarticle.concat(value) : value
+      });
+
+      if (value.length < this.page.pageSize) {
+        this.setState({ hasMore: false });
+      }
+    });
+  };
+  onScrollToLower = () => {
+    this.page.pageNo++;
+    this.requestList();
   };
   submit = () => {
     const { chooseids } = this.state;
@@ -120,35 +139,16 @@ export default class extends Component {
   render() {
     const { userarticle, articleTag, chooseids } = this.state;
     const { deviceinfo } = this.props.commonReducer;
-    const tabList = [
-      {
-        title: "全部文章"
-      },
-      {
-        title: "我的文章"
-      }
-    ];
-    const usertag = [
-      {
-        name: "我的上传",
-        value: 1
-      },
-      {
-        name: "我的收藏",
-        value: 2
-      },
-      {
-        name: "我的转发",
-        value: 3
-      }
-    ];
-
     const scrollheight = Taro.pxTransform(
       (deviceinfo.windowHeight * 750) / deviceinfo.windowWidth - 100
     );
     return (
       <View>
-        <ScrollView scrollY={true} style={`height:${scrollheight}`}>
+        <ScrollView
+          scrollY={true}
+          style={`height:${scrollheight}`}
+          onScrollToLower={this.onScrollToLower}
+        >
           <HeightView height={10} />
           {userarticle &&
             userarticle.map((item, index) => {

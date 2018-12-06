@@ -94,19 +94,19 @@ export default class extends Component {
     const { usercarte, usercartedesc, userinfo } = this.props.userReducer;
     const params = this.$router.params;
     const isme = params.userId == userinfo.userId;
-    // const getcarte = isme
-    //   ? this.props.getUserCarte
-    //   : this.props.getUserCarteOther;
-    // const getcartedesc = isme
-    //   ? this.props.getUserCarteDesc
-    //   : this.props.getUserCarteDescOther;
+    const getcarte = isme
+      ? this.props.getUserCarte
+      : this.props.getUserCarteOther;
+    const getcartedesc = isme
+      ? this.props.getUserCarteDesc
+      : this.props.getUserCarteDescOther;
 
     Taro.eventCenter.on("getUserCarte", () => {
       this.props.getUserCarteCollect();
-      this.props.getUserCarteOther(params.userId).then(({ value }) => {
+      getcarte(params.userId).then(({ value }) => {
         this.setState({ pagecarte: value });
       });
-      this.props.getUserCarteDescOther(params.userId).then(({ value }) => {
+      getcartedesc(params.userId).then(({ value }) => {
         this.setState({ pagecartedesc: value });
       });
     });

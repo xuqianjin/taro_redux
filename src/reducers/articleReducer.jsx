@@ -11,10 +11,10 @@ const API_PUT_USER_ARTICLE_UNSTAR = API_HOST + "/c/articles/unstar";
 
 const API_GET_ARTICLE = API_HOST + "/c/article/{id}";
 
-export const getSysArticle = () => (dispatch, getState) => {
+export const getSysArticle = params => (dispatch, getState) => {
   return dispatch({
     type: API_GET_SYS_ARTICLE,
-    payload: request.get(API_GET_SYS_ARTICLE)
+    payload: request.get(API_GET_SYS_ARTICLE, { params })
   });
 };
 export const getArticle = operateId => (dispatch, getState) => {
@@ -34,13 +34,14 @@ export const getUserArticleMy = params => (dispatch, getState) => {
     })
   });
 };
-export const getUserArticleCollect = () => (dispatch, getState) => {
+export const getUserArticleCollect = params => (dispatch, getState) => {
   return dispatch({
     type: API_GET_USER_ARTICLE_COLLECT,
     payload: request.get(API_GET_USER_ARTICLE_COLLECT, {
       header: {
         Authorization: getState().userReducer.token
-      }
+      },
+      params
     })
   });
 };
