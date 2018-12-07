@@ -13,6 +13,7 @@ import {
 
 import ArticleItem from "../article/ArticleItem";
 import HeightView from "../../components/HeightView";
+import BaseView from "../../components/BaseView";
 import {
   getSysArticle,
   getUserArticleMy,
@@ -143,7 +144,7 @@ export default class extends Component {
       (deviceinfo.windowHeight * 750) / deviceinfo.windowWidth - 100
     );
     return (
-      <View>
+      <BaseView>
         <ScrollView
           scrollY={true}
           style={`height:${scrollheight}`}
@@ -166,15 +167,15 @@ export default class extends Component {
           <AtLoadMore status={"noMore"} />
         </ScrollView>
         <View
-          style={`display:fixed;bottom:0;width:100%;height:${Taro.pxTransform(
+          style={`position:fixed;bottom:0;width:100%;height:${Taro.pxTransform(
             100
-          )};line-height:2.5;color:white`}
+          )};color:white;display:flex;align-items:center;justify-content:center;font-size:35rpx`}
           className="bg_theme text_center"
           onClick={this.submit}
         >
           提交
         </View>
-      </View>
+      </BaseView>
     );
   }
 }

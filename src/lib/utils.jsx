@@ -2,7 +2,7 @@ const nopic = require("../static/image/noPicture.png");
 
 export const changeSrc = src => {
   if (!src) {
-    return '';
+    return "";
   }
   if (src && typeof src === "string") {
     if (src.indexOf("i/") === 0) {
@@ -32,5 +32,40 @@ export function encodeSearchParams(paramObj) {
   for (let attr in paramObj) {
     sdata.push(`${attr}=${paramObj[attr]}`);
   }
-  return sdata.join('&');
+  return sdata.join("&");
 }
+
+export const errLog = {
+  ErrVipExpired: {
+    status: 400,
+    message: "您的VIP已过期"
+  },
+  ErrInvalidWxArticle$: {
+    status: 400,
+    message: "请上传未上传过的微信公众号文章"
+  },
+  ErrModelConflict: {
+    status: 400,
+    message: "重复上传" // 结合接口上下文，可能是标签已已存在，文章已存在等
+  },
+  ErrNoPermToForcePush: {
+    status: 400,
+    message: "推送消息是VIP权限"
+  },
+  ErrVipOutdated: {
+    status: 400,
+    message: "您的VIP已过期"
+  },
+  ErrNoFormid: {
+    status: 400,
+    message: "推送次数为0"
+  },
+  ErrUseTooManyFormid: {
+    status: 400,
+    message: "今日该客户推送次数已达上限"
+  },
+  ErrInternal$: {
+    status: 500,
+    message: "系统异常"
+  }
+};

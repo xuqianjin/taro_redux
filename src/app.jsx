@@ -2,6 +2,7 @@ import Taro, { Component } from "@tarojs/taro";
 import "@tarojs/async-await";
 import { Provider } from "@tarojs/redux";
 import configStore from "./store";
+import fundebug from "fundebug-wxjs";
 
 import reducer from "./reducers";
 import Index from "./pages/index";
@@ -94,6 +95,13 @@ class App extends Component {
   };
 
   componentWillMount() {
+    fundebug.init({
+      apikey:
+        "b5f7a6887104e30832573b69bb727b6ba573ad9df9dd806650a39a229d0e1f4a",
+      releaseStage: process.env.NODE_ENV,
+      silent: process.env.NODE_ENV === "development",
+      setSystemInfo: true
+    });
     this.checkWxUpdate();
   }
 

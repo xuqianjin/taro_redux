@@ -161,7 +161,7 @@ export default class extends Component {
           })
           .catch(err => {
             Taro.atMessage({
-              message: "推送失败",
+              message: err.message,
               type: "error"
             });
             Taro.hideLoading();
@@ -185,9 +185,6 @@ export default class extends Component {
       showHow,
       pagecarte
     } = this.state;
-    const scrollheight = Taro.pxTransform(
-      (deviceinfo.windowHeight * 750) / deviceinfo.windowWidth - 100
-    );
     let condition = false;
     if (messages && pagecarte) {
     } else {
@@ -198,7 +195,11 @@ export default class extends Component {
     }
     var isvip =
       new Date(userinfodetail.vipEndAt).getTime() > new Date().getTime();
-
+    const isSys = pagecarte.id === 1;
+    const distance = isSys ? 0 : 100;
+    const scrollheight = Taro.pxTransform(
+      (deviceinfo.windowHeight * 750) / deviceinfo.windowWidth - distance
+    );
     return (
       <BaseView condition={condition}>
         <ScrollView
@@ -227,18 +228,20 @@ export default class extends Component {
             })}
           <HeightView height={50} color="transparent" />
         </ScrollView>
-        <View className="bottomview">
-          <AtInput
-            clear={true}
-            border={true}
-            cursorSpacing="20"
-            value={this.state.value}
-            onChange={this.handleChange.bind(this)}
-            onConfirm={this.handleonConfirm.bind(this)}
-            confirmType="完成"
-            placeholder="请输入聊天信息"
-          />
-        </View>
+        {!isSys && (
+          <View className="bottomview">
+            <AtInput
+              clear={true}
+              border={true}
+              cursorSpacing="20"
+              value={this.state.value}
+              onChange={this.handleChange.bind(this)}
+              onConfirm={this.handleonConfirm.bind(this)}
+              confirmType="完成"
+              placeholder="请输入聊天信息"
+            />
+          </View>
+        )}
         <AtCurtain
           isOpened={Boolean(showcurtain)}
           onClose={this.handleCurtainClose}

@@ -32,7 +32,7 @@ export default class extends Component {
     this.props.getArticle(id).then(({ value }) => {
       this.setState({ articleitem: value });
     });
-    this.setState({ weburl, overcarte:Number(overcarte), id });
+    this.setState({ weburl, overcarte: Number(overcarte), id });
   }
   componentDidMount() {}
   componentWillUnmount() {}
@@ -42,7 +42,7 @@ export default class extends Component {
     let sharecontent = {
       path: `/pages/index?goto=article&id=${id}&name=${
         articleitem.User.nickName
-      }`
+      }&userId=${articleitem.userId}`
     };
     if (
       this.share &&
@@ -54,6 +54,7 @@ export default class extends Component {
       sharecontent.title = content.title;
       sharecontent.imageUrl = content.imageUrl;
     }
+    console.log(sharecontent);
     return sharecontent;
   }
   bindMessage = data => {

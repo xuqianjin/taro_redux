@@ -86,7 +86,7 @@ export default class extends Component {
       })
       .catch(err => {
         Taro.atMessage({
-          message: "上传失败,请检查链接是否正确" + err.message,
+          message: err.message,
           type: "error"
         });
         Taro.hideLoading();

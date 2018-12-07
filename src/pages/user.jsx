@@ -36,6 +36,16 @@ export default class extends Component {
     }
     return [
       {
+        icon: "sketch",
+        title: "VIP会员",
+        extra: vipEndAt
+          ? `有效期到${moment(vipEndAt).format("YYYY-MM-DD")}`
+          : "1天8毛钱",
+        onClick: () => {
+          Taro.navigateTo({ url: "/pages/vip/index" });
+        }
+      },
+      {
         icon: "message",
         title: "我的消息",
         extra: unread ? "你有新的消息" : "暂无消息",
@@ -50,16 +60,6 @@ export default class extends Component {
         extra: "收藏起来不丢失",
         onClick: () => {
           Taro.navigateTo({ url: "/pages/userinfo/collect" });
-        }
-      },
-      {
-        icon: "sketch",
-        title: "VIP会员",
-        extra: vipEndAt
-          ? `有效期到${moment(vipEndAt).format("YYYY-MM-DD")}`
-          : "1天8毛钱",
-        onClick: () => {
-          Taro.navigateTo({ url: "/pages/vip/index" });
         }
       },
       {
@@ -114,7 +114,11 @@ export default class extends Component {
         className="at-row bg_white home_card_container shadow opacity"
       >
         <View className="at-col at-col-1 at-col--auto">
-          <AtAvatar className='icon' circle={true} image={changeSrc(usercarte && usercarte.avatarUrl)} />
+          <AtAvatar
+            className="icon"
+            circle={true}
+            image={changeSrc(usercarte && usercarte.avatarUrl)}
+          />
         </View>
         <View className="at-col">
           <View className="fontbig">{usercarte.name}</View>
