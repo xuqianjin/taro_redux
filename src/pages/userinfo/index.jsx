@@ -93,6 +93,7 @@ export default class extends Component {
   componentWillMount() {
     const { usercarte, usercartedesc, userinfo } = this.props.userReducer;
     const params = this.$router.params;
+    console.log(params);
     const isme = params.userId == userinfo.userId;
     const getcarte = isme
       ? this.props.getUserCarte

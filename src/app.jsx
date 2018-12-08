@@ -100,8 +100,10 @@ class App extends Component {
         "b5f7a6887104e30832573b69bb727b6ba573ad9df9dd806650a39a229d0e1f4a",
       releaseStage: process.env.NODE_ENV,
       silent: process.env.NODE_ENV === "development",
-      setSystemInfo: true
+      setSystemInfo: true,
+      monitorHttpData: true
     });
+    wx.fundebug = fundebug;
     this.checkWxUpdate();
   }
 

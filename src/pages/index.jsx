@@ -38,6 +38,7 @@ import {
 } from "../reducers/commonReducer";
 import {
   postWxLogin,
+  postWxLoginUid,
   postWxMagicMessage,
   getDebugToken,
   getUserCarte,
@@ -69,6 +70,7 @@ const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       postWxLogin,
+      postWxLoginUid,
       postWxMagicMessage,
       getDebugToken,
       getDeviceInfo,
@@ -107,6 +109,8 @@ class Index extends Component {
       showsharemsg: false,
       senderId: false
     };
+    this.authCode = "";
+    this.ErrNoUnionid = false;
   }
   checkNavigateTo = () => {
     const params = this.$router.params;
@@ -170,7 +174,6 @@ class Index extends Component {
     });
     Taro.eventCenter.on("getMessageBoxes", () => {
       this.props.getStatistic();
-      this.props.getMessageBoxes();
     });
   }
 
@@ -178,6 +181,7 @@ class Index extends Component {
     this.props.getDeviceInfo();
     Taro.login()
       .then(res => {
+        this.authCode = res.code;
         return this.props.postWxLogin({ code: res.code });
       })
       .then(res => {
@@ -204,6 +208,10 @@ class Index extends Component {
       })
       .catch(err => {
         if (err.message === "noAuth") {
+          this.setState({ showauth: true });
+        }
+        if (err.code === "ErrNoUnionid") {
+          this.ErrNoUnionid = true;
           this.setState({ showauth: true });
         }
       });
@@ -298,13 +306,8 @@ class Index extends Component {
     this.setState({ showsharemsg: false });
   };
   getMenuData = () => {
-    const { messageboxes } = this.props.customerReducer;
-    var unread = 0;
-    if (messageboxes) {
-      for (var message of messageboxes) {
-        unread += message.numUnread;
-      }
-    }
+    const { statistic } = this.props.commonReducer;
+    var unread = statistic.numUnreadMsgs;
     return [
       {
         title: "首页",
@@ -328,7 +331,16 @@ class Index extends Component {
     if (errMsg === "getUserInfo:ok") {
       const { avatarUrl, gender, nickName } = userInfo;
       this.setState({ showauth: false });
-      const userinfo = await this.props.putWxUserInfo({ encryptedData, iv });
+      if (this.ErrNoUnionid) {
+        //需要绑定unionid
+        await this.props.postWxLoginUid({
+          encryptedData,
+          iv,
+          code: this.authCode
+        });
+      } else {
+        await this.props.putWxUserInfo({ encryptedData, iv });
+      }
       await this.props.putUserCarte({ avatarUrl, gender, name: nickName });
       this.componentDidMount();
     }
@@ -336,11 +348,7 @@ class Index extends Component {
   render() {
     const { deviceinfo, statistic } = this.props.commonReducer;
     const { usercarte, userinfo, userinfodetail } = this.props.userReducer;
-    const {
-      visitguest,
-      visitintent,
-      messageboxes
-    } = this.props.customerReducer;
+    const { visitguest, visitintent } = this.props.customerReducer;
     const {
       current,
       showauth,
@@ -424,40 +432,42 @@ class Index extends Component {
       </View>
     );
     return (
-      <BaseView condition={condition}>
-        <AtTabs current={current}>
-          <AtTabsPane current={current} index={0}>
-            <Home
-              statistic={statistic}
-              userinfo={userinfo}
-              onShare={this.handleShare}
-              onJoin={this.handleJoin}
-            />
-          </AtTabsPane>
-          <AtTabsPane current={current} index={1}>
-            <Customer
-              visitguest={visitguest}
-              visitintent={visitintent}
-              deviceinfo={deviceinfo}
-            />
-          </AtTabsPane>
-          <AtTabsPane current={current} index={2}>
-            <User
-              onShare={this.handleShare}
-              userinfo={userinfo}
-              usercarte={usercarte}
-              userinfodetail={userinfodetail}
-              messageboxes={messageboxes}
-              onJoin={this.handleJoin}
-            />
-          </AtTabsPane>
-        </AtTabs>
-        <AtTabBar
-          fixed={true}
-          tabList={menuData}
-          onClick={this.handleMenuClick.bind(this)}
-          current={current}
-        />
+      <View>
+        <BaseView condition={condition}>
+          <AtTabs current={current}>
+            <AtTabsPane current={current} index={0}>
+              <Home
+                statistic={statistic}
+                userinfo={userinfo}
+                onShare={this.handleShare}
+                onJoin={this.handleJoin}
+              />
+            </AtTabsPane>
+            <AtTabsPane current={current} index={1}>
+              <Customer
+                visitguest={visitguest}
+                visitintent={visitintent}
+                deviceinfo={deviceinfo}
+              />
+            </AtTabsPane>
+            <AtTabsPane current={current} index={2}>
+              <User
+                onShare={this.handleShare}
+                userinfo={userinfo}
+                usercarte={usercarte}
+                userinfodetail={userinfodetail}
+                statistic={statistic}
+                onJoin={this.handleJoin}
+              />
+            </AtTabsPane>
+          </AtTabs>
+          <AtTabBar
+            fixed={true}
+            tabList={menuData}
+            onClick={this.handleMenuClick.bind(this)}
+            current={current}
+          />
+        </BaseView>
         <ShareDialog isOpened={showshare} onClose={this.handleShareClose} />
         <AtCurtain isOpened={showcurtain} onClose={this.handleJoinClose}>
           {jion}
@@ -469,7 +479,7 @@ class Index extends Component {
           {sharemsg}
         </AtCurtain>
         <AtMessage />
-      </BaseView>
+      </View>
     );
   }
 }

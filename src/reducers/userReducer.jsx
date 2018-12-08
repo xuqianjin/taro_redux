@@ -3,6 +3,7 @@ import request from "./request";
 const API_GET_DEGUG_TOKEN = API_HOST + "/c/wxlite/debugLogin/{id}";
 //wx
 const API_POST_WXLOGIN = API_HOST + "/c/wxlite/login";
+const API_POST_WXLOGIN_UID = API_HOST + "/c/wxlite/loginWithUserInfo";
 const API_PUT_WXUERINFO = API_HOST + "/c/wxlite/userinfo";
 const API_PUT_WXUERPHONE = API_HOST + "/c/wxlite/phonenum";
 const API_POST_WXFORMID = API_HOST + "/c/wxlite/formid";
@@ -38,6 +39,13 @@ export const postWxLogin = data => (dispatch, getState) => {
   });
 };
 
+export const postWxLoginUid = data => (dispatch, getState) => {
+  return dispatch({
+    type: API_POST_WXLOGIN_UID,
+    payload: request.post(API_POST_WXLOGIN_UID, { data })
+  });
+};
+
 export const putWxUserInfo = data => (dispatch, getState) => {
   return dispatch({
     type: API_PUT_WXUERINFO,
@@ -63,7 +71,7 @@ export const putWxUserPhone = data => (dispatch, getState) => {
 };
 
 export const postWxFormId = (formId, senderId) => (dispatch, getState) => {
-  console.log({formId, senderId});
+  console.log({ formId, senderId });
   if (formId === "the formId is a mock one") {
     return null;
   }
@@ -267,6 +275,7 @@ export default function reducer(state = init_state, action) {
         ...state,
         cartecollect: action.payload
       };
+    case `${API_POST_WXLOGIN_UID}_FULFILLED`:
     case `${API_POST_WXLOGIN}_FULFILLED`:
       return {
         ...state,

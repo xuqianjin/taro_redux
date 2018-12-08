@@ -38,12 +38,8 @@ export default class extends Component {
   componentWillUnmount() {}
 
   onShareAppMessage() {
-    const { weburl, id, articleitem } = this.state;
-    let sharecontent = {
-      path: `/pages/index?goto=article&id=${id}&name=${
-        articleitem.User.nickName
-      }&userId=${articleitem.userId}`
-    };
+    var { weburl, id, articleitem } = this.state;
+    let sharecontent = {};
     if (
       this.share &&
       this.share.currentTarget &&
@@ -51,13 +47,19 @@ export default class extends Component {
       this.share.currentTarget.data.length > 0
     ) {
       const content = this.share.currentTarget.data[0];
+      console.log(content);
       sharecontent.title = content.title;
       sharecontent.imageUrl = content.imageUrl;
+      id = content.id;
     }
-    console.log(sharecontent);
+    sharecontent.path = `/pages/index?goto=article&id=${id}&name=${
+      articleitem.User.nickName
+    }&userId=${articleitem.userId}`;
+
     return sharecontent;
   }
   bindMessage = data => {
+    console.log("postmessage", data);
     this.share = data;
   };
   render() {

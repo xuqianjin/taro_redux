@@ -17,20 +17,19 @@ export default class extends Component {
     super(props);
     this.state = {};
   }
+  static defaultProps = {
+    statistic: {}
+  };
   componentWillMount() {}
   componentDidMount() {}
   componentWillReceiveProps(nextProps) {}
   componentDidUpdate() {}
   componentWillUnmount() {}
   getUserList = () => {
-    const { userinfodetail, messageboxes } = this.props;
+    const { userinfodetail, statistic } = this.props;
     const { vipEndAt } = userinfodetail || {};
-    var unread = 0;
-    if (messageboxes) {
-      for (var session of messageboxes) {
-        unread += session.numUnread;
-      }
-    }
+    var unread = statistic.numUnreadMsgs;
+
     if (unread > 99) {
       unread = "99";
     }

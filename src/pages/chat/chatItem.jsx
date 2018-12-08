@@ -31,7 +31,7 @@ export default class extends Component {
           <View className="at-col at-col-1 at-col--auto avatar">
             <AtAvatar image={avatar || defaultavatar} />
           </View>
-          <View className="at-col at-col-1 at-col--auto at-col--wrap">
+          <View className="at-col at-col-1 at-col--auto">
             <View className="message">
               <Text className="at-col--wrap">{item.content}</Text>
             </View>

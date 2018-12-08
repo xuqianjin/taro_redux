@@ -96,9 +96,9 @@ export default class extends Component {
   enterRoom = () => {
     const params = this.$router.params;
     wx.socket.emit("enterChat", { toUserId: Number(params.to) }, err => {
-      console.log(err);
       if (err) {
         Taro.atMessage({ message: err.message, type: "error" });
+        wx.fundebug.notifyError(err)
       } else {
         //刷新UI
         Taro.eventCenter.trigger("getMessageBoxes");
@@ -107,15 +107,17 @@ export default class extends Component {
   };
   handleonConfirm = () => {
     const { usercarte } = this.props.userReducer;
-    const { value, messages } = this.state;
+    const { value, messages, pagecarte } = this.state;
 
     wx.socket.emit("msg", { content: value }, err => {
       if (err) {
         Taro.atMessage({ message: err.message, type: "error" });
+        wx.fundebug.notifyError(err)
       } else {
         const postdata = {
           userId: usercarte.id,
           content: value,
+          toUserId: pagecarte.id,
           createdAt: new Date()
         };
         Taro.eventCenter.trigger("onupdatemsg", postdata);

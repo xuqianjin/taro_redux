@@ -10,6 +10,7 @@ import { AtList, AtListItem, AtBadge, AtLoadMore, AtAvatar } from "taro-ui";
 import BaseView from "../../components/BaseView";
 import HeightView from "../../components/HeightView";
 import { changeSrc } from "../../lib/utils";
+import { getMessageBoxes } from "../../reducers/customerReducer";
 
 import "./style.scss";
 
@@ -22,7 +23,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({}, dispatch);
+  return bindActionCreators({ getMessageBoxes }, dispatch);
 };
 
 @connect(
@@ -37,8 +38,16 @@ export default class extends Component {
   constructor(props) {
     super(props);
   }
-  componentWillMount() {}
+  componentWillMount() {
+    Taro.eventCenter.on("getMessageBoxes", () => {
+      this.props.getMessageBoxes();
+    });
+    Taro.eventCenter.trigger("getMessageBoxes");
+  }
   componentDidMount() {}
+  componentWillUnmount() {
+    Taro.eventCenter.off("getMessageBoxes");
+  }
   handleClick = item => {
     const { toUserId, id } = item;
     Taro.navigateTo({
