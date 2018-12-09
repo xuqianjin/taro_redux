@@ -84,9 +84,15 @@ export default class extends Component {
           isneed: true
         },
         {
-          title: "地址",
+          title: "区域",
           name: "regionId",
           type: "region",
+          isneed: true
+        },
+        {
+          title: "地址",
+          name: "address",
+          type: "text",
           isneed: true
         },
         {
@@ -141,6 +147,7 @@ export default class extends Component {
     this.setState({ avatarUrl: images[0] });
   };
   onSubmit = () => {
+    const { userinfo } = this.props.userReducer;
     const { listdata } = this.state;
     let postdata = {};
     for (var item of listdata) {
@@ -160,6 +167,7 @@ export default class extends Component {
     this.props
       .putUserCarte(postdata)
       .then(res => {
+        Taro.eventCenter.trigger("getUserCarteDesc");
         Taro.eventCenter.trigger("getUserCarte");
         Taro.hideLoading();
         Taro.navigateBack();

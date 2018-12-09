@@ -114,7 +114,6 @@ class Index extends Component {
   }
   checkNavigateTo = () => {
     const params = this.$router.params;
-
     var newobj = JSON.parse(JSON.stringify(params));
     const { goto, name } = newobj;
     const { showsharemsg } = this.state;
@@ -157,20 +156,26 @@ class Index extends Component {
     }
   };
   componentWillMount() {
-    Taro.eventCenter.on("getUserCarte", () => {
+    Taro.eventCenter.on("getUserCarte", force => {
       const { userinfo } = this.props.userReducer;
       this.props.getUserCarte(userinfo.userId);
-      this.props.getUserCarteDesc(userinfo.userId);
     });
     Taro.eventCenter.on("getUserInfoDetail", () => {
-      this.props.getUserInfoDetail();
+      if (!this.props.userReducer.userinfodetail) {
+        this.props.getUserInfoDetail();
+      }
     });
     Taro.eventCenter.on("postViewlogs", data => {
       this.props.postViewlogs(data);
     });
     Taro.eventCenter.on("getCustomer", () => {
-      this.props.getVisitGuest();
-      this.props.getVisitIntent();
+      if (
+        !this.props.customerReducer.visitguest ||
+        !this.props.customerReducer.visitintent
+      ) {
+        this.props.getVisitGuest();
+        this.props.getVisitIntent();
+      }
     });
     Taro.eventCenter.on("getMessageBoxes", () => {
       this.props.getStatistic();
@@ -185,10 +190,10 @@ class Index extends Component {
         return this.props.postWxLogin({ code: res.code });
       })
       .then(res => {
+        Taro.eventCenter.trigger("getMessageBoxes");
         Taro.eventCenter.trigger("getUserCarte");
         Taro.eventCenter.trigger("getCustomer");
         Taro.eventCenter.trigger("getUserInfoDetail");
-        Taro.eventCenter.trigger("getMessageBoxes");
         this.initSocket(res.value.token);
         //新用户未授权
         if (!res.value.nickName) {
@@ -226,13 +231,10 @@ class Index extends Component {
       }
     );
     wx.socket.on("connect", () => {
-      wx.socket.emit("authenticate", { token }, err => {
-        console.log(err);
-      }); // 登录, 链接后需要立刻调用
+      wx.socket.emit("authenticate", { token }, err => {}); // 登录, 链接后需要立刻调用
       wx.socket.emit("leaveChat", null);
     });
     wx.socket.on("msgnotify", msg => {
-      console.log(msg);
       Taro.atMessage({
         message: `${msg.name}给你发来消息`,
         type: "success"
@@ -314,8 +316,8 @@ class Index extends Component {
         iconType: "home"
       },
       {
-        title: "雷达",
-        iconType: "streaming"
+        title: "客户",
+        iconType: "bell"
       },
       {
         title: "我的",
@@ -360,7 +362,7 @@ class Index extends Component {
     const menuData = this.getMenuData();
 
     let condition = false;
-    if (deviceinfo && userinfodetail) {
+    if (deviceinfo && userinfo && statistic) {
     } else {
       condition = {
         state: "viewLoading",

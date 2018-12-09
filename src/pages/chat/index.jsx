@@ -98,7 +98,7 @@ export default class extends Component {
     wx.socket.emit("enterChat", { toUserId: Number(params.to) }, err => {
       if (err) {
         Taro.atMessage({ message: err.message, type: "error" });
-        wx.fundebug.notifyError(err)
+        wx.fundebug.notifyError(err);
       } else {
         //刷新UI
         Taro.eventCenter.trigger("getMessageBoxes");
@@ -112,7 +112,7 @@ export default class extends Component {
     wx.socket.emit("msg", { content: value }, err => {
       if (err) {
         Taro.atMessage({ message: err.message, type: "error" });
-        wx.fundebug.notifyError(err)
+        wx.fundebug.notifyError(err);
       } else {
         const postdata = {
           userId: usercarte.id,
@@ -232,16 +232,18 @@ export default class extends Component {
         </ScrollView>
         {!isSys && (
           <View className="bottomview">
-            <AtInput
-              clear={true}
-              border={true}
-              cursorSpacing="20"
-              value={this.state.value}
-              onChange={this.handleChange.bind(this)}
-              onConfirm={this.handleonConfirm.bind(this)}
-              confirmType="完成"
-              placeholder="请输入聊天信息"
-            />
+            <View className="inputview">
+              <AtInput
+                clear={true}
+                border={true}
+                cursorSpacing="20"
+                value={this.state.value}
+                onChange={this.handleChange.bind(this)}
+                onConfirm={this.handleonConfirm.bind(this)}
+                confirmType="完成"
+                placeholder="请输入聊天信息"
+              />
+            </View>
           </View>
         )}
         <AtCurtain

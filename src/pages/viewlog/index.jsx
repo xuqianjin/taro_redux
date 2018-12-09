@@ -70,6 +70,16 @@ export default class extends Component {
       url: `/pages/chat/index?to=${visitorId}`
     });
   };
+  dealTitle = title => {
+    if (!title) {
+      return "";
+    }
+    if (title.length > 17) {
+      title = title.slice(0, 17);
+      title = title + "...";
+    }
+    return `《${title}》`;
+  };
   render() {
     const { viewlogs } = this.props.customerReducer;
     const { deviceinfo } = this.props.commonReducer;
@@ -91,7 +101,7 @@ export default class extends Component {
     );
     const imgstyle = `margin:${Taro.pxTransform(20)}`;
     const descstyle = `font-size:${Taro.pxTransform(25)}`;
-
+    const marginright = `margin-right:${Taro.pxTransform(20)}`;
     return (
       <BaseView condition={condition}>
         <ScrollView
@@ -102,7 +112,14 @@ export default class extends Component {
         >
           {viewlogs &&
             viewlogs.map(viewlog => {
-              const { Visitor, duration, kind, count, createdAt } = viewlog;
+              const {
+                Visitor,
+                duration,
+                kind,
+                count,
+                createdAt,
+                Source
+              } = viewlog;
               return (
                 <View key={viewlog.id}>
                   <View
@@ -110,45 +127,40 @@ export default class extends Component {
                     onClick={this.handleClick.bind(this, viewlog)}
                   >
                     <View
-                      style={imgstyle}
                       className="at-col at-col-1 at-col--auto"
+                      style={imgstyle}
                     >
                       <AtAvatar
                         circle={true}
                         image={changeSrc(Visitor && Visitor.avatarUrl)}
                       />
                     </View>
-                    <View className="at-row at-row__justify--between at-row__align--center">
-                      <View className="at-col">
-                        <HeightView height={20} color="transparent" />
-                        <View>{Visitor.nickName}</View>
-                        <HeightView height={10} color="transparent" />
+                    <View className="at-col">
+                      <HeightView height={10} color="transparent" />
+                      <View className="at-row at-row__justify--between at-row__align--center">
+                        <View className="at-col">{Visitor.nickName}</View>
                         <View
-                          style={descstyle}
-                          className="at-row text_black_light at-row--wrap"
+                          className="at-col text_right text_black_light"
+                          style={marginright}
                         >
-                          <Text>在你的</Text>
-                          <Text className="text_theme">{kindtype[kind]}</Text>
-                          <Text>停留了</Text>
-                          <Text className="text_theme">{duration}</Text>
-                          <Text>秒</Text>
+                          {moment(createdAt).calendar()}
                         </View>
-                        <View
-                          style={descstyle}
-                          className="at-row text_black_light at-row--wrap"
-                        >
-                          <Text>这是他第</Text>
-                          <Text className="text_theme">{count}</Text>
-                          <Text>次访问你</Text>
-                        </View>
-                        <HeightView height={20} color="transparent" />
                       </View>
+                      <HeightView height={10} color="transparent" />
                       <View
-                        style={imgstyle}
-                        className="at-col at-col-1 at-col--auto text_right text_black_light"
+                        style={descstyle}
+                        className="at-row text_black_light at-row--wrap"
                       >
-                        <View>{moment(createdAt).calendar()}</View>
+                        <Text>在你的</Text>
+                        <Text className="text_theme">{kindtype[kind]}</Text>
+                        <Text>{this.dealTitle(Source.title)}</Text>
+                        <Text>停留了</Text>
+                        <Text className="text_theme">{duration}</Text>
+                        <Text>秒,这是他第</Text>
+                        <Text className="text_theme">{count}</Text>
+                        <Text>次访问你</Text>
                       </View>
+                      <HeightView height={10} color="transparent" />
                     </View>
                   </View>
                   <HeightView height={10} color="transparent" />

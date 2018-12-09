@@ -131,7 +131,7 @@ export default class extends Component {
         }
       })
       .then(res => {
-        Taro.eventCenter.trigger("getUserCarte");
+        Taro.eventCenter.trigger("getUserCarteDesc");
         Taro.navigateBack();
         Taro.hideLoading();
       })

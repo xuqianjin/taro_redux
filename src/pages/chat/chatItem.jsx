@@ -31,9 +31,14 @@ export default class extends Component {
           <View className="at-col at-col-1 at-col--auto avatar">
             <AtAvatar image={avatar || defaultavatar} />
           </View>
-          <View className="at-col at-col-1 at-col--auto">
+          <View
+            className="at-col at-col-8"
+            style="display: flex;align-items: center;"
+          >
             <View className="message">
-              <Text className="at-col--wrap">{item.content}</Text>
+              <Text selectable={true} className="at-col--wrap">
+                {item.content}
+              </Text>
             </View>
           </View>
         </View>
@@ -45,9 +50,16 @@ export default class extends Component {
           {moment(item.createdAt).calendar()}
         </View>
         <View className="at-row  at-row__justify--end">
-          <View className="at-col at-col-1 at-col--auto">
-            <View className="messageme">
-              <Text className="at-col--wrap">{item.content}</Text>
+          <View
+            className="at-col at-col-8"
+            style="display:flex;flex-direction:column;align-items:flex-end;"
+          >
+            <View style="display: flex;align-items: center;justify-content:flex-end">
+              <View className="messageme">
+                <Text selectable={true} className="at-col--wrap">
+                  {item.content}
+                </Text>
+              </View>
             </View>
             <View className="pushmessage" onClick={this.onForcePush}>
               推至客户

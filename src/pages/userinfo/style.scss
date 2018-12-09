@@ -91,10 +91,11 @@
   }
 }
 .userinfoedit {
-  margin-right: 45px;
+  position: absolute;
+  right: 85px;
+  bottom: 125px;
   font-size: 30px;
   font-weight: normal;
-  margin-top: -45px;
 }
 
 .userdesc {

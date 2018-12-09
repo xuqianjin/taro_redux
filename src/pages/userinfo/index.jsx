@@ -30,10 +30,7 @@ import { changeSrc } from "../../lib/utils";
 import { gender, careerKind } from "../../components/Constant";
 
 import {
-  getUserCarte,
-  getUserCarteOther,
   getUserCarteDesc,
-  getUserCarteDescOther,
   putUserCarteCollect,
   getUserCarteCollect
 } from "../../reducers/userReducer";
@@ -55,10 +52,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
-      getUserCarte,
-      getUserCarteOther,
       getUserCarteDesc,
-      getUserCarteDescOther,
       putUserCarteCollect,
       getUserCarteCollect,
       postViewlogs,
@@ -85,9 +79,7 @@ export default class extends Component {
       timebegin: new Date().getTime() - 3000,
       kind: 1,
       isme: true,
-      pageuserid: "",
-      pagecarte: "",
-      pagecartedesc: ""
+      pageuserid: ""
     };
   }
   componentWillMount() {
@@ -95,28 +87,18 @@ export default class extends Component {
     const params = this.$router.params;
     console.log(params);
     const isme = params.userId == userinfo.userId;
-    const getcarte = isme
-      ? this.props.getUserCarte
-      : this.props.getUserCarteOther;
-    const getcartedesc = isme
-      ? this.props.getUserCarteDesc
-      : this.props.getUserCarteDescOther;
 
-    Taro.eventCenter.on("getUserCarte", () => {
-      this.props.getUserCarteCollect();
-      getcarte(params.userId).then(({ value }) => {
-        this.setState({ pagecarte: value });
-      });
-      getcartedesc(params.userId).then(({ value }) => {
-        this.setState({ pagecartedesc: value });
-      });
+    this.props.getUserCarteCollect();
+    Taro.eventCenter.on("getUserCarteDesc", () => {
+      this.props.getUserCarteDesc(params.userId);
     });
 
-    Taro.eventCenter.trigger("getUserCarte");
+    Taro.eventCenter.trigger("getUserCarteDesc");
     this.setState({ isme, pageuserid: params.userId });
   }
 
   componentWillUnmount() {
+    Taro.eventCenter.off("getUserCarteDesc");
     this.postViewlog();
   }
   //上报数据
@@ -136,12 +118,11 @@ export default class extends Component {
     }
   };
   onShareAppMessage() {
-    const { pagecarte } = this.state;
+    const { usercartedesc } = this.props.userReducer;
+    const { carte } = usercartedesc;
     return {
-      title: pagecarte.name + "的名片",
-      path: `/pages/index?goto=carte&userId=${pagecarte.id}&name=${
-        pagecarte.name
-      }`
+      title: carte.name + "的名片",
+      path: `/pages/index?goto=carte&userId=${carte.id}&name=${carte.name}`
     };
   }
   getRegionName = id => {
@@ -187,9 +168,10 @@ export default class extends Component {
     Taro.redirectTo({ url: "/pages/userinfo/edit" });
   };
   handSendMessage = () => {
-    const { pagecarte } = this.state;
+    const { usercartedesc } = this.props.userReducer;
+    const { carte } = usercartedesc;
     Taro.navigateTo({
-      url: `/pages/chat/index?to=${pagecarte.id}`
+      url: `/pages/chat/index?to=${carte.id}`
     });
   };
   handleShareShow = () => {
@@ -204,40 +186,40 @@ export default class extends Component {
     });
   };
   handleCollect = isCollect => {
-    const { isme, pagecarte } = this.state;
-    console.log(!isme, !isCollect);
+    const { isme } = this.state;
+    const { usercartedesc } = this.props.userReducer;
+    const { carte } = usercartedesc;
     if (!isme && !isCollect) {
       Taro.showLoading();
-      this.props.putUserCarteCollect(pagecarte.id).then(res => {
+      this.props.putUserCarteCollect(carte.id).then(res => {
         Taro.hideLoading();
         Taro.atMessage({
           message: "名片已放到收藏夹",
           type: "success"
         });
-        Taro.eventCenter.trigger("getUserCarte");
+        this.props.getUserCarteCollect();
       });
     }
   };
   render() {
-    const { showshare, isme, pagecarte, pagecartedesc } = this.state;
+    const { showshare, isme } = this.state;
     const { regions } = this.props.commonReducer;
-    const { cartecollect } = this.props.userReducer;
+    const { cartecollect, usercartedesc } = this.props.userReducer;
+    var { carte } = usercartedesc;
     let condition = false;
-    if (pagecarte && pagecartedesc && regions) {
+    if (carte && regions) {
     } else {
       condition = {
         state: "viewLoading"
       };
     }
+    if (!carte) {
+      carte = {};
+    }
     const advantage =
-      (pagecarte &&
-        pagecarte.advantage &&
-        JSON.parse(pagecarte.advantage || "")) ||
-      [];
+      (carte && carte.advantage && JSON.parse(carte.advantage || "")) || [];
     const isCollect =
-      !isme &&
-      cartecollect &&
-      cartecollect.find(item => item.id === pagecarte.id);
+      !isme && cartecollect && cartecollect.find(item => item.id === carte.id);
     const themcolor = APP_COLOR_THEME;
     return (
       <BaseView baseclassname="" condition={condition}>
@@ -248,36 +230,32 @@ export default class extends Component {
             <View className="headercontent">
               <View className="at-row at-row at-row__justify--between at-row__align--center">
                 <View className="at-col  at-col-1 at-col--auto">
-                  <View className="name">{`${pagecarte.name}`}</View>
-                  <View className="career">
-                    {pagecarte.office || "职位未填写"}
-                  </View>
-                  <View className="career">
-                    {pagecarte.corp || "公司未填写"}
-                  </View>
+                  <View className="name">{`${carte.name}`}</View>
+                  <View className="career">{carte.office || "职位未填写"}</View>
+                  <View className="career">{carte.corp || "公司未填写"}</View>
                 </View>
                 <View className="at-col  at-col-1 at-col--auto">
                   <AtAvatar
                     size="large"
                     circle={true}
-                    image={`${changeSrc(pagecarte.avatarUrl)}`}
+                    image={`${changeSrc(carte.avatarUrl)}`}
                   />
                 </View>
               </View>
               <HeightView height={40} color="transparent" />
               <View
                 className="info "
-                onClick={this.handlePhoneCall.bind(
-                  this,
-                  pagecarte.contactPhonenum
-                )}
+                onClick={this.handlePhoneCall.bind(this, carte.contactPhonenum)}
               >
                 <AtIcon size={15} value="phone" />
-                <Text>{pagecarte.contactPhonenum || "未填写"}</Text>
+                <Text>{carte.contactPhonenum || "未填写"}</Text>
               </View>
               <View className="info">
                 <AtIcon size={15} value="map-pin" />
-                <Text>{this.getRegionName(pagecarte.regionId)}</Text>
+                <Text>
+                  {this.getRegionName(carte.regionId)}
+                  {carte.address || ""}
+                </Text>
               </View>
               {isme && (
                 <View
@@ -293,7 +271,7 @@ export default class extends Component {
           <View className="at-row headerboxbottom text_center bg_white">
             <View className="at-col text_black_light">
               <AtIcon value="eye" size={20} />
-              <Text>\t人气\t{pagecarte.numView}</Text>
+              <Text>\t人气\t{carte.numView}</Text>
             </View>
             <View
               className="at-col text_black_light"
@@ -304,7 +282,7 @@ export default class extends Component {
                 color={isCollect ? themcolor : "text_black_light"}
                 size={18}
               />
-              <Text>\t收藏\t{pagecarte.numCollect}</Text>
+              <Text>\t收藏\t{carte.numCollect}</Text>
             </View>
             <View className="at-col">
               <AtButton
@@ -333,12 +311,12 @@ export default class extends Component {
           </View>
           <HeightView height={1} color="#d6e4ef" />
           <View className="userdesc content-min-height  bg_white">
-            {isme && !pagecarte.desc ? (
+            {isme && !carte.desc ? (
               <AtButton onClick={this.handleSetClick.bind(this, 2)}>
                 去添加
               </AtButton>
             ) : (
-              pagecarte.desc || ""
+              carte.desc || ""
             )}
           </View>
         </View>
@@ -390,8 +368,8 @@ export default class extends Component {
           </View>
           <HeightView height={1} color="#d6e4ef" />
           <View className="content-min-height bg_white">
-            {pagecartedesc.articles &&
-              pagecartedesc.articles.map((item, index) => {
+            {usercartedesc.articles &&
+              usercartedesc.articles.map((item, index) => {
                 return (
                   <ArticleItem
                     key={item.id}
@@ -408,7 +386,7 @@ export default class extends Component {
         <HeightView height={100} color="transparent" />
         <ShareDialog isOpened={showshare} onClose={this.handleShareClose} />
         {!isme && (
-          <FormidButton senderId={pagecarte.id}>
+          <FormidButton senderId={carte.id}>
             <View
               className="fixmessage bg_theme"
               onClick={this.handSendMessage}

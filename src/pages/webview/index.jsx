@@ -27,6 +27,7 @@ export default class extends Component {
   }
   componentWillMount() {
     const params = this.$router.params;
+    console.log(params);
     const { overcarte, id } = params;
     const weburl = `${API_HOST}/article/${id}`;
     this.props.getArticle(id).then(({ value }) => {
@@ -38,7 +39,9 @@ export default class extends Component {
   componentWillUnmount() {}
 
   onShareAppMessage() {
+    var { userinfo } = this.props.userReducer;
     var { weburl, id, articleitem } = this.state;
+    var { nickName } = articleitem.User;
     let sharecontent = {};
     if (
       this.share &&
@@ -46,16 +49,18 @@ export default class extends Component {
       this.share.currentTarget.data &&
       this.share.currentTarget.data.length > 0
     ) {
-      const content = this.share.currentTarget.data[0];
-      console.log(content);
+      const content = this.share.currentTarget.data[
+        this.share.currentTarget.data.length - 1
+      ];
       sharecontent.title = content.title;
       sharecontent.imageUrl = content.imageUrl;
       id = content.id;
+      nickName = content.name;
     }
-    sharecontent.path = `/pages/index?goto=article&id=${id}&name=${
-      articleitem.User.nickName
-    }&userId=${articleitem.userId}`;
-
+    sharecontent.path = `/pages/index?goto=article&id=${id}&name=${nickName}&userId=${
+      userinfo.userId
+    }`;
+    console.log(sharecontent);
     return sharecontent;
   }
   bindMessage = data => {
@@ -68,7 +73,6 @@ export default class extends Component {
     if (overcarte) {
       url = weburl + "?overcarte=1";
     }
-    console.log(url);
     return <WebView src={url} onMessage={this.bindMessage} />;
   }
 }

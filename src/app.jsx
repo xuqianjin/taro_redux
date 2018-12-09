@@ -101,6 +101,8 @@ class App extends Component {
       releaseStage: process.env.NODE_ENV,
       silent: process.env.NODE_ENV === "development",
       setSystemInfo: true,
+      monitorMethodCall: true,
+      monitorMethodArguments: true,
       monitorHttpData: true
     });
     wx.fundebug = fundebug;

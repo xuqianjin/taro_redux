@@ -108,7 +108,7 @@ export default class extends Component {
     this.props
       .putUserCarte(postdata)
       .then(res => {
-        Taro.eventCenter.trigger("getUserCarte");
+        Taro.eventCenter.trigger("getUserCarteDesc");
         Taro.hideLoading();
         Taro.navigateBack();
       })

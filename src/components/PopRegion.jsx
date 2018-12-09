@@ -27,7 +27,7 @@ export const getRegionNameById = (id, provinces) => {
   const value = mapRegions(provinces, id);
   if (value) {
     const name = value.map(item => item.name).join(" ");
-    return name;
+    return name + " ";
   }
 };
 

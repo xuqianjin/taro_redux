@@ -4,6 +4,7 @@ import { bindActionCreators } from "redux";
 import { View, Button, Text, Input, ScrollView } from "@tarojs/components";
 import { AtTabBar, AtTabs, AtTabsPane, AtLoadMore } from "taro-ui";
 import UserItem from "../components/UserItem";
+import BaseView from "../components/BaseView";
 import { putVisit, postFriendShip } from "../reducers/customerReducer";
 
 const mapStateToProps = state => {
@@ -76,7 +77,22 @@ export default class extends Component {
     const scrollheight = Taro.pxTransform(
       (deviceinfo.windowHeight * 750) / deviceinfo.windowWidth - 205
     );
-
+    let conditionguest = false;
+    if (visitguest) {
+    } else {
+      conditionguest = {
+        state: "viewLoading",
+        tipsString: "加载中..."
+      };
+    }
+    let conditionintent = false;
+    if (visitintent) {
+    } else {
+      conditionintent = {
+        state: "viewLoading",
+        tipsString: "加载中..."
+      };
+    }
     return (
       <AtTabs
         current={this.state.current}
@@ -85,37 +101,41 @@ export default class extends Component {
         swipeable={false}
       >
         <AtTabsPane current={this.state.current} index={1}>
-          <ScrollView scrollY={true} style={`height:${scrollheight}`}>
-            {visitguest &&
-              visitguest.map(item => {
-                return (
-                  <UserItem
-                    key={item.id}
-                    item={item}
-                    type={1}
-                    onItemClick={this.onItemClick}
-                    onSetIntent={this.onSetIntent}
-                  />
-                );
-              })}
-            <AtLoadMore status={"noMore"} />
-          </ScrollView>
+          <BaseView condition={conditionguest}>
+            <ScrollView scrollY={true} style={`height:${scrollheight}`}>
+              {visitguest &&
+                visitguest.map(item => {
+                  return (
+                    <UserItem
+                      key={item.id}
+                      item={item}
+                      type={1}
+                      onItemClick={this.onItemClick}
+                      onSetIntent={this.onSetIntent}
+                    />
+                  );
+                })}
+              <AtLoadMore status={"noMore"} />
+            </ScrollView>
+          </BaseView>
         </AtTabsPane>
         <AtTabsPane current={this.state.current} index={0}>
-          <ScrollView scrollY={true} style={`height:${scrollheight}`}>
-            {visitintent &&
-              visitintent.map(item => {
-                return (
-                  <UserItem
-                    key={item.id}
-                    item={item}
-                    onItemClick={this.onItemClick}
-                    onSetIntent={this.onSetIntent}
-                  />
-                );
-              })}
-            <AtLoadMore status={"noMore"} />
-          </ScrollView>
+          <BaseView condition={conditionintent}>
+            <ScrollView scrollY={true} style={`height:${scrollheight}`}>
+              {visitintent &&
+                visitintent.map(item => {
+                  return (
+                    <UserItem
+                      key={item.id}
+                      item={item}
+                      onItemClick={this.onItemClick}
+                      onSetIntent={this.onSetIntent}
+                    />
+                  );
+                })}
+              <AtLoadMore status={"noMore"} />
+            </ScrollView>
+          </BaseView>
         </AtTabsPane>
       </AtTabs>
     );
