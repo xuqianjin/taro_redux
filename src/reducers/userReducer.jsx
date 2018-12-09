@@ -89,17 +89,14 @@ export const postWxFormId = (formId, senderId) => (dispatch, getState) => {
   });
 };
 
-export const postWxQrCode = page => (dispatch, getState) => {
+export const postWxQrCode = data => (dispatch, getState) => {
   return dispatch({
     type: API_POST_WXQRCODE,
     payload: request.post(API_POST_WXQRCODE, {
       header: {
         Authorization: getState().userReducer.token
       },
-      data: {
-        page,
-        scene: getState().userReducer.userinfo.userId.toString()
-      }
+      data
     })
   });
 };

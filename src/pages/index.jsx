@@ -2,6 +2,7 @@ import Taro, { Component } from "@tarojs/taro";
 import { View, Button, Text, Input } from "@tarojs/components";
 import { connect } from "@tarojs/redux";
 import { bindActionCreators } from "redux";
+import url from "url";
 import {
   AtTabs,
   AtTabsPane,
@@ -115,9 +116,19 @@ class Index extends Component {
   checkNavigateTo = () => {
     const params = this.$router.params;
     var newobj = JSON.parse(JSON.stringify(params));
-    const { goto, name } = newobj;
+    const { scene } = newobj;
     const { showsharemsg } = this.state;
-
+    if (scene) {
+      const params = decodeURIComponent(scene);
+      if (params.indexOf("?") === 0) {
+        //参数自带问号
+        newobj = url.parse(params, true).query;
+      } else {
+        //不带问号添加问号
+        newobj = url.parse("?" + params, true).query;
+      }
+    }
+    const { goto, name } = newobj;
     if (goto) {
       delete newobj.goto;
       const { userinfo } = this.props.userReducer;
@@ -360,7 +371,6 @@ class Index extends Component {
       showcurtain
     } = this.state;
     const menuData = this.getMenuData();
-
     let condition = false;
     if (deviceinfo && userinfo && statistic) {
     } else {
