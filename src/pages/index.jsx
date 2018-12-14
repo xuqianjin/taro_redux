@@ -115,6 +115,7 @@ class Index extends Component {
   }
   checkNavigateTo = () => {
     const params = this.$router.params;
+    wx.fundebug.notify('首页',JSON.stringify(params));
     var newobj = JSON.parse(JSON.stringify(params));
     const { scene } = newobj;
     const { showsharemsg } = this.state;

@@ -35,7 +35,7 @@ export default class extends Component {
     super(props);
   }
   componentWillMount() {
-    this.props.getOssToken();
+    !this.props.commonReducer.osstoken && this.props.getOssToken();
   }
   getfilename = filepath => {
     const dir = "i/";

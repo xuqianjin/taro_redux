@@ -47,13 +47,14 @@ export default class extends Component {
         left: `转发 ${statistic.numArticlesForwarded}`,
         right: `阅读 ${statistic.numArticlesViewed}`,
         tourl: "/pages/article/index"
+      },
+      {
+        title: "获客案例",
+        icon: require("../static/icon/haibao.png"),
+        desc: "海量最新模板",
+        left: "我的分享 0",
+        tourl: "/pages/demo/upload"
       }
-      // , {
-      //   title: '获客案例',
-      //   icon: require('../static/icon/haibao.png'),
-      //   desc: '海量最新模板',
-      //   left: '我的分享 0'
-      // }
     ];
   };
   handleTopClick = value => {
@@ -111,9 +112,7 @@ export default class extends Component {
             className="at-col text_center opacity"
             onClick={this.handleTopClick.bind(this, 3)}
           >
-            <View className="number">
-              {statistic.numMsgsToday}
-            </View>
+            <View className="number">{statistic.numMsgsToday}</View>
             <View className="text_black_light">今日消息</View>
           </View>
         </View>

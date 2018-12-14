@@ -39,8 +39,11 @@ class App extends Component {
       "pages/vip/index",
       "pages/chat/index",
       "pages/qrcode/index",
+      "pages/qrcode/userqrcode",
       "pages/viewlog/index",
-      "pages/share/index"
+      "pages/share/index",
+      "pages/demo/index",
+      "pages/demo/upload",
     ],
     window: {
       backgroundTextStyle: "dark",
