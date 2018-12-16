@@ -18,9 +18,15 @@ import BaseView from "../../components/BaseView";
 import ImageView from "../../components/ImageView";
 import UploadFile from "../../components/UploadFile";
 import PopRegion, { getRegionNameById } from "../../components/PopRegion";
-import { getRoomKinds } from "../../reducers/demoReducer";
+import { getRoomKinds, postDemo } from "../../reducers/demoReducer";
 
-import { roomStyle, houseKind } from "../../components/Constant";
+import {
+  roomStyle,
+  houseKind,
+  roomKind,
+  demoKind
+} from "../../components/Constant";
+import { getNameByValue } from "../../lib/utils";
 import "./style.scss";
 
 const mapStateToProps = state => {
@@ -32,7 +38,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ getRoomKinds }, dispatch);
+  return bindActionCreators({ getRoomKinds, postDemo }, dispatch);
 };
 
 @connect(
@@ -55,10 +61,19 @@ export default class extends Component {
           isneed: true
         },
         {
+          title: "类型",
+          name: "kind",
+          type: "select",
+          selector: demoKind,
+          rangeKey: "name",
+          isneed: true
+        },
+        {
           title: "户型",
           name: "houseKind",
           type: "select",
           selector: houseKind,
+          rangeKey: "name",
           isneed: true
         },
         {
@@ -66,23 +81,20 @@ export default class extends Component {
           name: "style",
           type: "select",
           selector: roomStyle,
+          rangeKey: "name",
           isneed: true
         }
       ],
-      images: "http://dummyimage.com/125x125,http://dummyimage.com/125x125",
-      rooms: {
-        1: "http://dummyimage.com/125x125,http://dummyimage.com/125x125,http://dummyimage.com/125x125"
-      }
+      images: "",
+      rooms: {}
     };
   }
-  componentWillMount() {
-    this.props.getRoomKinds();
-  }
+  componentWillMount() {}
   onChange = (item, index, value) => {
     let { listdata } = this.state;
     if (item.type === "select") {
       const { detail } = value;
-      listdata[index].value = item.selector[Number(detail.value)];
+      listdata[index].value = item.selector[Number(detail.value)].value;
     } else if (item.type === "region") {
       listdata[index].value = value[value.length - 1].id;
     } else {
@@ -111,7 +123,10 @@ export default class extends Component {
       return;
     }
     postdata.area = Number(postdata.area);
-    const name = `${postdata.area}平${postdata.style}风格${postdata.houseKind}`;
+    const name = `${postdata.area}平${getNameByValue(
+      roomStyle,
+      postdata.style
+    )}风格${getNameByValue(houseKind, postdata.houseKind)}`;
     postdata.name = name;
     if (!images) {
       Taro.atMessage({ message: `请上传封面`, type: "error" });
@@ -123,7 +138,7 @@ export default class extends Component {
       const array = [];
       keys.map(key => {
         const obj = {
-          roomKindId: Number(key),
+          kind: Number(key),
           images: rooms[key]
         };
         array.push(obj);
@@ -131,6 +146,18 @@ export default class extends Component {
       postdata.rooms = array;
     }
     console.log(postdata);
+    Taro.showLoading();
+    this.props
+      .postDemo(postdata)
+      .then(res => {
+        Taro.hideLoading();
+        Taro.navigateBack();
+        Taro.eventCenter.trigger("getUserDemoCreate");
+      })
+      .catch(err => {
+        Taro.hideLoading();
+        Taro.atMessage({ message: err.message, type: "error" });
+      });
   };
   getRegionName = item => {
     if (item.type !== "region") {
@@ -154,7 +181,6 @@ export default class extends Component {
   render() {
     const { usercarte } = this.props.userReducer;
     const { listdata, images, rooms } = this.state;
-    const { roomkinds } = this.props.demoReducer;
     const uploadconfig = { count: 9 };
     return (
       <BaseView>
@@ -165,12 +191,15 @@ export default class extends Component {
               <Picker
                 onChange={this.onChange.bind(this, item, index)}
                 key={item.name}
+                rangeKey={item.rangeKey}
                 range={item.selector}
               >
                 <View className="inputpicker">
                   <View className="left">{title}</View>
                   {item.value ? (
-                    <View className="right select">{item.value}</View>
+                    <View className="right select">
+                      {getNameByValue(item.selector, item.value)}
+                    </View>
                   ) : (
                     <View className="right default">{`请选择${
                       item.title
@@ -223,15 +252,17 @@ export default class extends Component {
         </View>
         <View className="bg_white">
           <UploadFile
+            prefix="wxd/"
             config={uploadconfig}
             onUpload={this.handleUpload.bind(this, 0)}
           >
             <View className="at-row imagesview">
-              {images.split(",").map((item, index) => {
-                return (
-                  <ImageView key={index} baseclassname="add_img" src={item} />
-                );
-              })}
+              {images &&
+                images.split(",").map((item, index) => {
+                  return (
+                    <ImageView key={index} baseclassname="add_img" src={item} />
+                  );
+                })}
               <AtIcon
                 value="add"
                 color="#ddd"
@@ -242,19 +273,20 @@ export default class extends Component {
           </UploadFile>
         </View>
         <HeightView height={20} color="transparent" />
-        {roomkinds &&
-          roomkinds.map(item => {
-            const finditemimages = rooms[item.id];
+        {roomKind &&
+          roomKind.map(item => {
+            const finditemimages = rooms[item.value];
             const subimages = finditemimages ? finditemimages.split(",") : [];
             return (
-              <View key={item.id}>
+              <View key={item.value}>
                 <View className="paneltitle bg_white">
                   <Text>{`上传${item.name}(选填)`}</Text>
                 </View>
                 <View className="bg_white">
                   <UploadFile
+                    prefix="wxd/"
                     config={uploadconfig}
-                    onUpload={this.handleUpload.bind(this, item.id)}
+                    onUpload={this.handleUpload.bind(this, item.value)}
                   >
                     <View className="at-row imagesview">
                       {subimages.map((subitem, index) => {

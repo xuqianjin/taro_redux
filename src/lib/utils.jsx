@@ -5,13 +5,20 @@ export const changeSrc = src => {
     return "";
   }
   if (src && typeof src === "string") {
-    if (src.indexOf("i/") === 0) {
+    if (src.indexOf("i/") === 0 || src.indexOf("wxd/") === 0) {
       src = CDN_URL + src;
     }
   }
   return src;
 };
 
+export const getNameByValue = (array, value) => {
+  if (!array) {
+    return "";
+  }
+  const item = array.find(item => item.value === value);
+  return item.name;
+};
 export const countTypeText = count => {
   let text = "可以和他见面聊一聊啦";
   if (count < 3) {

@@ -71,6 +71,12 @@ export default class extends Component {
         button = "回复6扫码分享";
         img = `${CDN_URL}sharearticle.jpg`;
         break;
+      case 2:
+        title = "案例分享提示";
+        desc = '在客服会话回复"6"扫码分享';
+        button = "回复6扫码分享";
+        img = `${CDN_URL}sharedemo.jpg`;
+        break;
       case 3:
         title = "进群提示";
         desc = '在客服会话回复"6"扫码进群';

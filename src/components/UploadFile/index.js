@@ -38,7 +38,7 @@ export default class extends Component {
     !this.props.commonReducer.osstoken && this.props.getOssToken();
   }
   getfilename = filepath => {
-    const dir = "i/";
+    const dir = this.props.prefix || "i/";
     let name = "";
     if (filepath && filepath.indexOf("/") > -1) {
       var split = filepath.split("/");

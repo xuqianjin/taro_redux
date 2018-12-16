@@ -88,12 +88,15 @@ export default class extends Component {
     });
     this.requestSysList();
     Taro.eventCenter.on("getUserArticleCreate", () => {
-      this.setState({ userarticle: "", chooseuser: 0 }, () => {
+      this.setState({ userarticle: "", chooseuser: 0, myhasMore: true }, () => {
         this.mypage.pageNo = 0;
         this.requestMyList();
       });
     });
     Taro.eventCenter.trigger("getUserArticleCreate");
+  }
+  componentWillUnmount() {
+    Taro.eventCenter.off("getUserArticleCreate");
   }
   requestSysList = () => {
     const { choosetag } = this.state;

@@ -27,33 +27,40 @@ export const careerKind = [
     value: 4
   }
 ];
+export const demoKind = [
+  { name: "装修", value: 1 },
+  { name: "设计", value: 2 }
+];
 export const roomStyle = [
-  "欧式",
-  "中式",
-  "新古典",
-  "东南亚",
-  "美式",
-  "田园",
-  "地中海",
-  "现代",
-  "简约",
-  "日式",
-  "宜家",
-  "北欧",
-  "简欧",
-  "LOFT",
-  "复式",
-  "混搭",
-  "工业风"
+  { name: "欧式", value: 1 },
+  { name: "中式", value: 2 },
+  { name: "新古典", value: 3 },
+  { name: "东南亚", value: 4 },
+  { name: "美式", value: 5 },
+  { name: "田园", value: 6 },
+  { name: "地中海", value: 7 },
+  { name: "现代", value: 8 },
+  { name: "简约", value: 9 },
+  { name: "日式", value: 10 },
+  { name: "宜家", value: 11 },
+  { name: "北欧", value: 12 },
+  { name: "简欧", value: 13 },
+  { name: "LOFT", value: 14 },
+  { name: "复式", value: 15 },
+  { name: "混搭", value: 16 },
+  { name: "工业风", value: 17 }
 ];
 export const houseKind = [
-  "一居室",
-  "两居室",
-  "三居室",
-  "四居室",
-  "大户型",
-  "复式",
-  "样板房",
-  "别墅豪宅",
-  "工装"
+  { name: "一居室", value: 1 },
+  { name: "两居室", value: 2 },
+  { name: "三居室", value: 3 },
+  { name: "四居室", value: 4 },
+  { name: "复式", value: 5 },
+  { name: "样板房", value: 6 }
+];
+export const roomKind = [
+  { name: "客厅", value: 1 },
+  { name: "餐厅", value: 2 },
+  { name: "卧室", value: 3 },
+  { name: "其他", value: 0 }
 ];

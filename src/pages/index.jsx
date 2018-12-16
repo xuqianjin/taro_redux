@@ -136,10 +136,11 @@ class Index extends Component {
 
       const pathkey = {
         visitors: "/pages/viewlog/index",
-        carte: `/pages/userinfo/index`,
         vip: "/pages/vip/index",
         messages: "/pages/message/index",
-        article: "/pages/webview/index"
+        carte: `/pages/userinfo/index`,
+        article: "/pages/webview/index",
+        demo: "/pages/webview/demo"
       };
       if (goto === "carte") {
         newobj = Object.assign({}, { userId: userinfo.userId }, newobj);
@@ -158,6 +159,13 @@ class Index extends Component {
       if (goto === "article" && !showsharemsg) {
         this.setState({
           showsharemsg: `您正在查看${name || ""}分享给你文章`,
+          senderId: newobj.userId
+        });
+        return;
+      }
+      if (goto === "demo" && !showsharemsg) {
+        this.setState({
+          showsharemsg: `您正在查看${name || ""}分享给你案例`,
           senderId: newobj.userId
         });
         return;

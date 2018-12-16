@@ -144,7 +144,7 @@ export default class extends Component {
     }
   };
   onUpload = images => {
-    this.setState({ avatarUrl: images[0] });
+    this.setState({ avatarUrl: CDN_URL + images[0] });
   };
   onSubmit = () => {
     const { userinfo } = this.props.userReducer;

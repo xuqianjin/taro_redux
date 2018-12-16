@@ -9,13 +9,13 @@ export default class extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      src: changeSrc(this.props.src)
+      src: this.props.src
     };
   }
-
+  componentWillMount() {}
   componentWillReceiveProps(nextProps) {
     if (nextProps.src !== this.props.src) {
-      this.setState({ src: changeSrc(nextProps.src) });
+      this.setState({ src: nextProps.src });
     }
   }
   onError = () => {
@@ -34,7 +34,7 @@ export default class extends Component {
 
     return (
       <Image
-        src={src}
+        src={changeSrc(src)}
         onError={this.onError}
         className={className}
         style={basestyle}

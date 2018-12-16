@@ -25,6 +25,7 @@ import FormidButton from "../../components/FormidButton";
 import PopRegion, { getRegionNameById } from "../../components/PopRegion";
 
 import ArticleItem from "../article/ArticleItem";
+import DemoItem from "../demo/DemoItem";
 import { changeSrc } from "../../lib/utils";
 
 import { gender, careerKind } from "../../components/Constant";
@@ -79,7 +80,9 @@ export default class extends Component {
       timebegin: new Date().getTime() - 3000,
       kind: 1,
       isme: true,
-      pageuserid: ""
+      pageuserid: "",
+      showarticleall: false,
+      showdemoall: false
     };
   }
   componentWillMount() {
@@ -153,6 +156,9 @@ export default class extends Component {
       case 4:
         Taro.navigateTo({ url: "/pages/userinfo/articles" });
         break;
+      case 5:
+        Taro.navigateTo({ url: "/pages/userinfo/demos" });
+        break;
       default:
     }
   };
@@ -180,9 +186,14 @@ export default class extends Component {
   handleShareClose = () => {
     this.setState({ showshare: false });
   };
-  handleItemClick = item => {
+  handleArticleClick = item => {
     Taro.navigateTo({
       url: `/pages/webview/index?id=${item.id}&overcarte=${item.isSystem}`
+    });
+  };
+  handleDemoClick = item => {
+    Taro.navigateTo({
+      url: `/pages/webview/demo?id=${item.id}&overcarte=${item.isSystem}`
     });
   };
   handleCollect = isCollect => {
@@ -201,8 +212,19 @@ export default class extends Component {
       });
     }
   };
+  handleShowAll = type => {
+    switch (type) {
+      case 1:
+        this.setState({ showarticleall: true });
+        break;
+      case 2:
+        this.setState({ showdemoall: true });
+        break;
+      default:
+    }
+  };
   render() {
-    const { showshare, isme } = this.state;
+    const { showshare, isme, showarticleall, showdemoall } = this.state;
     const { regions } = this.props.commonReducer;
     const { cartecollect, usercartedesc } = this.props.userReducer;
     var { carte } = usercartedesc;
@@ -370,16 +392,67 @@ export default class extends Component {
           <View className="content-min-height bg_white">
             {usercartedesc.articles &&
               usercartedesc.articles.map((item, index) => {
-                return (
+                return index > 2 && !showarticleall ? null : (
                   <ArticleItem
                     key={item.id}
                     item={item}
                     line={true}
-                    onClick={this.handleItemClick.bind(this, item)}
+                    onClick={this.handleArticleClick.bind(this, item)}
                   />
                 );
               })}
-            <AtLoadMore status={"noMore"} />
+            {usercartedesc.articles && (
+              <AtLoadMore
+                status={
+                  usercartedesc.articles.length > 3 && !showarticleall
+                    ? "more"
+                    : "noMore"
+                }
+                onClick={this.handleShowAll.bind(this, 1)}
+              />
+            )}
+          </View>
+        </View>
+
+        <View>
+          <HeightView height={20} color="transparent" />
+          <View className="paneltitle bg_white">
+            <Text>推荐案例</Text>
+            {isme && (
+              <View
+                className="extra text_theme"
+                onClick={this.handleSetClick.bind(this, 5)}
+              >
+                添加
+              </View>
+            )}
+          </View>
+          <HeightView height={1} color="#d6e4ef" />
+          <View className="content-min-height bg_white">
+            <View className="at-row at-row--wrap">
+              {usercartedesc.demos &&
+                usercartedesc.demos.map((item, index) => {
+
+                  return index > 3 && !showarticleall ? null : (
+                    <DemoItem
+                      key={item.id}
+                      item={item}
+                      line={true}
+                      onClick={this.handleDemoClick.bind(this, item)}
+                    />
+                  );
+                })}
+            </View>
+            {usercartedesc.demos && (
+              <AtLoadMore
+                status={
+                  usercartedesc.demos.length > 4 && !showdemoall
+                    ? "more"
+                    : "noMore"
+                }
+                onClick={this.handleShowAll.bind(this, 2)}
+              />
+            )}
           </View>
         </View>
 

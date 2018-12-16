@@ -51,9 +51,10 @@ export default class extends Component {
       {
         title: "获客案例",
         icon: require("../static/icon/haibao.png"),
-        desc: "海量最新模板",
-        left: "我的分享 0",
-        tourl: "/pages/demo/upload"
+        desc: "带名片精品案例，专业即转化",
+        left: `收藏 ${statistic.numDemosCollected}`,
+        right: `阅读 ${statistic.numDemosViewed}`,
+        tourl: "/pages/demo/index"
       }
     ];
   };
