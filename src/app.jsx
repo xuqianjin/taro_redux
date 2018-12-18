@@ -45,7 +45,8 @@ class App extends Component {
       "pages/viewlog/index",
       "pages/share/index",
       "pages/demo/index",
-      "pages/demo/upload",
+      "pages/demo/uploadh",
+      "pages/demo/uploadm",
     ],
     window: {
       backgroundTextStyle: "dark",

@@ -28,8 +28,8 @@ export const careerKind = [
   }
 ];
 export const demoKind = [
-  { name: "装修", value: 1 },
-  { name: "设计", value: 2 }
+  { name: "装修案例", value: 1 },
+  { name: "建材案例", value: 2 }
 ];
 export const roomStyle = [
   { name: "欧式", value: 1 },
@@ -55,8 +55,11 @@ export const houseKind = [
   { name: "两居室", value: 2 },
   { name: "三居室", value: 3 },
   { name: "四居室", value: 4 },
-  { name: "复式", value: 5 },
-  { name: "样板房", value: 6 }
+  { name: "大户型", value: 5 },
+  { name: "复式", value: 6 },
+  { name: "样板房", value: 7 },
+  { name: "别墅豪装", value: 8 },
+  { name: "工装", value: 9 }
 ];
 export const roomKind = [
   { name: "客厅", value: 1 },

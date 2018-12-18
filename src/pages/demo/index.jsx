@@ -2,7 +2,16 @@ import Taro, { Component } from "@tarojs/taro";
 import { View, ScrollView } from "@tarojs/components";
 import { connect } from "@tarojs/redux";
 import { bindActionCreators } from "redux";
-import { AtTabBar, AtTabs, AtTabsPane, AtLoadMore, AtIcon } from "taro-ui";
+import {
+  AtTabBar,
+  AtTabs,
+  AtTabsPane,
+  AtLoadMore,
+  AtIcon,
+  AtModal,
+  AtModalHeader,
+  AtModalContent
+} from "taro-ui";
 
 import HeightView from "../../components/HeightView";
 import BaseView from "../../components/BaseView";
@@ -46,7 +55,8 @@ export default class extends Component {
       current: 0,
       chooseuser: 0,
       userdemo: "",
-      myhasMore: true
+      myhasMore: true,
+      isOpened: false
     };
     this.mypage = {
       pageNo: 0,
@@ -108,7 +118,20 @@ export default class extends Component {
     });
   };
   handUpload = () => {
-    Taro.navigateTo({ url: "/pages/demo/upload" });
+    this.setState({ isOpened: true });
+    // Taro.navigateTo({ url: "/pages/demo/upload" });
+  };
+  handleTypeClick = item => {
+    switch (item.value) {
+      case 1:
+        Taro.navigateTo({ url: `/pages/demo/uploadh?kind=${item.value}` });
+        break;
+      case 2:
+        Taro.navigateTo({ url: `/pages/demo/uploadm?kind=${item.value}` });
+        break;
+      default:
+    }
+    this.setState({ isOpened: false });
   };
   onMyScrollToLower = () => {
     this.mypage.pageNo++;
@@ -165,6 +188,23 @@ export default class extends Component {
           <HeightView height={5} color="transparent" />
           <Text>上传案例</Text>
         </View>
+        <AtModal isOpened={this.state.isOpened}>
+          <AtModalHeader>请选择上传模板</AtModalHeader>
+          <AtModalContent className="at-row at-row__justify--around at-row__align--center">
+            {demoKind.map(item => {
+              return (
+                <View
+                  key={item.value}
+                  className="text_center text_theme"
+                  style="font-size:18px;line-height:4;font-weight:bold"
+                  onClick={this.handleTypeClick.bind(this, item)}
+                >
+                  {item.name}
+                </View>
+              );
+            })}
+          </AtModalContent>
+        </AtModal>
       </View>
     );
   }

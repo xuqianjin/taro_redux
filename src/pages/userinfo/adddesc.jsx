@@ -106,7 +106,7 @@ export default class extends Component {
           <AtTextarea
             value={desc}
             onChange={this.onDescChange.bind(this)}
-            height="200"
+            height="400"
             maxlength="200"
             placeholder="个人简介..."
           />

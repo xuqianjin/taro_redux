@@ -338,7 +338,7 @@ export default class extends Component {
                 去添加
               </AtButton>
             ) : (
-              carte.desc || ""
+              <Text>{carte.desc || ""}</Text>
             )}
           </View>
         </View>
@@ -432,7 +432,6 @@ export default class extends Component {
             <View className="at-row at-row--wrap">
               {usercartedesc.demos &&
                 usercartedesc.demos.map((item, index) => {
-
                   return index > 3 && !showarticleall ? null : (
                     <DemoItem
                       key={item.id}

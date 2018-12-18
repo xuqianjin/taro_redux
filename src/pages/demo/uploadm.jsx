@@ -55,34 +55,11 @@ export default class extends Component {
     this.state = {
       listdata: [
         {
-          title: "面积",
-          name: "area",
-          type: "number",
-          isneed: true
-        },
-        {
-          title: "类型",
-          name: "kind",
-          type: "select",
-          selector: demoKind,
-          rangeKey: "name",
-          isneed: true
-        },
-        {
-          title: "户型",
-          name: "houseKind",
-          type: "select",
-          selector: houseKind,
-          rangeKey: "name",
-          isneed: true
-        },
-        {
-          title: "风格",
-          name: "style",
-          type: "select",
-          selector: roomStyle,
-          rangeKey: "name",
-          isneed: true
+          title: "标题",
+          name: "name",
+          type: "text",
+          isneed: true,
+          desc: ""
         }
       ],
       images: "",
@@ -104,8 +81,12 @@ export default class extends Component {
   };
   onSubmit = () => {
     const { userinfo } = this.props.userReducer;
-    const { listdata, rooms, images } = this.state;
-    let postdata = {};
+    const { listdata, images, desc } = this.state;
+    const params = this.$router.params;
+    let postdata = {
+      kind: Number(params.kind),
+      desc
+    };
     for (var item of listdata) {
       if (!item.value && item.isneed) {
         let toast = item.type === "select" ? "请选择" : "请输入";
@@ -118,33 +99,11 @@ export default class extends Component {
         }
       }
     }
-    if (!Number(postdata.area)) {
-      Taro.atMessage({ message: `面积为纯数字`, type: "error" });
-      return;
-    }
-    postdata.area = Number(postdata.area);
-    const name = `${postdata.area}平${getNameByValue(
-      roomStyle,
-      postdata.style
-    )}风格${getNameByValue(houseKind, postdata.houseKind)}`;
-    postdata.name = name;
     if (!images) {
-      Taro.atMessage({ message: `请上传封面`, type: "error" });
+      Taro.atMessage({ message: `请上传产品图`, type: "error" });
       return null;
     }
     postdata.images = images;
-    const keys = Object.keys(rooms);
-    if (keys.length > 0) {
-      const array = [];
-      keys.map(key => {
-        const obj = {
-          kind: Number(key),
-          images: rooms[key]
-        };
-        array.push(obj);
-      });
-      postdata.rooms = array;
-    }
     console.log(postdata);
     Taro.showLoading();
     this.props
@@ -167,20 +126,23 @@ export default class extends Component {
     const name = getRegionNameById(item.value, regions);
     return name;
   };
+  onDescChange = value => {
+    const { detail } = value;
+    this.setState({ desc: detail.value });
+  };
   handleUpload = (id, images) => {
     const { rooms } = this.state;
-    if (id === 0) {
+    if (id === -1) {
       //上传默认案例
       this.setState({ images: images.join(",") });
     } else {
       rooms[id] = images.join(",");
-      console.log(rooms);
       this.setState({ rooms });
     }
   };
   render() {
     const { usercarte } = this.props.userReducer;
-    const { listdata, images, rooms } = this.state;
+    const { listdata, images, rooms, desc } = this.state;
     const uploadconfig = { count: 9 };
     return (
       <BaseView>
@@ -248,13 +210,27 @@ export default class extends Component {
 
         <HeightView height={20} color="transparent" />
         <View className="paneltitle bg_white">
-          <Text>上传封面(必选)</Text>
+          <Text>简介</Text>
+        </View>
+        <View>
+          <AtTextarea
+            value={desc}
+            onChange={this.onDescChange.bind(this)}
+            height="400"
+            maxlength="200"
+            placeholder="产品简介..."
+          />
+        </View>
+
+        <HeightView height={20} color="transparent" />
+        <View className="paneltitle bg_white">
+          <Text>上传产品图(必选)</Text>
         </View>
         <View className="bg_white">
           <UploadFile
             prefix="wxd/"
             config={uploadconfig}
-            onUpload={this.handleUpload.bind(this, 0)}
+            onUpload={this.handleUpload.bind(this, -1)}
           >
             <View className="at-row imagesview">
               {images &&
@@ -272,45 +248,6 @@ export default class extends Component {
             </View>
           </UploadFile>
         </View>
-        <HeightView height={20} color="transparent" />
-        {roomKind &&
-          roomKind.map(item => {
-            const finditemimages = rooms[item.value];
-            const subimages = finditemimages ? finditemimages.split(",") : [];
-            return (
-              <View key={item.value}>
-                <View className="paneltitle bg_white">
-                  <Text>{`上传${item.name}(选填)`}</Text>
-                </View>
-                <View className="bg_white">
-                  <UploadFile
-                    prefix="wxd/"
-                    config={uploadconfig}
-                    onUpload={this.handleUpload.bind(this, item.value)}
-                  >
-                    <View className="at-row imagesview">
-                      {subimages.map((subitem, index) => {
-                        return (
-                          <ImageView
-                            key={index}
-                            baseclassname="add_img"
-                            src={subitem}
-                          />
-                        );
-                      })}
-                      <AtIcon
-                        value="add"
-                        color="#ddd"
-                        size={30}
-                        className="add_icon opacity"
-                      />
-                    </View>
-                  </UploadFile>
-                </View>
-                <HeightView height={20} color="transparent" />
-              </View>
-            );
-          })}
         <HeightView height={100} color="transparent" />
         <AtButton className="button" type="primary" onClick={this.onSubmit}>
           提交
