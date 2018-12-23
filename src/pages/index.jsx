@@ -115,7 +115,7 @@ class Index extends Component {
   }
   checkNavigateTo = () => {
     const params = this.$router.params;
-    wx.fundebug.notify('首页',JSON.stringify(params));
+    wx.fundebug.notify("首页", JSON.stringify(params));
     var newobj = JSON.parse(JSON.stringify(params));
     const { scene } = newobj;
     const { showsharemsg } = this.state;
@@ -129,7 +129,7 @@ class Index extends Component {
         newobj = url.parse("?" + params, true).query;
       }
     }
-    const { goto, name } = newobj;
+    const { goto, name, redpackId } = newobj;
     if (goto) {
       delete newobj.goto;
       const { userinfo } = this.props.userReducer;
@@ -150,10 +150,17 @@ class Index extends Component {
         newobj.userId != userinfo.userId &&
         !showsharemsg
       ) {
-        this.setState({
-          showsharemsg: `您正在查看${name || ""}分享给你名片`,
-          senderId: newobj.userId
-        });
+        if (redpackId) {
+          this.setState({
+            showsharemsg: `您正在领取${name || ""}分享给你名片红包`,
+            senderId: newobj.userId
+          });
+        } else {
+          this.setState({
+            showsharemsg: `您正在查看${name || ""}分享给你名片`,
+            senderId: newobj.userId
+          });
+        }
         return;
       }
       if (goto === "article" && !showsharemsg) {

@@ -47,6 +47,9 @@ class App extends Component {
       "pages/demo/index",
       "pages/demo/uploadh",
       "pages/demo/uploadm",
+      "pages/redpack/index",
+      "pages/redpack/list",
+      "pages/redpack/share"
     ],
     window: {
       backgroundTextStyle: "dark",

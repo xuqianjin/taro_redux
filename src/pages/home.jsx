@@ -70,6 +70,9 @@ export default class extends Component {
       default:
     }
   };
+  handleRedPackClick = () => {
+    Taro.navigateTo({ url: "/pages/redpack/index" });
+  };
   handleListClick = item => {
     Taro.navigateTo({ url: item.tourl });
   };
@@ -162,6 +165,7 @@ export default class extends Component {
       <BaseView condition={condition}>
         {headeBg}
         {header}
+        <View onClick={this.handleRedPackClick.bind(this)}>创建红包</View>
         {userCard}
         <HeightView height={20} color="transparent" />
       </BaseView>

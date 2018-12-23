@@ -12,6 +12,9 @@ export default class extends Component {
       src: this.props.src
     };
   }
+  static defaultProps = {
+    onClick: () => {}
+  };
   componentWillMount() {}
   componentWillReceiveProps(nextProps) {
     if (nextProps.src !== this.props.src) {
@@ -24,7 +27,7 @@ export default class extends Component {
 
   render() {
     const { src } = this.state;
-    const { basestyle, mode } = this.props;
+    const { basestyle, mode, onClick } = this.props;
 
     //  小程序bug兼容 https://nervjs.github.io/taro/docs/component-style.html
     var className = "baseclassname";
@@ -34,6 +37,7 @@ export default class extends Component {
 
     return (
       <Image
+        onClick={onClick}
         src={changeSrc(src)}
         onError={this.onError}
         className={className}

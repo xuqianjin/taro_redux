@@ -5,6 +5,7 @@ import userReducer from "./userReducer";
 import articleReducer from "./articleReducer";
 import customerReducer from "./customerReducer";
 import demoReducer from "./demoReducer";
+import redpackReducer from "./redpackReducer";
 
 const rootReducer = combineReducers({
   counter,
@@ -12,7 +13,8 @@ const rootReducer = combineReducers({
   userReducer,
   articleReducer,
   customerReducer,
-  demoReducer
+  demoReducer,
+  redpackReducer
 });
 
 export default rootReducer;
