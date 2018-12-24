@@ -10,6 +10,8 @@ const API_GET_REDPACK_OPEN = API_HOST + "/c/redpack/{id}/open";
 const API_GET_REDPACK_RECEIVE = API_HOST + "/c/redpacks/receive";
 const API_GET_REDPACK_SEND = API_HOST + "/c/redpacks/send";
 
+const API_GET_REDPACK_STATISTIC = API_HOST + "/c/statistic/redpack";
+
 export const postRedPack = data => (dispatch, getState) => {
   return dispatch({
     type: API_POST_REDPACK,
@@ -89,15 +91,28 @@ export const getRedPackSend = params => (dispatch, getState) => {
   });
 };
 
+export const getRedPackStatistic = () => (dispatch, getState) => {
+  return dispatch({
+    type: API_GET_REDPACK_STATISTIC,
+    payload: request.get(API_GET_REDPACK_STATISTIC, {
+      header: {
+        Authorization: getState().userReducer.token
+      }
+    })
+  });
+};
+
 const init_state = {
-  roomkinds: ""
+  roomkinds: "",
+  redpackstatistic: ""
 };
 
 export default function reducer(state = init_state, action) {
   switch (action.type) {
-    case `${API_POST_REDPACK}_FULFILLED`:
+    case `${API_GET_REDPACK_STATISTIC}_FULFILLED`:
       return {
-        ...state
+        ...state,
+        redpackstatistic: action.payload
       };
     default:
       return state;

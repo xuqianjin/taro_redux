@@ -3,6 +3,7 @@ import { connect } from "@tarojs/redux";
 import { bindActionCreators } from "redux";
 
 import ImageView from "../../components/ImageView";
+import HeightView from "../../components/HeightView";
 import { View, Button } from "@tarojs/components";
 import "./style.scss";
 
@@ -44,12 +45,13 @@ export default class extends Component {
     const { usercarte } = this.props.userReducer;
     return (
       <View className="sharecontent">
-        <View className="shareheader">
+        <HeightView height={75} color="transparent" />
+        <View className="redpackbg">
           <ImageView baseclassname="shareheaderimg" src={usercarte.avatarUrl} />
+          <Button className="sharebutton" openType="share">
+            发红包给好友或群聊
+          </Button>
         </View>
-        <Button className="sharebutton" openType="share">
-          发红包给好友或群聊
-        </Button>
         <View className="sharedesc">
           <Text>未领取红包将于24小时退回多装获客宝账户</Text>
         </View>

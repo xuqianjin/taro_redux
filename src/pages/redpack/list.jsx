@@ -18,8 +18,11 @@ import BaseView from "../../components/BaseView";
 import ImageView from "../../components/ImageView";
 import {
   getRedPackSend,
-  getRedPackReceive
+  getRedPackReceive,
+  getRedPackStatistic
 } from "../../reducers/redpackReducer";
+import RedpackCenter from "./RedpackCenter";
+import ListItem from "./ListItem";
 
 import "./style.scss";
 
@@ -32,7 +35,10 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ getRedPackSend, getRedPackReceive }, dispatch);
+  return bindActionCreators(
+    { getRedPackSend, getRedPackReceive, getRedPackStatistic },
+    dispatch
+  );
 };
 
 @connect(
@@ -59,17 +65,18 @@ export default class extends Component {
     };
     this.usertag = [
       {
-        name: "我收到的",
-        func: this.props.getRedPackReceive
-      },
-      {
         name: "我发出的",
         func: this.props.getRedPackSend
+      },
+      {
+        name: "我收到的",
+        func: this.props.getRedPackReceive
       }
     ];
   }
   componentWillMount() {
     Taro.eventCenter.on("getUserRedpack", () => {
+      this.props.getRedPackStatistic();
       this.setState({ redpacklist: "", chooseuser: 0, myhasMore: true }, () => {
         this.mypage.pageNo = 0;
         this.requestMyList();
@@ -128,48 +135,78 @@ export default class extends Component {
     this.requestMyList();
   };
   render() {
+    const { usercarte } = this.props.userReducer;
+    const { redpackstatistic } = this.props.redpackReducer;
     const { chooseuser, redpacklist, myhasMore } = this.state;
     const { deviceinfo } = this.props.commonReducer;
+    const { moneyLeft, moneyReceive, moneySend, numReceive, numSend } =
+      redpackstatistic || {};
+    const title = `${chooseuser == 0 ? "共发出" : "共收到"}`;
+    const { money, num } =
+      chooseuser == 0
+        ? { money: moneySend, num: numSend }
+        : { money: moneyReceive, num: numReceive };
+
     const scrollheight = Taro.pxTransform(
-      (deviceinfo.windowHeight * 750) / deviceinfo.windowWidth - 80
+      (deviceinfo.windowHeight * 750) / deviceinfo.windowWidth - 500 - 20
     );
+
     return (
-      <View>
-        <View className="attabs">
-          <View className="at-row bg_white fixtag">
+      <View className="content">
+        <View className="header">
+          <View className="attabs at-row">
             {this.usertag.map((tag, index) => {
-              let color =
-                index == chooseuser ? "text_black" : "text_black_light";
+              let color = index == chooseuser ? "choose" : "default";
               return (
                 <View
-                  className={`at-col text_center ${color}`}
+                  className={`at-col text_center`}
                   key={tag.value}
                   onClick={this.handleUserClick.bind(this, index)}
                 >
-                  {tag.name}
+                  <Text className={`${color}`}>{tag.name}</Text>
                 </View>
               );
             })}
+          </View>
+        </View>
+        <RedpackCenter avatarUrl={usercarte.avatarUrl} />
+        <View className="body">
+          <View className="infoblock">
+            <View>
+              <Text className="text_theme">{usercarte.name}</Text>
+              {title}
+            </View>
+            <HeightView height={20} color="transparent" />
+            <View className="at-row">
+              <View className="at-col text_center">
+                <View className="text_black_light">金额(元)</View>
+                <HeightView height={20} color="transparent" />
+                <View className="number">{money / 100}</View>
+              </View>
+              <View className="at-col text_center">
+                <View className="text_black_light">数量(个)</View>
+                <HeightView height={20} color="transparent" />
+                <View className="number">{num}</View>
+              </View>
+            </View>
           </View>
           <ScrollView
             scrollY={true}
             style={`height:${scrollheight}`}
             onScrollToLower={this.onMyScrollToLower}
+            className="body"
           >
-            <HeightView height={10} />
-            <View className="at-row at-row--wrap">
-              {redpacklist &&
-                redpacklist.map((item, index) => {
-                  return (
-                    <DemoItem
-                      key={item.id}
-                      item={item}
-                      line={index < redpacklist.length - 1}
-                      onClick={this.handleItemClick.bind(this, item)}
-                    />
-                  );
-                })}
-            </View>
+            {redpacklist &&
+              redpacklist.map((item, index) => {
+                return (
+                  <ListItem
+                    avatarUrl={usercarte.avatarUrl}
+                    key={item.id}
+                    item={item}
+                    onClick={this.handleItemClick.bind(this, item)}
+                  />
+                );
+              })}
             <AtLoadMore status={myhasMore ? "loading" : "noMore"} />
           </ScrollView>
         </View>
