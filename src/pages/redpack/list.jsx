@@ -1,7 +1,8 @@
 import Taro, { Component } from "@tarojs/taro";
-import { View, ScrollView } from "@tarojs/components";
+import { View, ScrollView, Text } from "@tarojs/components";
 import { connect } from "@tarojs/redux";
 import { bindActionCreators } from "redux";
+import moment from "moment";
 import {
   AtTabBar,
   AtTabs,
@@ -116,7 +117,7 @@ export default class extends Component {
   };
   handleItemClick = item => {
     Taro.navigateTo({
-      url: `/pages/webview/demo?id=${item.id}&overcarte=${item.isSystem}`
+      url: `/pages/redpack/detail?redpackId=${item.id}`
     });
   };
   handleTypeClick = item => {
@@ -148,7 +149,7 @@ export default class extends Component {
         : { money: moneyReceive, num: numReceive };
 
     const scrollheight = Taro.pxTransform(
-      (deviceinfo.windowHeight * 750) / deviceinfo.windowWidth - 500 - 20
+      (deviceinfo.windowHeight * 750) / deviceinfo.windowWidth - 550 - 20
     );
 
     return (
@@ -198,11 +199,20 @@ export default class extends Component {
           >
             {redpacklist &&
               redpacklist.map((item, index) => {
+                const avatarUrl = usercarte.avatarUrl;
+                const nickName = usercarte.name+'的名片红包';
+                const createdAt = item.createdAt;
+                const itemmoney = item.money / 100 + "元";
+                const desc = item.numTaken + "/" + item.amount;
+
                 return (
                   <ListItem
-                    avatarUrl={usercarte.avatarUrl}
                     key={item.id}
-                    item={item}
+                    avatarUrl={avatarUrl}
+                    nickName={nickName}
+                    createdAt={moment(createdAt).format("MM月DD日 HH:mm")}
+                    money={itemmoney}
+                    desc={desc}
                     onClick={this.handleItemClick.bind(this, item)}
                   />
                 );

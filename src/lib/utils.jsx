@@ -74,5 +74,9 @@ export const errLog = {
   ErrInternal$: {
     status: 500,
     message: "系统异常"
+  },
+  ErrAlreadyOpenRedpack: {
+    status: 400,
+    message: "你已经领过该红包啦!"
   }
 };

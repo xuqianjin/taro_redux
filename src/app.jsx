@@ -49,6 +49,7 @@ class App extends Component {
       "pages/demo/uploadm",
       "pages/redpack/index",
       "pages/redpack/list",
+      "pages/redpack/detail",
       "pages/redpack/share"
     ],
     window: {

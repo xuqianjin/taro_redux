@@ -18,7 +18,7 @@
     width: 100%;
     background-color: #d65c44;
     border-radius: 0 0 50% 50%;
-    box-shadow: 0px 5px 20px #d65c44;
+    box-shadow: 0px 10px 20px #cc4228;
     z-index: 2;
   }
   & .headerimg {
@@ -30,7 +30,7 @@
     display: block;
     margin: auto;
     border-radius: 50%;
-    box-shadow: 0px 5px 20px #d65c44;
+    box-shadow: 0px 5px 20px #cc4228;
     z-index: 3;
   }
 }
@@ -169,7 +169,7 @@
 }
 
 .infoblock {
-  height: 200px;
+  height: 250px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -180,4 +180,26 @@
     font-weight: bold;
     font-size: 45px;
   }
+}
+
+.detailbutton {
+  background: #ff8269;
+  width: 550px;
+  line-height: 3;
+  border-radius: 50px;
+  font-size: 28px;
+  color: white;
+  margin: auto;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.detailicon {
+  width: 25px;
+  margin-right: 10px;
+}
+
+.redpackOpen {
+  width: 600px;
+  height: 700px;
 }
