@@ -3,7 +3,7 @@ import { connect } from "@tarojs/redux";
 import { bindActionCreators } from "redux";
 import moment from "moment";
 
-import { AtLoadMore, AtCurtain } from "taro-ui";
+import { AtLoadMore, AtCurtain, AtMessage } from "taro-ui";
 import { View, ScrollView } from "@tarojs/components";
 import ImageView from "../../components/ImageView";
 import BaseView from "../../components/BaseView";
@@ -21,6 +21,12 @@ const redpack_default = require("../../static/icon/redpack_default.png");
 const redpack_money = require("../../static/icon/redpack_money.png");
 const redpack_share = require("../../static/icon/redpack_share.png");
 
+const statusmap = {
+  0: "该红包未支付",
+  1: "领取红包",
+  2: "该红包已领完",
+  3: "该红包已过期"
+};
 const mapStateToProps = state => {
   return {
     userReducer: state.userReducer,
@@ -55,16 +61,26 @@ export default class extends Component {
     this.requstRedpack();
   }
   handleRedpackOpen = () => {
-    const { openRedpack } = this.state;
+    const { openRedpack, redpack } = this.state;
     const { redpackId } = this.$router.params;
+    if (redpack.status !== 1) {
+      return;
+    }
     if (openRedpack) {
       this.showOpen();
       return;
     }
     Taro.showLoading();
-    this.props.getRedPackOpen(redpackId).then(res => {
-      this.requstRedpack(true);
-    });
+    this.props
+      .getRedPackOpen(redpackId)
+      .then(res => {
+        Taro.hideLoading();
+        this.requstRedpack(true);
+      })
+      .catch(err => {
+        Taro.atMessage({ message: err.message, type: "error" });
+        Taro.hideLoading();
+      });
   };
   requstRedpack = showme => {
     const { userinfo } = this.props.userReducer;
@@ -75,6 +91,7 @@ export default class extends Component {
         item => item.Receiver.id === userinfo.userId
       );
       this.setState({ redpack: value, openRedpack });
+      showme && this.showOpen();
     });
   };
   showOpen = () => {
@@ -85,7 +102,7 @@ export default class extends Component {
     this.setState({ showopenRedpack: false });
   };
   render() {
-    const { redpack, showopenRedpack } = this.state;
+    const { redpack, showopenRedpack, openRedpack } = this.state;
     const { User, RedpackPieces } = redpack || {};
     const { deviceinfo } = this.props.commonReducer;
     const scrollheight = Taro.pxTransform(
@@ -100,6 +117,7 @@ export default class extends Component {
     }
     return (
       <BaseView baseclassname="content" condition={condition}>
+        <AtMessage />
         <RedpackCenter
           avatarUrl={User.avatarUrl}
           whitestyle="background-color:transparent"
@@ -110,12 +128,7 @@ export default class extends Component {
             <View>
               <Text className="text_white">{User.nickName + "的名片红包"}</Text>
             </View>
-            <View
-              className="detailbutton"
-              onClick={this.handleRedpackOpen.bind(this)}
-            >
-              {"领取红包"}
-            </View>
+            <View className="detailbutton">{statusmap[redpack.status]}</View>
             <View className="at-row">
               <View className="at-col text_center text_white">
                 <ImageView
@@ -146,15 +159,25 @@ export default class extends Component {
           <ScrollView
             scrollY={true}
             style={`height:${scrollheight}`}
-            onScrollToLower={this.onMyScrollToLower}
             className="body"
           >
+            <View className="text_center">
+              <HeightView height={20} color="transparent" />
+              <View className="looktitle">看看大家手气如何</View>
+              <HeightView height={10} color="transparent" />
+              <View className="text_black_light" style="font-size:12px">
+                {`共${redpack.money / 100}元,已领取${redpack.numTaken}/${
+                  redpack.amount
+                }个`}
+              </View>
+              <HeightView height={20} color="transparent" />
+            </View>
             {RedpackPieces &&
               RedpackPieces.map((item, index) => {
                 const avatarUrl = item.Receiver.avatarUrl;
                 const nickName = item.Receiver.nickName;
                 const createdAt = item.createdAt;
-                const money = item.money + "元";
+                const money = item.money / 100 + "元";
                 return (
                   <ListItem
                     key={item.id}
@@ -165,15 +188,20 @@ export default class extends Component {
                   />
                 );
               })}
-            <AtLoadMore status={"noMore"} />
           </ScrollView>
         </View>
-        <AtCurtain
-          isOpened={showopenRedpack}
-          onClose={this.closeOpen.bind(this)}
-        >
-          <RedpackOpen />
-        </AtCurtain>
+        {openRedpack && (
+          <AtCurtain
+            isOpened={showopenRedpack}
+            onClose={this.closeOpen.bind(this)}
+          >
+            <RedpackOpen
+              redpackId={redpack.id}
+              money={openRedpack.money / 100}
+              onClose={this.closeOpen.bind(this)}
+            />
+          </AtCurtain>
+        )}
       </BaseView>
     );
   }

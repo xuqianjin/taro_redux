@@ -36,6 +36,10 @@ import {
   getUserCarteCollect
 } from "../../reducers/userReducer";
 import { postViewlogs, putViewlogs } from "../../reducers/customerReducer";
+import {
+  getRedPackDetail,
+  getRedPackOpen
+} from "../../reducers/redpackReducer";
 import { getTags } from "../../reducers/commonReducer";
 
 import "./edit";
@@ -58,7 +62,9 @@ const mapDispatchToProps = dispatch => {
       getUserCarteCollect,
       postViewlogs,
       putViewlogs,
-      getTags
+      getTags,
+      getRedPackDetail,
+      getRedPackOpen
     },
     dispatch
   );
@@ -91,6 +97,9 @@ export default class extends Component {
     console.log(params);
     const isme = params.userId == userinfo.userId;
 
+    if (params.redpackId) {
+      this.requstRedpack();
+    }
     this.props.getUserCarteCollect();
     Taro.eventCenter.on("getUserCarteDesc", () => {
       this.props.getUserCarteDesc(params.userId);
@@ -104,6 +113,39 @@ export default class extends Component {
     Taro.eventCenter.off("getUserCarteDesc");
     this.postViewlog();
   }
+  handleRedpackOpen = () => {
+    const { openRedpack, redpack } = this.state;
+    if (redpack.status !== 1) {
+      return;
+    }
+    if (openRedpack) {
+      this.showOpen();
+      return;
+    }
+    Taro.showLoading();
+    this.props
+      .getRedPackOpen(redpack.id)
+      .then(res => {
+        Taro.hideLoading();
+        this.requstRedpack(true);
+      })
+      .catch(err => {
+        Taro.atMessage({ message: err.message, type: "error" });
+        Taro.hideLoading();
+      });
+  };
+  requstRedpack = showme => {
+    const { userinfo } = this.props.userReducer;
+    const { redpackId } = this.$router.params;
+    this.props.getRedPackDetail(redpackId).then(({ value }) => {
+      const { RedpackPieces } = value;
+      const openRedpack = RedpackPieces.find(
+        item => item.Receiver.id === userinfo.userId
+      );
+      this.setState({ redpack: value, openRedpack });
+      showme && this.showOpen();
+    });
+  };
   //上报数据
   postViewlog = () => {
     const { timebegin, kind, isme, pageuserid } = this.state;

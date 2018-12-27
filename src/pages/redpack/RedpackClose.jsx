@@ -25,12 +25,12 @@ export default class extends Component {
     });
   };
   render() {
-    const style = `background: url(${CDN_URL}hblq.png) no-repeat; background-size: 100% 100%;`;
+    const style = `background: url(${CDN_URL}hbfxbj2.png) no-repeat; background-size: 100% 100%;`;
     const { money } = this.props;
     return (
       <View className="redpackOpen" style={style}>
         <HeightView height={50} color="transparent" />
-        <View className="redpackOpenTitle text_center">您已经领取过该红包</View>
+        <View className="redpackOpenTitle text_center">收到一个名片红包</View>
         <HeightView height={100} color="transparent" />
         <View className="redpackOpenMoney text_center">{money + "元"}</View>
         <HeightView height={50} color="transparent" />
@@ -45,7 +45,7 @@ export default class extends Component {
           className="redpackOpenButton text_center"
           onClick={this.handleShare.bind(this)}
         >
-          分享给好友或群
+          分享群里再得红包
         </View>
         <HeightView height={50} color="transparent" />
         <View className="redpackOpenDesc text_center text_white">

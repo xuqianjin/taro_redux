@@ -96,11 +96,15 @@ export default class extends Component {
         return this.props.postRedPackCharge(chargedata);
       })
       .then(({ value }) => {
+        this.redpack = value;
         return Taro.requestPayment(value);
       })
       .then(res => {
         Taro.showToast({ title: "支付成功" });
         Taro.hideLoading();
+        Taro.navigateTo({
+          url: `/pages/redpack/share?redpackId=${this.redpack.id}`
+        });
       })
       .catch(err => {
         Taro.hideLoading();

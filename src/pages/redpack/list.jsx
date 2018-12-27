@@ -117,7 +117,7 @@ export default class extends Component {
   };
   handleItemClick = item => {
     Taro.navigateTo({
-      url: `/pages/redpack/detail?redpackId=${item.id}`
+      url: `/pages/redpack/detail?redpackId=${item.redpackId || item.id}`
     });
   };
   handleTypeClick = item => {
@@ -199,11 +199,14 @@ export default class extends Component {
           >
             {redpacklist &&
               redpacklist.map((item, index) => {
-                const avatarUrl = usercarte.avatarUrl;
-                const nickName = usercarte.name+'的名片红包';
+                const avatarUrl =
+                  chooseuser == 0 ? usercarte.avatarUrl : item.Sender.avatarUrl;
+                const nickName =
+                  chooseuser == 0 ? usercarte.name : item.Sender.nickName;
                 const createdAt = item.createdAt;
                 const itemmoney = item.money / 100 + "元";
-                const desc = item.numTaken + "/" + item.amount;
+                const desc =
+                  chooseuser == 0 ? item.numTaken + "/" + item.amount : "";
 
                 return (
                   <ListItem
