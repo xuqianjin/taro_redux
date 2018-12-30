@@ -50,6 +50,7 @@ class App extends Component {
       "pages/redpack/index",
       "pages/redpack/list",
       "pages/redpack/detail",
+      "pages/redpack/money",
       "pages/redpack/share"
     ],
     window: {

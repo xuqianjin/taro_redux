@@ -102,7 +102,7 @@ export default class extends Component {
       .then(res => {
         Taro.showToast({ title: "支付成功" });
         Taro.hideLoading();
-        Taro.navigateTo({
+        Taro.redirectTo({
           url: `/pages/redpack/share?redpackId=${this.redpack.id}`
         });
       })

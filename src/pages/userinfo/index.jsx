@@ -21,6 +21,7 @@ import HeightView from "../../components/HeightView";
 import BaseView from "../../components/BaseView";
 import ImageView from "../../components/ImageView";
 import ShareDialog from "../../components/ShareDialog";
+import RedpackDialog from "../redpack/RedpackDialog";
 import FormidButton from "../../components/FormidButton";
 import PopRegion, { getRegionNameById } from "../../components/PopRegion";
 
@@ -266,6 +267,7 @@ export default class extends Component {
     }
   };
   render() {
+    const { redpackId } = this.$router.params;
     const { showshare, isme, showarticleall, showdemoall } = this.state;
     const { regions } = this.props.commonReducer;
     const { cartecollect, usercartedesc } = this.props.userReducer;
@@ -521,6 +523,7 @@ export default class extends Component {
         )}
         <PopRegion ref={ref => (this.PopRegion = ref)} />
         <AtMessage />
+        <RedpackDialog redpackId={redpackId} />
       </BaseView>
     );
   }

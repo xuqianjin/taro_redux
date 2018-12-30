@@ -36,6 +36,9 @@ export default class extends Component {
     const { usercarte } = this.props.userReducer;
     const { id, name } = usercarte;
     const { redpackId } = this.$router.params;
+    console.log(
+      `/pages/index?goto=carte&userId=${id}&name=${name}&redpackId=${redpackId}`
+    );
     return {
       title: name + "的名片红包",
       path: `/pages/index?goto=carte&userId=${id}&name=${name}&redpackId=${redpackId}`
@@ -49,7 +52,7 @@ export default class extends Component {
         <View className="redpackbg">
           <ImageView baseclassname="shareheaderimg" src={usercarte.avatarUrl} />
           <Button className="sharebutton" openType="share">
-            发红包给好友或群聊
+            分享给好友或群
           </Button>
         </View>
         <View className="sharedesc">

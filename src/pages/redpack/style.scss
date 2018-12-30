@@ -241,4 +241,41 @@ $redpadk: #d65c44;
     font-size: 28px;
     color: white;
   }
+  & .redpackOpenCircleButton {
+    background: #63d978;
+    width: 150px;
+    height: 150px;
+    margin: auto;
+    border-radius: 50%;
+    font-size: 50px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.moneyview {
+  width: 610px;
+  margin: auto;
+  padding: 50px;
+  line-height: 3;
+  font-size: 30px;
+
+  & .moneybig {
+    font-size: 50px;
+    color: #666;
+    line-height: 2;
+  }
+  & .fontbig {
+    line-height: 2;
+    font-size: 50px;
+    font-weight: bold;
+  }
+  & .moneyviewbutton {
+    width: 610px;
+    margin: auto;
+    background-color: #19ad19;
+    border-radius: 10px;
+  }
 }

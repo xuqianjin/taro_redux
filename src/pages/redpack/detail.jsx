@@ -23,7 +23,7 @@ const redpack_share = require("../../static/icon/redpack_share.png");
 
 const statusmap = {
   0: "该红包未支付",
-  1: "领取红包",
+  1: "红包领取中",
   2: "该红包已领完",
   3: "该红包已过期"
 };
@@ -94,6 +94,27 @@ export default class extends Component {
       showme && this.showOpen();
     });
   };
+  handleClick = type => {
+    const { redpack, showopenRedpack, openRedpack } = this.state;
+    switch (type) {
+      case 1:
+        Taro.navigateTo({
+          url: `/pages/redpack/money`
+        });
+        break;
+      case 2:
+        Taro.navigateTo({
+          url: `/pages/redpack/index`
+        });
+        break;
+      case 3:
+        Taro.navigateTo({
+          url: `/pages/redpack/share?redpackId=${redpack.id}`
+        });
+        break;
+      default:
+    }
+  };
   showOpen = () => {
     const { openRedpack } = this.state;
     this.setState({ showopenRedpack: true });
@@ -130,7 +151,10 @@ export default class extends Component {
             </View>
             <View className="detailbutton">{statusmap[redpack.status]}</View>
             <View className="at-row">
-              <View className="at-col text_center text_white">
+              <View
+                className="at-col text_center text_white"
+                onClick={this.handleClick.bind(this, 1)}
+              >
                 <ImageView
                   src={redpack_money}
                   baseclassname="detailicon"
@@ -138,7 +162,10 @@ export default class extends Component {
                 />
                 去提现
               </View>
-              <View className="at-col text_center text_white">
+              <View
+                className="at-col text_center text_white"
+                onClick={this.handleClick.bind(this, 2)}
+              >
                 <ImageView
                   src={redpack_default}
                   baseclassname="detailicon"
@@ -146,7 +173,10 @@ export default class extends Component {
                 />
                 再发一个
               </View>
-              <View className="at-col text_center text_white">
+              <View
+                className="at-col text_center text_white"
+                onClick={this.handleClick.bind(this, 3)}
+              >
                 <ImageView
                   src={redpack_share}
                   baseclassname="detailicon"
@@ -190,18 +220,6 @@ export default class extends Component {
               })}
           </ScrollView>
         </View>
-        {openRedpack && (
-          <AtCurtain
-            isOpened={showopenRedpack}
-            onClose={this.closeOpen.bind(this)}
-          >
-            <RedpackOpen
-              redpackId={redpack.id}
-              money={openRedpack.money / 100}
-              onClose={this.closeOpen.bind(this)}
-            />
-          </AtCurtain>
-        )}
       </BaseView>
     );
   }
