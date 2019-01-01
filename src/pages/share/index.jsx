@@ -52,6 +52,9 @@ export default class extends Component {
       case 3: //加群
         data = { hook: `joingroup` };
         break;
+      case 4: //关注公众号
+        data = { hook: `userqrpub` };
+        break;
       default:
     }
     data && this.props.postWxMagicMessage(data);
@@ -80,6 +83,12 @@ export default class extends Component {
       case 3:
         title = "进群提示";
         desc = '在客服会话回复"6"扫码进群';
+        button = "回复6扫码进群";
+        img = `${CDN_URL}intro_join_group.jpg`;
+        break;
+      case 4:
+        title = "关注公众号";
+        desc = '在客服会话回复"6"关注公众号';
         button = "回复6扫码进群";
         img = `${CDN_URL}intro_join_group.jpg`;
         break;

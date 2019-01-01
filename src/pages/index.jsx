@@ -35,7 +35,8 @@ import {
   setState,
   getStatistic,
   getImToken,
-  getVipKinds
+  getVipKinds,
+  getSysMetaData
 } from "../reducers/commonReducer";
 import {
   postWxLogin,
@@ -57,6 +58,8 @@ import {
   getMessageBoxes
 } from "../reducers/customerReducer";
 
+import { getRedPackStatistic } from "../reducers/redpackReducer";
+
 import ShareDialog from "../components/ShareDialog";
 import "./style.scss";
 
@@ -64,7 +67,8 @@ const mapStateToProps = state => {
   return {
     commonReducer: state.commonReducer,
     userReducer: state.userReducer,
-    customerReducer: state.customerReducer
+    customerReducer: state.customerReducer,
+    redpackReducer: state.redpackReducer
   };
 };
 const mapDispatchToProps = dispatch => {
@@ -88,6 +92,8 @@ const mapDispatchToProps = dispatch => {
       putWxUserInfo,
       putUserCarte,
       getMessageBoxes,
+      getRedPackStatistic,
+      getSysMetaData,
       setState
     },
     dispatch
@@ -207,6 +213,10 @@ class Index extends Component {
     Taro.eventCenter.on("getMessageBoxes", () => {
       this.props.getStatistic();
     });
+    Taro.eventCenter.on("getRedPackStatistic", () => {
+      this.props.getSysMetaData();
+      this.props.getRedPackStatistic();
+    });
   }
 
   componentDidMount() {
@@ -221,6 +231,7 @@ class Index extends Component {
         Taro.eventCenter.trigger("getUserCarte");
         Taro.eventCenter.trigger("getCustomer");
         Taro.eventCenter.trigger("getUserInfoDetail");
+        Taro.eventCenter.trigger("getRedPackStatistic");
         this.initSocket(res.value.token);
         //新用户未授权
         if (!res.value.nickName) {
@@ -344,7 +355,8 @@ class Index extends Component {
       },
       {
         title: "客户",
-        iconType: "bell"
+        iconType: "customer",
+        iconPrefixClass: "iconfont"
       },
       {
         title: "我的",
@@ -375,9 +387,10 @@ class Index extends Component {
     }
   };
   render() {
-    const { deviceinfo, statistic } = this.props.commonReducer;
+    const { deviceinfo, statistic, sysmetadata } = this.props.commonReducer;
     const { usercarte, userinfo, userinfodetail } = this.props.userReducer;
     const { visitguest, visitintent } = this.props.customerReducer;
+    const { redpackstatistic } = this.props.redpackReducer;
     const {
       current,
       showauth,
@@ -467,6 +480,8 @@ class Index extends Component {
               <Home
                 statistic={statistic}
                 userinfo={userinfo}
+                redpackstatistic={redpackstatistic}
+                sysmetadata={sysmetadata}
                 onShare={this.handleShare}
                 onJoin={this.handleJoin}
               />

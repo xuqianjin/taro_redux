@@ -2,7 +2,7 @@ import Taro, { Component } from "@tarojs/taro";
 import { connect } from "@tarojs/redux";
 import { bindActionCreators } from "redux";
 
-import { View } from "@tarojs/components";
+import { View, ScrollView } from "@tarojs/components";
 import {
   AtButton,
   AtInput,
@@ -89,7 +89,8 @@ export default class extends Component {
       isme: true,
       pageuserid: "",
       showarticleall: false,
-      showdemoall: false
+      showdemoall: false,
+      showphotoall: false
     };
   }
   componentWillMount() {
@@ -202,6 +203,25 @@ export default class extends Component {
       case 5:
         Taro.navigateTo({ url: "/pages/userinfo/demos" });
         break;
+      case 6:
+        Taro.navigateTo({ url: "/pages/userinfo/photos" });
+        break;
+      default:
+    }
+  };
+  handleInfoClick = index => {
+    const { usercartedesc } = this.props.userReducer;
+    const { carte } = usercartedesc;
+    switch (index) {
+      case 0:
+        Taro.navigateTo({ url: "/pages/share/index?type=4" });
+        break;
+      case 1:
+        Taro.setClipboardData({ data: JSON.parse(carte.extra).wechat });
+        break;
+      case 2:
+        this.handlePhoneCall(carte.contactPhonenum);
+        break;
       default:
     }
   };
@@ -225,6 +245,15 @@ export default class extends Component {
   };
   handleShareShow = () => {
     this.setState({ showshare: true });
+  };
+  handleSave = () => {
+    const { usercartedesc } = this.props.userReducer;
+    const { carte } = usercartedesc;
+    Taro.addPhoneContact({
+      nickName: carte.name,
+      mobilePhoneNumber: carte.contactPhonenum,
+      weChatNumber: carte.contactPhonenum
+    });
   };
   handleShareClose = () => {
     this.setState({ showshare: false });
@@ -263,12 +292,21 @@ export default class extends Component {
       case 2:
         this.setState({ showdemoall: true });
         break;
+      case 3:
+        this.setState({ showphotoall: true });
+        break;
       default:
     }
   };
   render() {
     const { redpackId } = this.$router.params;
-    const { showshare, isme, showarticleall, showdemoall } = this.state;
+    const {
+      showshare,
+      isme,
+      showarticleall,
+      showdemoall,
+      showphotoall
+    } = this.state;
     const { regions } = this.props.commonReducer;
     const { cartecollect, usercartedesc } = this.props.userReducer;
     var { carte } = usercartedesc;
@@ -287,12 +325,36 @@ export default class extends Component {
     const isCollect =
       !isme && cartecollect && cartecollect.find(item => item.id === carte.id);
     const themcolor = APP_COLOR_THEME;
+    var extra = { photos: "" };
+    if (carte.extra && JSON.parse(carte.extra)) {
+      extra = Object.assign({}, extra, JSON.parse(carte.extra));
+    }
+    const infomoredata = [
+      {
+        title: "关注公众号",
+        icon: "gongzhonghao",
+        desc: "多装获客宝",
+        isshow: true
+      },
+      {
+        title: "加我微信",
+        icon: "wechat",
+        desc: extra.wechat,
+        isshow: Boolean(extra.wechat)
+      },
+      {
+        title: "拨打电话",
+        icon: "phone",
+        desc: carte.contactPhonenum,
+        isshow: Boolean(carte.contactPhonenum)
+      }
+    ];
     return (
-      <BaseView baseclassname="" condition={condition}>
-        <HeightView height={150} color={APP_COLOR_THEME} />
+      <BaseView baseclassname="bg_white" condition={condition}>
+        <View className="userinfo_header_bg" />
         <View className="bg_white">
           <HeightView height={20} color="transparent" />
-          <View className="headderbox shadow">
+          <View className="headderbox">
             <View className="headercontent">
               <View className="at-row at-row at-row__justify--between at-row__align--center">
                 <View className="at-col  at-col-1 at-col--auto">
@@ -308,16 +370,30 @@ export default class extends Component {
                   />
                 </View>
               </View>
-              <HeightView height={40} color="transparent" />
+              <HeightView height={20} color="transparent" />
+              <View className="info">
+                <AtIcon
+                  size={15}
+                  prefixClass="iconfont"
+                  value="wechat"
+                  color={APP_COLOR_THEME}
+                />
+                <Text>{extra.wechat || "未填写"}</Text>
+              </View>
               <View
                 className="info "
                 onClick={this.handlePhoneCall.bind(this, carte.contactPhonenum)}
               >
-                <AtIcon size={15} value="phone" />
+                <AtIcon
+                  size={15}
+                  prefixClass="iconfont"
+                  value="phone"
+                  color={APP_COLOR_THEME}
+                />
                 <Text>{carte.contactPhonenum || "未填写"}</Text>
               </View>
               <View className="info">
-                <AtIcon size={15} value="map-pin" />
+                <AtIcon size={15} value="map-pin" color={APP_COLOR_THEME} />
                 <Text>
                   {this.getRegionName(carte.regionId)}
                   {carte.address || ""}
@@ -334,7 +410,28 @@ export default class extends Component {
             </View>
           </View>
           <HeightView height={30} color="transparent" />
-          <View className="at-row headerboxbottom text_center bg_white">
+          <View className="at-row at-row__justify--around">
+            <View className="at-col">
+              <AtButton
+                onClick={this.handleShareShow}
+                className="at-col-9 infobutton"
+                type="secondary"
+              >
+                分享名片
+              </AtButton>
+            </View>
+            <View className="at-col at-row">
+              <AtButton
+                onClick={this.handleSave}
+                className="at-col-9 infobutton"
+                type="primary"
+              >
+                存入通讯录
+              </AtButton>
+            </View>
+          </View>
+          <HeightView height={20} color="transparent" />
+          {/*<View className="at-row headerboxbottom text_center bg_white">
             <View className="at-col text_black_light">
               <AtIcon value="eye" size={20} />
               <Text>\t人气\t{carte.numView}</Text>
@@ -359,13 +456,43 @@ export default class extends Component {
                 分享好友
               </AtButton>
             </View>
-          </View>
+          </View>*/}
+          <ScrollView
+            scrollX={true}
+            className="at-row"
+            style="white-space:nowrap"
+          >
+            {infomoredata.map((item, index) => {
+              return (
+                item.isshow && (
+                  <View
+                    key={index}
+                    className="text_center"
+                    style="margin:15rpx;border:1px solid #ddd;border-radius:5px;padding:15px 10px;display:inline-block;min-width:180rpx"
+                    onClick={this.handleInfoClick.bind(this, index)}
+                  >
+                    <View>
+                      <AtIcon
+                        prefixClass="iconfont"
+                        value={item.icon}
+                        color={themcolor}
+                        size={15}
+                      />
+                      {item.title}
+                    </View>
+                    <View>{item.desc}</View>
+                  </View>
+                )
+              );
+            })}
+          </ScrollView>
+          <HeightView height={20} color="transparent" />
         </View>
 
         <View>
           <HeightView height={20} color="transparent" />
           <View className="paneltitle bg_white">
-            <Text>我的简介</Text>
+            <Text>个人简介</Text>
             {isme && (
               <View
                 className="extra text_theme"
@@ -375,7 +502,7 @@ export default class extends Component {
               </View>
             )}
           </View>
-          <HeightView height={1} color="#d6e4ef" />
+          <HeightView height={2} color="#d6e4ef" />
           <View className="userdesc content-min-height  bg_white">
             {isme && !carte.desc ? (
               <AtButton onClick={this.handleSetClick.bind(this, 2)}>
@@ -390,7 +517,7 @@ export default class extends Component {
         <View>
           <HeightView height={20} color="transparent" />
           <View className="paneltitle bg_white">
-            <Text>个性标签</Text>
+            <Text>擅长领域</Text>
             {isme && (
               <View
                 className="extra text_theme"
@@ -400,7 +527,7 @@ export default class extends Component {
               </View>
             )}
           </View>
-          <HeightView height={1} color="#d6e4ef" />
+          <HeightView height={2} color="#d6e4ef" />
           <View className="userdesc content-min-height bg_white">
             <HeightView height={20} color="transparent" />
             {isme && advantage.length == 0 ? (
@@ -410,11 +537,52 @@ export default class extends Component {
             ) : (
               advantage.map((tag, index) => {
                 return (
-                  <AtTag key={index} type="primary" circle={true}>
+                  <AtTag key={index} type="primary" active={true} circle={true}>
                     {tag}
                   </AtTag>
                 );
               })
+            )}
+          </View>
+        </View>
+
+        <View>
+          <HeightView height={20} color="transparent" />
+          <View className="paneltitle bg_white">
+            <Text>精选案例</Text>
+            {isme && (
+              <View
+                className="extra text_theme"
+                onClick={this.handleSetClick.bind(this, 5)}
+              >
+                添加
+              </View>
+            )}
+          </View>
+          <HeightView height={2} color="#d6e4ef" />
+          <View className="content-min-height bg_white">
+            <View className="at-row at-row--wrap">
+              {usercartedesc.demos &&
+                usercartedesc.demos.map((item, index) => {
+                  return index > 3 && !showarticleall ? null : (
+                    <DemoItem
+                      key={item.id}
+                      item={item}
+                      line={true}
+                      onClick={this.handleDemoClick.bind(this, item)}
+                    />
+                  );
+                })}
+            </View>
+            {usercartedesc.demos && (
+              <AtLoadMore
+                status={
+                  usercartedesc.demos.length > 4 && !showdemoall
+                    ? "more"
+                    : "noMore"
+                }
+                onClick={this.handleShowAll.bind(this, 2)}
+              />
             )}
           </View>
         </View>
@@ -432,7 +600,7 @@ export default class extends Component {
               </View>
             )}
           </View>
-          <HeightView height={1} color="#d6e4ef" />
+          <HeightView height={2} color="#d6e4ef" />
           <View className="content-min-height bg_white">
             {usercartedesc.articles &&
               usercartedesc.articles.map((item, index) => {
@@ -461,39 +629,37 @@ export default class extends Component {
         <View>
           <HeightView height={20} color="transparent" />
           <View className="paneltitle bg_white">
-            <Text>推荐案例</Text>
+            <Text>我的相片</Text>
             {isme && (
               <View
                 className="extra text_theme"
-                onClick={this.handleSetClick.bind(this, 5)}
+                onClick={this.handleSetClick.bind(this, 6)}
               >
                 添加
               </View>
             )}
           </View>
-          <HeightView height={1} color="#d6e4ef" />
+          <HeightView height={2} color="#d6e4ef" />
           <View className="content-min-height bg_white">
-            <View className="at-row at-row--wrap">
-              {usercartedesc.demos &&
-                usercartedesc.demos.map((item, index) => {
-                  return index > 3 && !showarticleall ? null : (
-                    <DemoItem
-                      key={item.id}
-                      item={item}
-                      line={true}
-                      onClick={this.handleDemoClick.bind(this, item)}
-                    />
-                  );
-                })}
-            </View>
-            {usercartedesc.demos && (
+            {extra.photos &&
+              extra.photos.split(",").map((item, index) => {
+                return index > 2 && !showphotoall ? null : (
+                  <ImageView
+                    key={index}
+                    src={item}
+                    basestyle="width:100%"
+                    mode="widthFix"
+                  />
+                );
+              })}
+            {extra.photos && (
               <AtLoadMore
                 status={
-                  usercartedesc.demos.length > 4 && !showdemoall
+                  extra.photos.split(",").length > 3 && !showphotoall
                     ? "more"
                     : "noMore"
                 }
-                onClick={this.handleShowAll.bind(this, 2)}
+                onClick={this.handleShowAll.bind(this, 3)}
               />
             )}
           </View>
@@ -516,9 +682,11 @@ export default class extends Component {
         {!isme && (
           <View
             onClick={this.handleEditMine}
-            className="fixbottom text_center bg_theme_opacity"
+            className="fixbottom bg_theme"
           >
-            生成我的名片
+            <AtIcon value="user" size={18} />
+            <HeightView height={5} color="transparent" />
+            <Text>我的名片</Text>
           </View>
         )}
         <PopRegion ref={ref => (this.PopRegion = ref)} />

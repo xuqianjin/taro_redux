@@ -69,6 +69,12 @@ export default class extends Component {
           isneed: true
         },
         {
+          title: "微信",
+          name: "wechat",
+          type: "text",
+          isneed: true
+        },
+        {
           title: "姓名",
           name: "name",
           type: "text",
@@ -122,7 +128,13 @@ export default class extends Component {
       const { listdata } = this.state;
       var list = JSON.parse(JSON.stringify(listdata));
       list.map(item => {
-        item.value = usercarte[item.name];
+        if (item.name === "wechat") {
+          item.value = usercarte.extra
+            ? JSON.parse(usercarte.extra).wechat
+            : "";
+        } else {
+          item.value = usercarte[item.name];
+        }
       });
       this.setState({
         listdata: list,
@@ -147,7 +159,7 @@ export default class extends Component {
     this.setState({ avatarUrl: CDN_URL + images[0] });
   };
   onSubmit = () => {
-    const { userinfo } = this.props.userReducer;
+    const { userinfo, usercarte } = this.props.userReducer;
     const { listdata } = this.state;
     let postdata = {};
     for (var item of listdata) {
@@ -161,6 +173,13 @@ export default class extends Component {
           postdata[item.name] = temp;
         }
       }
+    }
+    if (postdata.wechat) {
+      const newextra = Object.assign({}, JSON.parse(usercarte.extra), {
+        wechat: postdata.wechat
+      });
+      postdata.extra = JSON.stringify(newextra);
+      delete postdata.wechat;
     }
     postdata.avatarUrl = this.state.avatarUrl;
     Taro.showLoading();

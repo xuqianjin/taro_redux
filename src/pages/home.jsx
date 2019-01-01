@@ -16,7 +16,8 @@ export default class extends Component {
   };
   static defaultProps = {
     userinfo: {},
-    statistic: {}
+    statistic: {},
+    redpackstatistic: {}
   };
 
   constructor(props) {
@@ -30,8 +31,17 @@ export default class extends Component {
   componentWillUnmount() {}
 
   getListData = () => {
-    const { userinfo, statistic } = this.props;
-    return [
+    const { userinfo, statistic, redpackstatistic, sysmetadata } = this.props;
+    const { isShowRedpack } = sysmetadata ? JSON.parse(sysmetadata.system) : {};
+    const redpackdata = {
+      title: "名片红包",
+      icon: require("../static/icon/redpack.png"),
+      desc: "精准获客必备核武器",
+      left: `收到 ${redpackstatistic.numReceive}`,
+      right: `发出 ${redpackstatistic.numSend}`,
+      tourl: "/pages/redpack/index"
+    };
+    const data = [
       {
         title: "我的名片",
         icon: require("../static/icon/usercard.png"),
@@ -57,6 +67,10 @@ export default class extends Component {
         tourl: "/pages/demo/index"
       }
     ];
+    if (isShowRedpack) {
+      data.push(redpackdata);
+    }
+    return data;
   };
   handleTopClick = value => {
     switch (value) {
@@ -84,7 +98,14 @@ export default class extends Component {
     onJoin();
   };
   render() {
-    const { userinfo, statistic, numMsgsUnreadToday } = this.props;
+    const {
+      userinfo,
+      statistic,
+      redpackstatistic,
+      numMsgsUnreadToday,
+      sysmetadata
+    } = this.props;
+    const { isShowRedpack } = sysmetadata ? JSON.parse(sysmetadata.system) : {};
     let condition = false;
     if (true) {
     } else {
@@ -93,7 +114,15 @@ export default class extends Component {
         tipsString: "加载中..."
       };
     }
-    const headeBg = <View className="bg_theme home_header_bg " />;
+    const headeBg = (
+      <View className="home_header_bg">
+        <ImageView
+          basestyle="width:90%;display:block;margin:auto"
+          src={`${CDN_URL}sylogo.png`}
+          mode="widthFix"
+        />
+      </View>
+    );
 
     const header = (
       <View className="home_header_container bg_white shadow">
@@ -120,13 +149,13 @@ export default class extends Component {
             <View className="text_black_light">今日消息</View>
           </View>
         </View>
-        <View className="at-row at-row__align--center footer text_theme">
+        <View className="at-row at-row__align--center footer">
           <View
             className="at-col text_center line opacity"
             onClick={this.handleShare}
           >
             <AtIcon value="share" size={16} />
-            <Text>\t邀请好友获VIP</Text>
+            <Text>\t邀请好友</Text>
           </View>
           <View
             className="at-col text_center opacity"
@@ -144,30 +173,64 @@ export default class extends Component {
         <View
           key={index}
           onClick={this.handleListClick.bind(this, item)}
-          className="at-row bg_white home_card_container shadow opacity"
+          className="at-row home_card_container "
         >
-          <View className="at-col at-col-1 at-col--auto">
-            <ImageView baseclassname="icon" src={item.icon} />
-          </View>
-          <View className="at-col">
-            <View className="title fontbig">{item.title}</View>
+          <View className="content bg_white shadow opacity text_center">
+            <View className="at-row at-row__align--center at-row__justify--center">
+              <ImageView baseclassname="icon" src={item.icon} />
+              <View className="title fontbig">{item.title}</View>
+            </View>
+            <HeightView height={10} color="transparent" />
             <View className="desc text_black_light">{item.desc}</View>
+            <HeightView height={20} color="transparent" />
             <View className="at-row text_black_light">
-              <Text className="at-col">{item.left}</Text>
-              <Text className="at-col">{item.right}</Text>
+              <Text className="at-col text_right">{item.left}</Text>
+              <Text className="at-col at-col-2">|</Text>
+              <Text className="at-col text_left">{item.right}</Text>
             </View>
           </View>
         </View>
       );
     });
 
+    const redpack = (
+      <View
+        className="text_center"
+        onClick={this.handleRedPackClick.bind(this)}
+      >
+        <ImageView
+          basestyle="width:95%"
+          src={`${CDN_URL}syhbt.png`}
+          mode="widthFix"
+        />
+        <View
+          style="margin-top:-8%;margin-left:40rpx;position:absolute;font-size:22rpx"
+          className="text_white text_left"
+        >{`已发送:${redpackstatistic.numSend}\t\t|\t\t已领取:${
+          redpackstatistic.numReceive
+        }`}</View>
+      </View>
+    );
+
+    const title = (
+      <View className="text_center">
+        <ImageView
+          basestyle="width:35%"
+          src={`${CDN_URL}syhkgj.png`}
+          mode="widthFix"
+        />
+      </View>
+    );
     return (
       <BaseView condition={condition}>
         {headeBg}
         {header}
-        <View onClick={this.handleRedPackClick.bind(this)}>创建红包</View>
-        {userCard}
         <HeightView height={20} color="transparent" />
+        {isShowRedpack && redpack}
+        <HeightView height={20} color="transparent" />
+        {title}
+        <View className="at-row at-row--wrap">{userCard}</View>
+        <HeightView height={150} color="transparent" />
       </BaseView>
     );
   }

@@ -14,6 +14,7 @@ if (process.env.TARO_ENV === "weapp") {
 }
 
 import "./app.scss";
+import "./font/iconfont.scss";
 
 const globalvalue = {
   color: "#6190e8"
@@ -33,6 +34,7 @@ class App extends Component {
       "pages/userinfo/adddesc",
       "pages/userinfo/addtag",
       "pages/userinfo/collect",
+      "pages/userinfo/photos",
       "pages/article/index",
       "pages/article/upload",
       "pages/webview/index",

@@ -110,11 +110,11 @@ export default class extends Component {
     const userCard = (
       <View
         onClick={this.handleUserData}
-        className="at-row bg_white home_card_container shadow opacity"
+        className="at-row at-row__align--center bg_white userheader shadow opacity"
       >
         <View className="at-col at-col-1 at-col--auto">
           <AtAvatar
-            className="icon"
+            className="userheadericon"
             circle={true}
             image={changeSrc(usercarte && usercarte.avatarUrl)}
           />

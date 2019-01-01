@@ -1,4 +1,4 @@
-$APP_COLOR_THEME: #008aff;
+$APP_COLOR_THEME: #64d978;
 $APP_COLOR_GRAY: #f0f1f5;
 $APP_COLOR_THEME_OPACITY: rgba(0,138,255,.9);
 
@@ -126,9 +126,17 @@ page {
 .at-tag--active,
 .at-button--primary{
 	background-color: $APP_COLOR_THEME !important;
+	border:1PX solid $APP_COLOR_THEME !important;
 }
 .at-tabs__item--active{
 	color: $APP_COLOR_THEME !important;
+}
+.at-button{
+	// border:none !important;
+	border:1PX solid $APP_COLOR_THEME !important;
+}
+.at-button--secondary{
+	color:$APP_COLOR_THEME !important;
 }
 .at-button--full{
 	width:750px !important;

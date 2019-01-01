@@ -1,12 +1,16 @@
+.userinfo_header_bg{
+  height: 150px;
+  background: url(https://djcdn.baicaiyun.com/sybg.png) no-repeat;
+  background-size: 100% 100%;
+}
 .headderbox {
   width: 710px;
   height: 400px;
   margin: auto;
   position: relative;
-  // background: url(https://djcdn.baicaiyun.com/carte_bg.jpg) no-repeat center
-  //   center;
-  // background-size: 100% 100%;
-  background: #f0f1f5;
+  background: url(https://djcdn.baicaiyun.com/mpbg.png) no-repeat center center;
+  background-size: 100% 100%;
+  // background: #f0f1f5;
   display: flex;
   align-items: center;
   border-radius: 20px;
@@ -26,7 +30,7 @@
   }
   & .info {
     font-size: 25px;
-    line-height: 2;
+    line-height: 1.5;
   }
 }
 
@@ -67,6 +71,11 @@
   width: 710px;
   margin: auto;
 }
+.infobutton {
+  height: 80px !important;
+  line-height: 80px !important;
+  font-size: 28px !important;
+}
 .headerboxbottom {
   width: 750px;
   font-size: 25px;
@@ -106,15 +115,29 @@
   min-height: 100px;
 }
 .fixbottom {
+  // position: fixed;
+  // bottom: 0px;
+  // width: 100%;
+  // color: white;
+  // line-height: 3;
+
   position: fixed;
-  bottom: 0px;
-  width: 100%;
+  bottom: 20px;
+  right: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
   color: white;
-  line-height: 3;
+  height: 110px;
+  width: 110px;
+  border-radius: 50%;
+
 }
 .fixmessage {
   position: fixed;
-  bottom: 100px;
+  bottom: 150px;
   right: 30px;
   display: flex;
   flex-direction: column;
@@ -144,4 +167,14 @@
   & .collectfontsmall {
     font-size: 25px;
   }
+}
+.add_icon {
+  margin: 10px;
+  padding: 30px;
+  border: 4px solid #ddd;
+}
+.add_img {
+  height: 130px;
+  width: 130px;
+  margin: 10px;
 }

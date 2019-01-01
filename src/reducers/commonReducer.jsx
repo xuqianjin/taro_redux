@@ -9,7 +9,18 @@ const API_GET_STATISTIC = API_HOST + "/c/statistic";
 const API_GET_REGION = API_HOST + "/c/regions";
 const API_GET_TAGS = API_HOST + "/c/tags";
 const API_GET_VIPKINDS = API_HOST + "/c/vipKinds";
+const API_GET_SYSTEM_METADATA = API_HOST + "/c/metadata/system";
 
+export const getSysMetaData = () => (dispatch, getState) => {
+  return dispatch({
+    type: API_GET_SYSTEM_METADATA,
+    payload: request.get(API_GET_SYSTEM_METADATA, {
+      header: {
+        Authorization: getState().userReducer.token
+      }
+    })
+  });
+};
 export const getRegion = () => (dispatch, getState) => {
   return dispatch({
     type: API_GET_REGION,
@@ -71,6 +82,7 @@ export const getVipKinds = () => (dispatch, getState) => {
 
 const init_state = {
   deviceinfo: "",
+  sysmetadata: "",
   osstoken: "",
   statistic: "",
   regions: "",
@@ -79,6 +91,11 @@ const init_state = {
 
 export default function reducer(state = init_state, action) {
   switch (action.type) {
+    case `${API_GET_SYSTEM_METADATA}_FULFILLED`:
+      return {
+        ...state,
+        sysmetadata: action.payload
+      };
     case `${GET_DEVICE_INFO}_FULFILLED`:
       return {
         ...state,

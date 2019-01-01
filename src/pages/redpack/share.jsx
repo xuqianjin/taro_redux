@@ -40,8 +40,9 @@ export default class extends Component {
       `/pages/index?goto=carte&userId=${id}&name=${name}&redpackId=${redpackId}`
     );
     return {
-      title: name + "的名片红包",
-      path: `/pages/index?goto=carte&userId=${id}&name=${name}&redpackId=${redpackId}`
+      title: `［有人@你］${name}邀请您领取现金红包，快快来拆！`,
+      path: `/pages/index?goto=carte&userId=${id}&name=${name}&redpackId=${redpackId}`,
+      imageUrl: "https://djcdn.baicaiyun.com/hbfnt.png"
     };
   }
   render() {
