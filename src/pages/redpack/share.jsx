@@ -55,6 +55,8 @@ export default class extends Component {
           <Button className="sharebutton" openType="share">
             分享给好友或群
           </Button>
+          <HeightView height={450} color="transparent" />
+          <View className="text_white text_center" style='font-size:16px'>您的名片红包已生成</View>
         </View>
         <View className="sharedesc">
           <Text>未领取红包将于24小时退回多装获客宝账户</Text>

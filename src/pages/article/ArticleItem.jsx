@@ -68,7 +68,7 @@ export default class extends Component {
           </View>
         </View>
         <HeightView height={20} color="transparent" />
-        {line && <HeightView height={1} color={color} />}
+        {line && <HeightView height={2} color={color} />}
       </View>
     );
   }

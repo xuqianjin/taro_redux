@@ -5,7 +5,11 @@ export const changeSrc = src => {
     return "";
   }
   if (src && typeof src === "string") {
-    if (src.indexOf("i/") === 0 || src.indexOf("wxd/") === 0) {
+    if (
+      src.indexOf("i/") === 0 ||
+      src.indexOf("wxd/") === 0 ||
+      src.indexOf("qruser/") === 0
+    ) {
       src = CDN_URL + src;
     }
   }

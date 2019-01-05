@@ -110,9 +110,15 @@ export default class extends Component {
           title: "职位",
           name: "office",
           type: "text"
+        },
+        {
+          title: "公众号",
+          name: "qrpubname",
+          type: "text"
         }
       ],
-      avatarUrl: ""
+      avatarUrl: "",
+      qrpub: ""
     };
   }
   config = {
@@ -132,13 +138,19 @@ export default class extends Component {
           item.value = usercarte.extra
             ? JSON.parse(usercarte.extra).wechat
             : "";
+        } else if (item.name === "qrpubname") {
+          item.value = usercarte.extra
+            ? JSON.parse(usercarte.extra).qrpubname
+            : "";
         } else {
           item.value = usercarte[item.name];
         }
       });
+      const qrpub = usercarte.extra ? JSON.parse(usercarte.extra).qrpub : "";
       this.setState({
         listdata: list,
-        avatarUrl: usercarte.avatarUrl
+        avatarUrl: usercarte.avatarUrl,
+        qrpub
       });
     });
   }
@@ -158,6 +170,9 @@ export default class extends Component {
   onUpload = images => {
     this.setState({ avatarUrl: CDN_URL + images[0] });
   };
+  onUploadQrpub = images => {
+    this.setState({ qrpub: images[0] });
+  };
   onSubmit = () => {
     const { userinfo, usercarte } = this.props.userReducer;
     const { listdata } = this.state;
@@ -174,13 +189,19 @@ export default class extends Component {
         }
       }
     }
+    const newextra = usercarte.extra ? JSON.parse(usercarte.extra) : {};
     if (postdata.wechat) {
-      const newextra = Object.assign({}, JSON.parse(usercarte.extra), {
-        wechat: postdata.wechat
-      });
-      postdata.extra = JSON.stringify(newextra);
+      newextra.wechat = postdata.wechat;
       delete postdata.wechat;
     }
+    if (true) {
+      newextra.qrpubname = postdata.qrpubname;
+      delete postdata.qrpubname;
+    }
+    if (this.state.qrpub) {
+      newextra.qrpub = this.state.qrpub;
+    }
+    postdata.extra = JSON.stringify(newextra);
     postdata.avatarUrl = this.state.avatarUrl;
     Taro.showLoading();
     this.props
@@ -223,7 +244,7 @@ export default class extends Component {
   };
   render() {
     const { usercarte } = this.props.userReducer;
-    const { listdata, avatarUrl } = this.state;
+    const { listdata, avatarUrl, qrpub } = this.state;
 
     const { regions } = this.props.commonReducer;
 
@@ -317,6 +338,18 @@ export default class extends Component {
               </AtInput>
             );
           })}
+          <UploadFile prefix="qruser/" onUpload={this.onUploadQrpub}>
+            <View className="inputpicker">
+              <View className="left">二维码</View>
+              <View className="right default">
+                {qrpub ? (
+                  <ImageView src={qrpub} basestyle="height:100px;width:100px" />
+                ) : (
+                  "请上传公众号二维码"
+                )}
+              </View>
+            </View>
+          </UploadFile>
         </AtForm>
         <HeightView height={100} color="transparent" />
         <FormidButton onClick={this.onSubmit}>

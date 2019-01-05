@@ -333,8 +333,8 @@ export default class extends Component {
       {
         title: "关注公众号",
         icon: "gongzhonghao",
-        desc: "多装获客宝",
-        isshow: true
+        desc: extra.qrpubname,
+        isshow: Boolean(extra.qrpubname)
       },
       {
         title: "加我微信",
@@ -358,8 +358,12 @@ export default class extends Component {
             <View className="headercontent">
               <View className="at-row at-row at-row__justify--between at-row__align--center">
                 <View className="at-col  at-col-1 at-col--auto">
-                  <View className="name">{`${carte.name}`}</View>
-                  <View className="career">{carte.office || "职位未填写"}</View>
+                  <View className="at-row at-row__align--center">
+                    <View className="name at-col">{`${carte.name}`}</View>
+                    <View className="career at-col margin-left-30">
+                      {carte.office || "职位未填写"}
+                    </View>
+                  </View>
                   <View className="career">{carte.corp || "公司未填写"}</View>
                 </View>
                 <View className="at-col  at-col-1 at-col--auto">
@@ -378,7 +382,9 @@ export default class extends Component {
                   value="wechat"
                   color={APP_COLOR_THEME}
                 />
-                <Text>{extra.wechat || "未填写"}</Text>
+                <Text className="margin-left-30">
+                  {extra.wechat || "未填写"}
+                </Text>
               </View>
               <View
                 className="info "
@@ -390,11 +396,13 @@ export default class extends Component {
                   value="phone"
                   color={APP_COLOR_THEME}
                 />
-                <Text>{carte.contactPhonenum || "未填写"}</Text>
+                <Text className="margin-left-30">
+                  {carte.contactPhonenum || "未填写"}
+                </Text>
               </View>
               <View className="info">
                 <AtIcon size={15} value="map-pin" color={APP_COLOR_THEME} />
-                <Text>
+                <Text className="margin-left-30">
                   {this.getRegionName(carte.regionId)}
                   {carte.address || ""}
                 </Text>
@@ -410,25 +418,25 @@ export default class extends Component {
             </View>
           </View>
           <HeightView height={30} color="transparent" />
-          <View className="at-row at-row__justify--around">
-            <View className="at-col">
-              <AtButton
-                onClick={this.handleShareShow}
-                className="at-col-9 infobutton"
-                type="secondary"
-              >
-                分享名片
-              </AtButton>
-            </View>
-            <View className="at-col at-row">
-              <AtButton
-                onClick={this.handleSave}
-                className="at-col-9 infobutton"
-                type="primary"
-              >
-                存入通讯录
-              </AtButton>
-            </View>
+          <View
+            className="at-row at-row__justify--between"
+            style={`width:${Taro.pxTransform(710)};margin:auto`}
+          >
+            <AtButton
+              // onClick={this.handleShareShow}
+              className="infobutton"
+              type="secondary"
+              open-type="share"
+            >
+              分享名片
+            </AtButton>
+            <AtButton
+              onClick={this.handleSave}
+              className="infobutton"
+              type="primary"
+            >
+              存入通讯录
+            </AtButton>
           </View>
           <HeightView height={20} color="transparent" />
           {/*<View className="at-row headerboxbottom text_center bg_white">
@@ -468,7 +476,9 @@ export default class extends Component {
                   <View
                     key={index}
                     className="text_center"
-                    style="margin:15rpx;border:1px solid #ddd;border-radius:5px;padding:15px 10px;display:inline-block;min-width:180rpx"
+                    style={`margin:${Taro.pxTransform(
+                      20
+                    )};border:1px solid #ddd;border-radius:5px;padding:15px 10px;display:inline-block;min-width:180rpx`}
                     onClick={this.handleInfoClick.bind(this, index)}
                   >
                     <View>
@@ -581,6 +591,7 @@ export default class extends Component {
                     ? "more"
                     : "noMore"
                 }
+                moreBtnStyle='border:none !important'
                 onClick={this.handleShowAll.bind(this, 2)}
               />
             )}
@@ -620,6 +631,7 @@ export default class extends Component {
                     ? "more"
                     : "noMore"
                 }
+                moreBtnStyle='border:none !important'
                 onClick={this.handleShowAll.bind(this, 1)}
               />
             )}
@@ -647,7 +659,7 @@ export default class extends Component {
                   <ImageView
                     key={index}
                     src={item}
-                    basestyle="width:100%"
+                    baseclassname="photosimage"
                     mode="widthFix"
                   />
                 );
@@ -659,6 +671,7 @@ export default class extends Component {
                     ? "more"
                     : "noMore"
                 }
+                moreBtnStyle='border:none !important'
                 onClick={this.handleShowAll.bind(this, 3)}
               />
             )}
@@ -680,10 +693,7 @@ export default class extends Component {
           </FormidButton>
         )}
         {!isme && (
-          <View
-            onClick={this.handleEditMine}
-            className="fixbottom bg_theme"
-          >
+          <View onClick={this.handleEditMine} className="fixbottom bg_theme">
             <AtIcon value="user" size={18} />
             <HeightView height={5} color="transparent" />
             <Text>我的名片</Text>

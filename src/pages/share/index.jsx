@@ -89,7 +89,7 @@ export default class extends Component {
       case 4:
         title = "关注公众号";
         desc = '在客服会话回复"6"关注公众号';
-        button = "回复6扫码进群";
+        button = "回复6扫码关注";
         img = `${CDN_URL}intro_join_group.jpg`;
         break;
       default:

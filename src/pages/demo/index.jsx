@@ -189,13 +189,18 @@ export default class extends Component {
           <Text>上传案例</Text>
         </View>
         <AtModal isOpened={this.state.isOpened}>
-          <AtModalHeader>请选择上传模板</AtModalHeader>
+          <View
+            className="text_center"
+            style="background:#e0f7e3;line-height:4;font-size:16px"
+          >
+            请选择上传模板
+          </View>
           <AtModalContent className="at-row at-row__justify--around at-row__align--center">
             {demoKind.map(item => {
               return (
                 <View
                   key={item.value}
-                  className="text_center text_theme"
+                  className="text_center"
                   style="font-size:18px;line-height:4;font-weight:bold"
                   onClick={this.handleTypeClick.bind(this, item)}
                 >

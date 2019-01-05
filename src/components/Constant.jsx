@@ -28,7 +28,7 @@ export const careerKind = [
   }
 ];
 export const demoKind = [
-  { name: "装修案例", value: 1 },
+  { name: "设计案例", value: 1 },
   { name: "建材案例", value: 2 }
 ];
 export const roomStyle = [

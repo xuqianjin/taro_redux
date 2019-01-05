@@ -77,8 +77,13 @@ export default class extends Component {
       Taro.atMessage({ message: "请输入正确红包个数", type: "error" });
       return;
     }
-    if (Number(amount) < 1 || Number(amount) > 500) {
-      Taro.atMessage({ message: "红包个数最小1个最大500个", type: "error" });
+    if (Number(amount) < 1 || Number(amount) > 100) {
+      Taro.atMessage({ message: "红包个数最小1个最大100个", type: "error" });
+      return;
+    }
+
+    if (Number(money) / Number(amount) < 0.1) {
+      Taro.atMessage({ message: "单个红包金额最低0.1元", type: "error" });
       return;
     }
     const postdata = {
@@ -89,6 +94,7 @@ export default class extends Component {
     this.props
       .postRedPack(postdata)
       .then(({ value }) => {
+        this.redpack = value;
         const chargedata = {
           redpackId: value.id,
           channel: "WX_LITE"
@@ -96,7 +102,6 @@ export default class extends Component {
         return this.props.postRedPackCharge(chargedata);
       })
       .then(({ value }) => {
-        this.redpack = value;
         return Taro.requestPayment(value);
       })
       .then(res => {

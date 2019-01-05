@@ -112,14 +112,15 @@
 .demoitem {
   width: 375px;
   & .content {
-    margin: 10px;
+    margin: 20px;
     background: white;
     border-radius: 6px;
     overflow: hidden;
   }
+
   & .image {
-    width: 355px;
-    height: 355px;
+    width: 335px;
+    height: 335px;
     border-radius: 6px 6px 0px 0px;
   }
   & .name {
