@@ -18,7 +18,8 @@ export default class extends Component {
     this.state = {};
   }
   static defaultProps = {
-    statistic: {}
+    statistic: {},
+    redpackstatistic: {}
   };
   componentWillMount() {}
   componentDidMount() {}
@@ -90,6 +91,28 @@ export default class extends Component {
       }
     ];
   };
+  getRedList = () => {
+    const { redpackstatistic } = this.props;
+    const { moneyLeft, numSend, numReceive } = redpackstatistic;
+    return [
+      {
+        icon: "money",
+        title: "红包提现",
+        extra: `余额:${moneyLeft / 100}元`,
+        onClick: () => {
+          Taro.navigateTo({ url: "/pages/redpack/money" });
+        }
+      },
+      {
+        icon: "list",
+        title: "红包记录",
+        extra: `已发送:${numSend}\t已领取:${numReceive}`,
+        onClick: () => {
+          Taro.navigateTo({ url: "/pages/redpack/list" });
+        }
+      }
+    ];
+  };
   handleUserData = () => {
     Taro.navigateTo({ url: "/pages/userinfo/edit" });
   };
@@ -101,6 +124,12 @@ export default class extends Component {
   };
   handleSysClick = index => {
     let list = this.getSysList();
+    if (list[index].onClick) {
+      list[index].onClick();
+    }
+  };
+  handleRedpackClick = index => {
+    let list = this.getRedList();
     if (list[index].onClick) {
       list[index].onClick();
     }
@@ -187,14 +216,41 @@ export default class extends Component {
         </View>
       );
     });
+
+    const list3data = this.getRedList();
+    const list3 = list3data.map((item, index) => {
+      return (
+        <View key={index} onClick={this.handleRedpackClick.bind(this, index)}>
+          <View className="at-row user_list_item bg_white opacity">
+            <View className="at-col at-col-1 at-col--auto icon">
+              <AtIcon size={18} value={item.icon} className="text_theme" />
+            </View>
+            <View className="at-col at-col-1 at-col--auto fontbig">
+              <View className="title">{item.title}</View>
+            </View>
+            <View className="at-col right text_black_light text_right">
+              <Text>{item.extra}</Text>
+              <AtIcon size={18} value="chevron-right" />
+            </View>
+          </View>
+          {index < list1data.length - 1 && (
+            <HeightView height={3} color="transparent" />
+          )}
+        </View>
+      );
+    });
+
     return (
       <ScrollView scrollY={true}>
         <HeightView height={20} color="transparent" />
         {userCard}
         <HeightView height={80} color="transparent" />
+        {list3}
+        <HeightView height={50} color="transparent" />
         {list1}
         <HeightView height={50} color="transparent" />
         {list2}
+        <HeightView height={150} color="transparent" />
       </ScrollView>
     );
   }

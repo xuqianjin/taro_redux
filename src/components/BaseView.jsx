@@ -1,5 +1,5 @@
 import Taro, { Component } from "@tarojs/taro";
-import { View, Button, Text, Input, ScrollView } from "@tarojs/components";
+import { View, Image } from "@tarojs/components";
 import { AtActivityIndicator } from "taro-ui";
 
 export default class extends Component {
@@ -22,21 +22,21 @@ export default class extends Component {
   render() {
     const { condition, basestyle } = this.props;
     let child = null;
-    if (condition && condition.state) {
-      switch (condition.state) {
-        case "viewLoading":
-          child = (
-            <AtActivityIndicator
-              mode="center"
-              content={condition.tipsString}
-            />
-          );
-          break;
-      }
+    if (condition && condition.state === "viewLoading") {
+      child = (
+        <AtActivityIndicator mode="center" content={condition.tipsString} />
+      );
+    } else if (condition && condition.state === "viewEmpty") {
+      child = (
+        <Image
+          style="width:50%;margin:auto;display:block"
+          mode="widthFix"
+          src={`${CDN_URL}kbbjt.png`}
+        />
+      );
     } else {
       child = this.props.children;
     }
-
     //  小程序bug兼容 https://nervjs.github.io/taro/docs/component-style.html
 
     var className = "baseclassname";

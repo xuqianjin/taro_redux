@@ -124,11 +124,12 @@
     border-radius: 6px 6px 0px 0px;
   }
   & .name {
-    font-size: 30px;
+    font-size: 28px;
     height: 90px;
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    margin: 0 5px;
+    width: 315px;
+    margin: auto;
   }
 }

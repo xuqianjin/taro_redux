@@ -79,6 +79,11 @@ export default class extends Component {
     );
     let conditionguest = false;
     if (visitguest) {
+      if (visitguest.length == 0) {
+        conditionguest = {
+          state: "viewEmpty"
+        };
+      }
     } else {
       conditionguest = {
         state: "viewLoading",
@@ -87,6 +92,11 @@ export default class extends Component {
     }
     let conditionintent = false;
     if (visitintent) {
+      if (visitintent.length == 0) {
+        conditionintent = {
+          state: "viewEmpty"
+        };
+      }
     } else {
       conditionintent = {
         state: "viewLoading",
@@ -101,7 +111,10 @@ export default class extends Component {
         swipeable={false}
       >
         <AtTabsPane current={this.state.current} index={1}>
-          <BaseView condition={conditionguest}>
+          <BaseView
+            condition={conditionguest}
+            basestyle={`height:${scrollheight}`}
+          >
             <ScrollView scrollY={true} style={`height:${scrollheight}`}>
               {visitguest &&
                 visitguest.map(item => {
@@ -120,7 +133,10 @@ export default class extends Component {
           </BaseView>
         </AtTabsPane>
         <AtTabsPane current={this.state.current} index={0}>
-          <BaseView condition={conditionintent}>
+          <BaseView
+            condition={conditionintent}
+            basestyle={`height:${scrollheight}`}
+          >
             <ScrollView scrollY={true} style={`height:${scrollheight}`}>
               {visitintent &&
                 visitintent.map(item => {

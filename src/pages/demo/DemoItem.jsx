@@ -28,17 +28,20 @@ export default class extends Component {
               item.images &&
               item.images.split(",").map((image, index) => {
                 return (
-                  <SwiperItem key={index} style='border-radius:6rpx'>
+                  <SwiperItem key={index} style="border-radius:6rpx">
                     <ImageView baseclassname="image" src={image} />
                   </SwiperItem>
                 );
               })}
           </Swiper>
-          <View className="name">
+          <View className="name at-row">
             {showChoose && (
               <AtIcon value={isChoose ? "star-2" : "star"} color={themecolor} />
             )}
             {item.name}
+            <View className="at-col text_right text_black_light">
+              <Text style="font-size:12px">{"访问\t\t" + item.numView}</Text>
+            </View>
           </View>
         </View>
       </View>

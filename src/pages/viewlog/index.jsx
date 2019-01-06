@@ -85,6 +85,11 @@ export default class extends Component {
     const { deviceinfo } = this.props.commonReducer;
     let condition = false;
     if (viewlogs) {
+      if (viewlogs.length == 0) {
+        condition = {
+          state: "viewEmpty"
+        };
+      }
     } else {
       condition = {
         state: "viewLoading",

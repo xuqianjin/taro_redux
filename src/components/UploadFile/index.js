@@ -78,6 +78,7 @@ export default class extends Component {
                 message: `有${fail.length}张图片上传失败`,
                 type: "error"
               });
+              wx.fundebug.notify("图像上传失败", JSON.stringify(fail));
             } else {
               Taro.atMessage({ message: `图片上传成功`, type: "success" });
               let success = res.map(result => {

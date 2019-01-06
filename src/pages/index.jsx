@@ -475,7 +475,7 @@ class Index extends Component {
     return (
       <View>
         <BaseView condition={condition}>
-          <AtTabs current={current}>
+          <AtTabs current={current} swipeable={false}>
             <AtTabsPane current={current} index={0}>
               <Home
                 statistic={statistic}
@@ -500,6 +500,7 @@ class Index extends Component {
                 usercarte={usercarte}
                 userinfodetail={userinfodetail}
                 statistic={statistic}
+                redpackstatistic={redpackstatistic}
                 onJoin={this.handleJoin}
               />
             </AtTabsPane>

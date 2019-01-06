@@ -96,7 +96,6 @@ export default class extends Component {
   componentWillMount() {
     const { usercarte, usercartedesc, userinfo } = this.props.userReducer;
     const params = this.$router.params;
-    console.log(params);
     const isme = params.userId == userinfo.userId;
 
     if (params.redpackId) {
@@ -209,6 +208,9 @@ export default class extends Component {
       default:
     }
   };
+  handleMoreClick = value => {
+    Taro.navigateTo({ url: `/pages/userinfo/showdemoarticle?type=${value}` });
+  };
   handleInfoClick = index => {
     const { usercartedesc } = this.props.userReducer;
     const { carte } = usercartedesc;
@@ -297,6 +299,12 @@ export default class extends Component {
         break;
       default:
     }
+  };
+  handleAddrClick = () => {
+    const { usercartedesc } = this.props.userReducer;
+    const { carte } = usercartedesc;
+    const addr = this.getRegionName(carte.regionId) + carte.address;
+    Taro.setClipboardData({ data: addr });
   };
   render() {
     const { redpackId } = this.$router.params;
@@ -400,7 +408,7 @@ export default class extends Component {
                   {carte.contactPhonenum || "未填写"}
                 </Text>
               </View>
-              <View className="info">
+              <View className="info" onClick={this.handleAddrClick}>
                 <AtIcon size={15} value="map-pin" color={APP_COLOR_THEME} />
                 <Text className="margin-left-30">
                   {this.getRegionName(carte.regionId)}
@@ -538,7 +546,7 @@ export default class extends Component {
             )}
           </View>
           <HeightView height={2} color="#d6e4ef" />
-          <View className="userdesc content-min-height bg_white">
+          <View className="usertag content-min-height bg_white">
             <HeightView height={20} color="transparent" />
             {isme && advantage.length == 0 ? (
               <AtButton onClick={this.handleSetClick.bind(this, 3)}>
@@ -547,7 +555,13 @@ export default class extends Component {
             ) : (
               advantage.map((tag, index) => {
                 return (
-                  <AtTag key={index} type="primary" active={true} circle={true}>
+                  <AtTag
+                    className="attag"
+                    key={index}
+                    type="primary"
+                    active={true}
+                    circle={true}
+                  >
                     {tag}
                   </AtTag>
                 );
@@ -560,12 +574,19 @@ export default class extends Component {
           <HeightView height={20} color="transparent" />
           <View className="paneltitle bg_white">
             <Text>精选案例</Text>
-            {isme && (
+            {isme ? (
               <View
                 className="extra text_theme"
                 onClick={this.handleSetClick.bind(this, 5)}
               >
                 添加
+              </View>
+            ) : (
+              <View
+                className="extra text_black_light"
+                onClick={this.handleMoreClick.bind(this, 1)}
+              >
+                更多>
               </View>
             )}
           </View>
@@ -584,7 +605,15 @@ export default class extends Component {
                   );
                 })}
             </View>
-            {usercartedesc.demos && (
+            {isme && usercartedesc.demos == 0 && (
+              <AtButton
+                className="goaddbutton"
+                onClick={this.handleSetClick.bind(this, 5)}
+              >
+                去添加
+              </AtButton>
+            )}
+            {/*usercartedesc.demos && (
               <AtLoadMore
                 status={
                   usercartedesc.demos.length > 4 && !showdemoall
@@ -594,7 +623,7 @@ export default class extends Component {
                 moreBtnStyle='border:none !important'
                 onClick={this.handleShowAll.bind(this, 2)}
               />
-            )}
+            )*/}
           </View>
         </View>
 
@@ -602,29 +631,43 @@ export default class extends Component {
           <HeightView height={20} color="transparent" />
           <View className="paneltitle bg_white">
             <Text>推荐好文</Text>
-            {isme && (
+            {isme ? (
               <View
                 className="extra text_theme"
                 onClick={this.handleSetClick.bind(this, 4)}
               >
                 添加
               </View>
+            ) : (
+              <View
+                className="extra text_black_light"
+                onClick={this.handleMoreClick.bind(this, 2)}
+              >
+                更多>
+              </View>
             )}
           </View>
           <HeightView height={2} color="#d6e4ef" />
           <View className="content-min-height bg_white">
-            {usercartedesc.articles &&
-              usercartedesc.articles.map((item, index) => {
-                return index > 2 && !showarticleall ? null : (
-                  <ArticleItem
-                    key={item.id}
-                    item={item}
-                    line={true}
-                    onClick={this.handleArticleClick.bind(this, item)}
-                  />
-                );
-              })}
-            {usercartedesc.articles && (
+            {usercartedesc.articles.map((item, index) => {
+              return index > 2 && !showarticleall ? null : (
+                <ArticleItem
+                  key={item.id}
+                  item={item}
+                  line={true}
+                  onClick={this.handleArticleClick.bind(this, item)}
+                />
+              );
+            })}
+            {isme && usercartedesc.articles == 0 && (
+              <AtButton
+                className="goaddbutton"
+                onClick={this.handleSetClick.bind(this, 4)}
+              >
+                去添加
+              </AtButton>
+            )}
+            {/*usercartedesc.articles && (
               <AtLoadMore
                 status={
                   usercartedesc.articles.length > 3 && !showarticleall
@@ -634,7 +677,7 @@ export default class extends Component {
                 moreBtnStyle='border:none !important'
                 onClick={this.handleShowAll.bind(this, 1)}
               />
-            )}
+            )*/}
           </View>
         </View>
 
@@ -655,7 +698,7 @@ export default class extends Component {
           <View className="content-min-height bg_white">
             {extra.photos &&
               extra.photos.split(",").map((item, index) => {
-                return index > 2 && !showphotoall ? null : (
+                return (
                   <ImageView
                     key={index}
                     src={item}
@@ -664,7 +707,15 @@ export default class extends Component {
                   />
                 );
               })}
-            {extra.photos && (
+            {isme && extra.photos.split(",") == 0 && (
+              <AtButton
+                className="goaddbutton"
+                onClick={this.handleSetClick.bind(this, 6)}
+              >
+                去添加
+              </AtButton>
+            )}
+            {/*extra.photos && (
               <AtLoadMore
                 status={
                   extra.photos.split(",").length > 3 && !showphotoall
@@ -674,7 +725,7 @@ export default class extends Component {
                 moreBtnStyle='border:none !important'
                 onClick={this.handleShowAll.bind(this, 3)}
               />
-            )}
+            )*/}
           </View>
         </View>
 
