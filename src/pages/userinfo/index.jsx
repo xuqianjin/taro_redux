@@ -33,6 +33,7 @@ import { gender, careerKind } from "../../components/Constant";
 
 import {
   getUserCarteDesc,
+  getUserCarteVisitors,
   putUserCarteCollect,
   getUserCarteCollect
 } from "../../reducers/userReducer";
@@ -59,6 +60,7 @@ const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       getUserCarteDesc,
+      getUserCarteVisitors,
       putUserCarteCollect,
       getUserCarteCollect,
       postViewlogs,
@@ -104,6 +106,7 @@ export default class extends Component {
     this.props.getUserCarteCollect();
     Taro.eventCenter.on("getUserCarteDesc", () => {
       this.props.getUserCarteDesc(params.userId);
+      this.props.getUserCarteVisitors(params.userId);
     });
 
     Taro.eventCenter.trigger("getUserCarteDesc");
@@ -224,6 +227,9 @@ export default class extends Component {
       case 2:
         this.handlePhoneCall(carte.contactPhonenum);
         break;
+      case 3:
+        this.handleAddrClick();
+        break;
       default:
     }
   };
@@ -316,7 +322,11 @@ export default class extends Component {
       showphotoall
     } = this.state;
     const { regions } = this.props.commonReducer;
-    const { cartecollect, usercartedesc } = this.props.userReducer;
+    const {
+      cartecollect,
+      usercartedesc,
+      usercartevisitors
+    } = this.props.userReducer;
     var { carte } = usercartedesc;
     let condition = false;
     if (carte && regions) {
@@ -341,27 +351,67 @@ export default class extends Component {
       {
         title: "关注公众号",
         icon: "gongzhonghao",
+        prefixClass: "iconfont",
         desc: extra.qrpubname,
         isshow: Boolean(extra.qrpubname)
       },
       {
         title: "加我微信",
         icon: "wechat",
+        prefixClass: "iconfont",
         desc: extra.wechat,
         isshow: Boolean(extra.wechat)
       },
       {
         title: "拨打电话",
+        prefixClass: "iconfont",
         icon: "phone",
         desc: carte.contactPhonenum,
         isshow: Boolean(carte.contactPhonenum)
+      },
+      {
+        title: "联系地址",
+        icon: "map-pin",
+        desc: this.getRegionName(carte.regionId) || "",
+        isshow: Boolean(carte.regionId)
       }
     ];
+    const visitorsView = (
+      <View style={`width:${Taro.pxTransform(710)};margin:auto`}>
+        <View className="at-row at-row__align--center at-row__justify--between">
+          <View className="at-row">
+            {usercartevisitors &&
+              usercartevisitors.map((item, index) => {
+                return index > 5 ? null : (
+                  <ImageView
+                    basestyle="margin-right:5px;height:30px;width:30px;border-radius:5px"
+                    key={item.id}
+                    src={`${changeSrc(item.avatarUrl)}`}
+                  />
+                );
+              })}
+            {usercartevisitors && usercartevisitors.length > 5 && (
+              <Text className="text_theme">...</Text>
+            )}
+          </View>
+          <AtIcon
+            onClick={this.handleCollect.bind(this, isCollect)}
+            value={isCollect ? "star-2" : "star"}
+            color={themcolor}
+            size={25}
+          />
+        </View>
+        <HeightView height={20} color="transparent" />
+        <View style="font-size:12px" className="text_black_light">
+          {carte.numView}人浏览
+        </View>
+      </View>
+    );
     return (
       <BaseView baseclassname="bg_white" condition={condition}>
         <View className="userinfo_header_bg" />
         <View className="bg_white">
-          <HeightView height={20} color="transparent" />
+          <HeightView height={10} color="transparent" />
           <View className="headderbox">
             <View className="headercontent">
               <View className="at-row at-row at-row__justify--between at-row__align--center">
@@ -491,7 +541,7 @@ export default class extends Component {
                   >
                     <View>
                       <AtIcon
-                        prefixClass="iconfont"
+                        prefixClass={item.prefixClass}
                         value={item.icon}
                         color={themcolor}
                         size={15}
@@ -506,7 +556,7 @@ export default class extends Component {
           </ScrollView>
           <HeightView height={20} color="transparent" />
         </View>
-
+        {visitorsView}
         <View>
           <HeightView height={20} color="transparent" />
           <View className="paneltitle bg_white">
@@ -752,7 +802,7 @@ export default class extends Component {
         )}
         <PopRegion ref={ref => (this.PopRegion = ref)} />
         <AtMessage />
-        <RedpackDialog redpackId={redpackId} />
+        <RedpackDialog redpackId={redpackId} senderId={carte.id} />
       </BaseView>
     );
   }

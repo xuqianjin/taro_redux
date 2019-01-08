@@ -4,6 +4,7 @@ import { bindActionCreators } from "redux";
 import { View } from "@tarojs/components";
 import ImageView from "../../components/ImageView";
 import HeightView from "../../components/HeightView";
+import FormidButton from "../../components/FormidButton";
 import "./style.scss";
 import { AtCurtain } from "taro-ui";
 import {
@@ -104,6 +105,7 @@ export default class extends Component {
     });
   };
   render() {
+    const { senderId } = this.props;
     const { openRedpack, showDialog, redpack } = this.state;
     const { money } = openRedpack || {};
     const style = openRedpack
@@ -114,34 +116,36 @@ export default class extends Component {
         {openRedpack ? (
           <View className="redpackOpen" style={style}>
             <HeightView height={50} color="transparent" />
-            <View className="redpackOpenTitle text_center">
-              您已领取该红包
-            </View>
+            <View className="redpackOpenTitle text_center">您已领取该红包</View>
             <HeightView height={100} color="transparent" />
             <View className="redpackOpenMoney text_center">
               {money / 100 + "元"}
             </View>
             <HeightView height={50} color="transparent" />
-            <View
-              className="redpackOpenButton text_center"
+            <FormidButton
               onClick={this.closeOpen.bind(this)}
+              senderId={senderId}
             >
-              确认
-            </View>
+              <View className="redpackOpenButton text_center">确认</View>
+            </FormidButton>
             <HeightView height={50} color="transparent" />
-            <View
-              className="redpackOpenButton text_center"
+            <FormidButton
               onClick={this.handleShare.bind(this)}
+              senderId={senderId}
             >
-              分享给好友或群
-            </View>
+              <View className="redpackOpenButton text_center">
+                分享给好友或群
+              </View>
+            </FormidButton>
             <HeightView height={50} color="transparent" />
-            <View
-              className="redpackOpenDesc text_center text_white"
+            <FormidButton
               onClick={this.hendleDetail.bind(this)}
+              senderId={senderId}
             >
-              看看大家的手气
-            </View>
+              <View className="redpackOpenDesc text_center text_white">
+                看看大家的手气
+              </View>
+            </FormidButton>
           </View>
         ) : (
           <View className="redpackOpen" style={style}>
@@ -150,19 +154,23 @@ export default class extends Component {
               收到一个名片红包
             </View>
             <HeightView height={200} color="transparent" />
-            <View
-              className="redpackOpenButton text_center"
+            <FormidButton
               onClick={this.handleRedpackOpen.bind(this)}
+              senderId={senderId}
             >
-              {statusmap[redpack.status]}
-            </View>
+              <View className="redpackOpenButton text_center">
+                {statusmap[redpack.status]}
+              </View>
+            </FormidButton>
             <HeightView height={50} color="transparent" />
-            <View
-              className="redpackOpenDesc text_center text_white"
+            <FormidButton
               onClick={this.hendleDetail.bind(this)}
+              senderId={senderId}
             >
-              看看大家的手气
-            </View>
+              <View className="redpackOpenDesc text_center text_white">
+                看看大家的手气
+              </View>
+            </FormidButton>
           </View>
         )}
       </AtCurtain>

@@ -30,7 +30,9 @@ export default class extends Component {
   }
   config = {
     navigationBarTitleText: "分享红包",
-    navigationBarBackgroundColor: "#d65c44"
+    navigationBarBackgroundColor: "#d65c44",
+    backgroundColor: "#d65c44",
+    backgroundColorTop: "#d65c44"
   };
   onShareAppMessage() {
     const { usercarte } = this.props.userReducer;

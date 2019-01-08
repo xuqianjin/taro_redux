@@ -47,7 +47,9 @@ export default class extends Component {
   static defaultProps = {};
   config = {
     navigationBarTitleText: "红包详情",
-    navigationBarBackgroundColor: "#d65c44"
+    navigationBarBackgroundColor: "#d65c44",
+    backgroundColor: "#d65c44",
+    backgroundColorTop: "#d65c44"
   };
   constructor(props) {
     super(props);

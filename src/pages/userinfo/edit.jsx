@@ -184,9 +184,7 @@ export default class extends Component {
         return;
       } else {
         var temp = item.func ? item.func(item.value) : item.value;
-        if (temp) {
-          postdata[item.name] = temp;
-        }
+        postdata[item.name] = temp;
       }
     }
     const newextra = usercarte.extra ? JSON.parse(usercarte.extra) : {};

@@ -157,17 +157,17 @@ class Index extends Component {
         !showsharemsg
       ) {
         if (redpackId) {
-          this.setState({
-            showsharemsg: `您正在领取${name || ""}分享给你名片红包`,
-            senderId: newobj.userId
-          });
+          // this.setState({
+          //   showsharemsg: `您正在领取${name || ""}分享给你名片红包`,
+          //   senderId: newobj.userId
+          // });
         } else {
           this.setState({
             showsharemsg: `您正在查看${name || ""}分享给你名片`,
             senderId: newobj.userId
           });
+          return;
         }
-        return;
       }
       if (goto === "article" && !showsharemsg) {
         this.setState({

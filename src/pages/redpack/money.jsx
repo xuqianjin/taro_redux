@@ -53,7 +53,7 @@ export default class extends Component {
       Taro.atMessage({ message: "请输入正确提现金额", type: "error" });
       return;
     }
-    if (Number(money) < 0.1 || Number(money) > 200) {
+    if (Number(money) < 0.3 || Number(money) > 200) {
       Taro.atMessage({ message: "提现金额最小0.3元最大200元", type: "error" });
       return;
     }

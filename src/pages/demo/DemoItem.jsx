@@ -38,9 +38,10 @@ export default class extends Component {
             {showChoose && (
               <AtIcon value={isChoose ? "star-2" : "star"} color={themecolor} />
             )}
-            {item.name}
+            <Text className="nameline">{item.name}</Text>
             <View className="at-col text_right text_black_light">
-              <Text style="font-size:12px">{"访问\t\t" + item.numView}</Text>
+              <AtIcon value="eye" size={16} />
+              <Text style="font-size:12px">{"\t\t" + item.numView}</Text>
             </View>
           </View>
         </View>

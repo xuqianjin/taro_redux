@@ -15,6 +15,7 @@ const API_POST_MAGICMESSAGE = API_HOST + "/c/wxlite/magicMessageHook";
 const API_GET_USER_INFO = API_HOST + "/c/user";
 const API_PUT_USER_CARTE = API_HOST + "/c/carte";
 const API_GET_USER_CARTE = API_HOST + "/c/carte/{id}";
+const API_GET_USER_CARTE_VISITORS = API_HOST + "/c/carte/{id}/visitors";
 const API_GET_USER_CARTE_OTHER = API_HOST + "/c/carte/{id}_other";
 const API_GET_USER_CARTE_DEC = API_HOST + "/c/carte/{id}/decorate";
 const API_GET_USER_CARTE_DEC_OTHER = API_HOST + "/c/carte/{id}/decorate_other";
@@ -133,6 +134,17 @@ export const getUserCarte = operateId => (dispatch, getState) => {
     })
   });
 };
+export const getUserCarteVisitors = operateId => (dispatch, getState) => {
+  return dispatch({
+    type: API_GET_USER_CARTE_VISITORS,
+    payload: request.get(API_GET_USER_CARTE_VISITORS, {
+      header: {
+        Authorization: getState().userReducer.token
+      },
+      operateId
+    })
+  });
+};
 export const getUserCarteOther = operateId => (dispatch, getState) => {
   return dispatch({
     type: API_GET_USER_CARTE_OTHER,
@@ -244,6 +256,7 @@ const init_state = {
   userinfo: "",
   userinfodetail: "",
   usercarte: "",
+  usercartevisitors: "",
   usercartedesc: "",
   cartecollect: ""
 };
@@ -261,6 +274,11 @@ export default function reducer(state = init_state, action) {
       return {
         ...state,
         usercarte: action.payload
+      };
+    case `${API_GET_USER_CARTE_VISITORS}_FULFILLED`:
+      return {
+        ...state,
+        usercartevisitors: action.payload
       };
     case `${API_GET_USER_CARTE_DEC}_FULFILLED`:
       return {
