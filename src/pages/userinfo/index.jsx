@@ -170,7 +170,7 @@ export default class extends Component {
     const { usercartedesc } = this.props.userReducer;
     const { carte } = usercartedesc;
     return {
-      title: carte.name + "的名片",
+      title: `［有人@你］这是${carte.name}的名片，请惠存！`,
       path: `/pages/index?goto=carte&userId=${carte.id}&name=${carte.name}`
     };
   }
@@ -242,7 +242,8 @@ export default class extends Component {
     Taro.navigateTo({ url: "/pages/userinfo/edit" });
   };
   handleEditMine = () => {
-    Taro.redirectTo({ url: "/pages/userinfo/edit" });
+    // Taro.redirectTo({ url: "/pages/userinfo/edit" });
+    Taro.navigateBack();
   };
   handSendMessage = () => {
     const { usercartedesc } = this.props.userReducer;
@@ -384,13 +385,13 @@ export default class extends Component {
               usercartevisitors.map((item, index) => {
                 return index > 5 ? null : (
                   <ImageView
-                    basestyle="margin-right:5px;height:30px;width:30px;border-radius:5px"
+                    basestyle="margin-right:5px;height:20px;width:20px;border-radius:5px"
                     key={item.id}
                     src={`${changeSrc(item.avatarUrl)}`}
                   />
                 );
               })}
-            {usercartevisitors && usercartevisitors.length > 5 && (
+            {usercartevisitors && usercartevisitors.length > 6 && (
               <Text className="text_theme">...</Text>
             )}
           </View>
@@ -401,9 +402,8 @@ export default class extends Component {
             size={25}
           />
         </View>
-        <HeightView height={20} color="transparent" />
-        <View style="font-size:12px" className="text_black_light">
-          {carte.numView}人浏览
+        <View style="font-size:10px" className="text_black_light">
+          {usercartevisitors ? usercartevisitors.length : 0}人浏览
         </View>
       </View>
     );
@@ -419,10 +419,10 @@ export default class extends Component {
                   <View className="at-row at-row__align--center">
                     <View className="name at-col">{`${carte.name}`}</View>
                     <View className="career at-col margin-left-30">
-                      {carte.office || "职位未填写"}
+                      {carte.office || ""}
                     </View>
                   </View>
-                  <View className="career">{carte.corp || "公司未填写"}</View>
+                  <View className="career">{carte.corp || ""}</View>
                 </View>
                 <View className="at-col  at-col-1 at-col--auto">
                   <AtAvatar
