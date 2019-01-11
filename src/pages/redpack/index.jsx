@@ -137,7 +137,7 @@ export default class extends Component {
         >
           <ImageView
             onClick={this.handleClick.bind(this, 0)}
-            src={"https://cdnbcsl.baicaiyun.com/hongbaomp.png"}
+            src={`${CDN_URL}hbmp.png`}
             baseclassname="goimage"
             mode="widthFix"
           />
@@ -175,13 +175,13 @@ export default class extends Component {
             >
               红包记录
             </Text>
-            <Text className="bottomdis">|</Text>
+            {/*<Text className="bottomdis">|</Text>
             <Text
               className="bottomdesc"
               onClick={this.handleClick.bind(this, 2)}
             >
               使用帮助
-            </Text>
+            </Text>*/}
           </View>
         </ScrollView>
       </View>

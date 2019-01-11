@@ -49,6 +49,7 @@ export default class extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isEnterRoom: false,
       value: "",
       messages: "",
       scrollIntoView: "",
@@ -97,11 +98,15 @@ export default class extends Component {
     const params = this.$router.params;
     wx.socket.emit("enterChat", { toUserId: Number(params.to) }, err => {
       if (err) {
-        Taro.atMessage({ message: err.message, type: "error" });
+        Taro.atMessage({
+          message: "进入房间失败:" + err.message,
+          type: "error"
+        });
         wx.fundebug.notifyError(err);
       } else {
         //刷新UI
         Taro.eventCenter.trigger("getMessageBoxes");
+        this.setState({ isEnterRoom: true });
       }
     });
   };
@@ -181,6 +186,7 @@ export default class extends Component {
     const { messageboxesdetail } = this.props.customerReducer;
     const { usercarte, userinfo, userinfodetail } = this.props.userReducer;
     const {
+      isEnterRoom,
       messages,
       scrollIntoView,
       showcurtain,
@@ -188,7 +194,7 @@ export default class extends Component {
       pagecarte
     } = this.state;
     let condition = false;
-    if (messages && pagecarte) {
+    if (messages && pagecarte && isEnterRoom) {
     } else {
       condition = {
         state: "viewLoading",
